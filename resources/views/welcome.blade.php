@@ -15,7 +15,6 @@
             <recorder></recorder>
 
             @if(count($videos))
-               <ul>
                   @foreach($videos as $video)
                      @if($video->playlist)
                         <video-player source="{{ $video->playlist }}"></video-player>
@@ -23,7 +22,6 @@
                         Coming soon
                      @endif
                   @endforeach
-               </ul>
             @else
                <div class="alert alert-info">No videos to show you yet</div>
             @endif

@@ -14,15 +14,16 @@
       <vue-web-cam v-show="!recordingBlob" ref="webcam" :device-id="deviceId" width="100%" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
    </div>
 
-   <div v-else-if="permission == 'denied'" class="card-body">
+   <!-- <div v-else-if="permission == 'denied'" class="card-body">
       <h3>Whoops.</h3>
       <p>We don't have access to your camera, you may need to take a look at your settings to find out how to enable it.</p>
-   </div>
+   </div> -->
 
-   <div v-else-if="permission == 'prompt'" class="card-body">
+   <div v-else-if="permission == 'prompt' || permission == 'denied'" class="card-body">
       <h3>Welcome</h3>
-      <p>First of all you’ll need to give this page permission to use your camera.</p>
-      <button class="btn btn-primary" @click="requestMedia">Request</button>
+      <p>You’ll need this site permission to access your camera.</p>
+      <p>If you’re having problems doing this, <a href="#">get help here</a></p>
+      <button class="btn btn-primary" @click="requestMedia">Start</button>
    </div>
    <div class="card-footer" v-if="isStarted && !recordingBlob">
       <button type="button" class="btn btn-success" @click="onCapture">Capture Photo</button>

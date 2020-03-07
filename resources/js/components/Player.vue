@@ -1,6 +1,5 @@
 <template>
    <video
-      id="my-video"
       class="video-js"
       controls
       preload="auto"
@@ -31,4 +30,13 @@ export default {
 
 <style>
    @import '~video.js/dist/video-js.css';
+
+   .video-js {
+      max-width: 100%;
+      margin: 2em 0;
+   }
+   video {
+      max-width: 100%;
+      display: block;
+   }
 </style>

@@ -1,0 +1,18 @@
+/*!
+ * Programatically add the following
+ */
+
+/*!
+ * Vue.js v2.6.11
+ * (c) 2014-2019 Evan You
+ * Released under the MIT License.
+ */
+
+/*! @name m3u8-parser @version 4.4.0 @license Apache-2.0 */
+
+/**
+ * @videojs/http-streaming
+ * @version 1.10.6
+ * @copyright 2019 Brightcove, Inc
+ * @license Apache-2.0
+ */
