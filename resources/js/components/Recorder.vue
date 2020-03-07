@@ -11,7 +11,7 @@
 
    <div v-if="permission == 'granted'" class="card-body p-0">
       <video v-if="recordingBlob" :src="recordingBlobUrl" width="100%" controls="true"></video>
-      <vue-web-cam v-show="!recordingBlob" ref="webcam" :device-id="deviceId" width="100%" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
+      <vue-web-cam ref="webcam" :device-id="deviceId" width="100%" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
    </div>
 
    <div v-else-if="permission == 'denied'" class="card-body">
@@ -113,21 +113,21 @@ export default {
             mimeType: 'video/webm'
          };
          const recordedChunks = [];
-         var recordingBlob = this.recordingBlob;
+
          this.mediaRecorder = new MediaRecorder(stream, options);
 
          this.mediaRecorder.addEventListener('dataavailable', (e) => {
             if (e.data.size > 0) {
                recordedChunks.push(e.data);
             }
-            if(this.isRecording && this.shouldStopRecording === true) {
-             console.log('media recorder stopped');
+            if(this.isRecording === true && this.shouldStopRecording === true) {
              this.mediaRecorder.stop();
+             this.isRecording = false;
             }
          });
 
          this.mediaRecorder.addEventListener('stop', () => {
-            this.isRecording = false;
+
             this.recordingBlob = new Blob(recordedChunks);
          });
       },
