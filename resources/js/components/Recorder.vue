@@ -121,6 +121,7 @@ export default {
                recordedChunks.push(e.data);
             }
             if(this.isRecording && this.shouldStopRecording === true) {
+             console.log('media recorder stopped');
              this.mediaRecorder.stop();
             }
          });
@@ -152,6 +153,7 @@ export default {
             this.isRecording = true;
             this.shouldStopRecording = false;
             this.mediaRecorder.start(1000);
+            console.log('media recorder started');
          }
       },
       onCameras(cameras) {
