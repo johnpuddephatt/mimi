@@ -16,10 +16,17 @@
 
    <div v-else-if="permission == 'denied'" class="card-body">
       <h3>Whoops.</h3>
-      <p>We don't have access to your camera, you may need to take a look at your settings to find out how to enable it.</p>
+      <p>We don't seem to have access to your camera, you may need to take a look at your settings to find out how to enable it.</p>
+      <button class="btn btn-primary" @click="requestMedia">Retry</button>
+
    </div>
 
-   <div v-else-if="permission == 'prompt'" class="card-body">
+   <div v-else-if="permission == 'unsupported'" class="card-body">
+      <p>This device doesn't support requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
+      <input type="file" name="video" accept="video/*" capture="user" id="video-input">
+   </div>
+
+   <div v-else class="card-body">
       <h3>Welcome</h3>
       <p>You’ll need this site permission to access your camera.</p>
       <p>If you’re having problems doing this, <a href="#">get help here</a></p>
@@ -63,7 +70,7 @@ export default {
          mediaRecorder: null,
          deviceId: null,
          devices: [],
-         permission: 'unknown'
+         permission: '',
       };
    },
    computed: {
@@ -92,16 +99,22 @@ export default {
    },
    methods: {
       checkPermissions() {
-         var vm = this;
-         navigator.permissions.query({
-            name: 'camera'
-         })
-         .then(function(result) {
-            vm.permission = result.state;
-            result.onchange = function() {
+         try {
+            var vm = this;
+            navigator.permissions.query({
+               name: 'camera'
+            })
+            .then(function(result) {
                vm.permission = result.state;
-            }
-         });
+               result.onchange = function() {
+                  vm.permission = result.state;
+               }
+            });
+         }
+         catch(error) {
+            this.permission = 'unknown';
+            console.warn(error);
+         }
       },
       onCapture() {
          this.img = this.$refs.webcam.capture();
@@ -188,7 +201,13 @@ export default {
          this.progress = percentage;
       },
       requestMedia() {
-         const stream = navigator.mediaDevices.getUserMedia({video: true});
+         try {
+            const stream = navigator.mediaDevices.getUserMedia({video: true});
+         }
+         catch(error) {
+            this.permission = 'unsupported';
+            console.log(error);
+         }
       }
    },
    filters: {
