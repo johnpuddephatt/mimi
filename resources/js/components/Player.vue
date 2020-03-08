@@ -1,14 +1,13 @@
 <template>
    <video
-      class="video-js"
+      class="video-js vjs-big-play-centered"
       controls
       preload="auto"
       width="640"
       height="264"
-      poster="https://www.placecage.com/480/360"
       data-setup="{}"
     >
-      <source :src="source" type="application/x-mpegURL" />
+      <source :src="source" :type="type" />
       <p class="vjs-no-js">
         To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
       </p>
@@ -19,7 +18,7 @@
 import videojs from "video.js";
 
 export default {
-   props: ['source'],
+   props: ['source', 'type'],
    data() {
       return {
       };
@@ -31,12 +30,20 @@ export default {
 <style>
    @import '~video.js/dist/video-js.css';
 
-   .video-js {
+   div.video-js {
       max-width: 100%;
       margin: 2em 0;
+      padding-top: 100%;
+      position: relative;
    }
-   video {
+   div.video-js video {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       max-width: 100%;
       display: block;
+      height: 100%;
    }
 </style>

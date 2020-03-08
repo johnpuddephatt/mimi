@@ -17,7 +17,7 @@
             @if(count($videos))
                   @foreach($videos as $video)
                      @if($video->playlist)
-                        <video-player source="{{ $video->playlist }}"></video-player>
+                        <video-player source="{{ $video->playlist }}" type="application/x-mpegURL"></video-player>
                      @else
                         Coming soon
                      @endif

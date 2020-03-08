@@ -9,9 +9,9 @@
       </div>
    </h5>
 
-   <div v-if="permission == 'granted'" class="card-body p-0">
-      <video v-if="recordingBlob" :src="recordingBlobUrl" width="100%" controls="true"></video>
-      <vue-web-cam ref="webcam" :device-id="deviceId" width="100%" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
+   <div v-if="permission == 'granted'" class="card-body webcam-wrapper">
+      <video-player v-if="recordingBlob" :source="recordingBlobUrl"></video-player>
+      <vue-web-cam v-show="!recordingBlob" ref="webcam" :device-id="deviceId" width="100%" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
    </div>
 
    <div v-else-if="permission == 'denied'" class="card-body">
@@ -33,6 +33,7 @@
    <div class="card-footer" v-if="recordingBlob">
       <button type="button" class="btn btn-success" @click="onUpload">Upload</button>
       <button type="button" class="btn btn-danger" @click="onRestart">Restart</button>
+      {{progress}}%
    </div>
 
    <div v-if="img">
@@ -56,6 +57,7 @@ export default {
          img: null,
          isStarted: false,
          isRecording: false,
+         progress: 0,
          shouldStopRecording: false,
          recordingBlob: '',
          mediaRecorder: null,
@@ -127,7 +129,6 @@ export default {
          });
 
          this.mediaRecorder.addEventListener('stop', () => {
-
             this.recordingBlob = new Blob(recordedChunks);
          });
       },
@@ -172,12 +173,19 @@ export default {
          data.append('title', 'Vue');
          data.append('video', this.recordingBlob);
          axios.post('/upload', data, {
-          headers: {'Content-Type': `multipart/form-data; boundary=${data._boundary}`}})
-             .then(res => {
-                 console.log(res);
-             }).catch(err => {
-             console.log(err)
-         });
+            headers: {'Content-Type': `multipart/form-data; boundary=${data._boundary}`},
+            onUploadProgress: progressEvent => this.updateProgress(Math.round( (progressEvent.loaded * 100) / progressEvent.total ))
+         })
+            .then(res => {
+               console.log(res);
+               this.progress = 0;
+            }).catch(err => {
+               console.log(err);
+               this.progress = 0;
+            });1
+      },
+      updateProgress(percentage) {
+         this.progress = percentage;
       },
       requestMedia() {
          const stream = navigator.mediaDevices.getUserMedia({video: true});
@@ -193,7 +201,21 @@ export default {
 
 
 <style>
-   video {
+
+   .webcam-wrapper {
+      padding-top: 100%;
+      position: relative;
+   }
+
+   .webcam-wrapper video {
+      position: absolute;
+      margin: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
       display: block;
       object-fit: cover
    }

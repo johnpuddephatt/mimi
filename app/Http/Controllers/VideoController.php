@@ -10,7 +10,7 @@ use App\Video;
 class VideoController extends Controller
 {
     public function index() {
-        $videos = Video::all();
+        $videos = Video::latest()->paginate(9);
         return view('welcome', compact('videos'));
     }
 
@@ -23,7 +23,7 @@ class VideoController extends Controller
         $video = Video::create([
             'disk'          => 'public',
             'original_name' => $request->video->getClientOriginalName(),
-            'path'          => $request->video->store('/video/original/', 'public'),
+            'path'          => $request->video->store('/video/original', 'public'),
             'title'         => $request->title,
         ]);
 
