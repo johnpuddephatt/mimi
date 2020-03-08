@@ -9,28 +9,35 @@
       </div>
    </h5>
 
-   <div v-if="permission == 'granted'" class="card-body webcam-wrapper">
-      <video-player v-if="recordingBlob" :source="recordingBlobUrl"></video-player>
-      <vue-web-cam v-show="!recordingBlob" ref="webcam" :device-id="deviceId" width="100%" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
+   <div v-if="errorMessage" class="card-body">
+      <h2>An error has occured</h2>
+      <p>Unfortunately we have not been able to access your camera. This might be because you haven’t given us permission to, or because your phone or computer doesn’t support doing this.</p>
+      <div class="alert alert-warning">
+         {{ errorMessage }}
+      </div>
+   </div>
+   <div v-else-if="cameraType == 'mediaRecorder'" class="card-body webcam-wrapper">
+      <video-player v-if="recordingBlob" :source="recordingBlobUrl" type="video/MP4"></video-player>
+      <vue-web-cam v-show="!recordingBlob" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
+   </div>
+   <div v-else-if="cameraType == 'fileInput'" class="card-body">
+      <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
+      <input type="file" name="video" accept="video/*" capture="user" id="video-input">
    </div>
 
-   <div v-else-if="permission == 'denied'" class="card-body">
+   <!-- <div v-else-if="permission == 'denied'" class="card-body">
       <h3>Whoops.</h3>
-      <p>We don't seem to have access to your camera, you may need to take a look at your settings to find out how to enable it.</p>
-      <button class="btn btn-primary" @click="requestMedia">Retry</button>
-
+      <p>We don't seem to be able to access your camera, you may need to take a look at your settings to find out how to enable it.</p>
    </div>
 
    <div v-else-if="permission == 'unsupported'" class="card-body">
       <p>This device doesn't support requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
       <input type="file" name="video" accept="video/*" capture="user" id="video-input">
-   </div>
+   </div> -->
 
    <div v-else class="card-body">
       <h3>Welcome</h3>
-      <p>You’ll need this site permission to access your camera.</p>
-      <p>If you’re having problems doing this, <a href="#">get help here</a></p>
-      <button class="btn btn-primary" @click="requestMedia">Start</button>
+      <button class="btn btn-primary" @click="openCamera">Start</button>
    </div>
    <div class="card-footer" v-if="isStarted && !recordingBlob">
       <button type="button" class="btn btn-success" @click="onCapture">Capture Photo</button>
@@ -70,7 +77,10 @@ export default {
          mediaRecorder: null,
          deviceId: null,
          devices: [],
-         permission: '',
+         // permission: '',
+         // permissionsApiSupported: true,
+         cameraType: false,
+         errorMessage: '',
       };
    },
    computed: {
@@ -78,7 +88,9 @@ export default {
          return this.devices.find(n => n.deviceId === this.deviceId);
       },
       recordingBlobUrl: function() {
-         return URL.createObjectURL(this.recordingBlob);
+         if(this.recordingBlob) {
+            return URL.createObjectURL(this.recordingBlob);
+         }
       }
    },
    watch: {
@@ -88,33 +100,49 @@ export default {
       devices: function() {
          // Once we have a list select the first one
          const [first, ...tail] = this.devices;
-         this.deviceId = localStorage.getItem('deviceId');
+         if(this.devices.indexOf(localStorage.getItem('deviceId'))) {
+            this.deviceId = localStorage.getItem('deviceId');
+         }
          if (first && !this.deviceId) {
             this.deviceId = first.deviceId;
          }
       }
    },
    created() {
-      this.checkPermissions();
+      // this.checkPermissions();
    },
    methods: {
-      checkPermissions() {
-         try {
-            var vm = this;
-            navigator.permissions.query({
-               name: 'camera'
-            })
-            .then(function(result) {
-               vm.permission = result.state;
-               result.onchange = function() {
-                  vm.permission = result.state;
-               }
-            });
+      // checkPermissions() {
+      //
+      //       if(window.navigator.permissions) {
+      //          var vm = this;
+      //          window.navigator.permissions.query({
+      //             name: 'camera'
+      //          })
+      //          .then(function(result) {
+      //             vm.permission = result.state;
+      //             result.onchange = function() {
+      //                vm.permission = result.state;
+      //             }
+      //          }).catch(err => {
+      //             console.warn(error);
+      //          });
+      //       }
+      //       else {
+      //          console.log('permissions api not available.');
+      //          this.permission = 'unknown';
+      //          this.permissionsApiSupported = false;
+      //       }
+      // },
+
+      openCamera() {
+         if(window.navigator.mediaDevices &&window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+            this.cameraType = 'mediaRecorder';
          }
-         catch(error) {
-            this.permission = 'unknown';
-            console.warn(error);
+         else {
+            this.cameraType = 'fileInput';
          }
+
       },
       onCapture() {
          this.img = this.$refs.webcam.capture();
@@ -125,23 +153,25 @@ export default {
          console.log("On Started Event", stream);
 
          const options = {
-            mimeType: 'video/webm'
+            // mimeType: 'video/webm'
          };
          const recordedChunks = [];
 
          this.mediaRecorder = new MediaRecorder(stream, options);
+         console.log('Mime:',this.mediaRecorder.mimeType);
 
          this.mediaRecorder.addEventListener('dataavailable', (e) => {
+            console.log(this.mediaRecorder.state);
             if (e.data.size > 0) {
                recordedChunks.push(e.data);
-            }
-            if(this.isRecording === true && this.shouldStopRecording === true) {
-             this.mediaRecorder.stop();
-             this.isRecording = false;
+            };
+            if(this.shouldStopRecording && this.isRecording && this.mediaRecorder.state == 'recording') {
+               this.mediaRecorder.stop();
             }
          });
 
-         this.mediaRecorder.addEventListener('stop', () => {
+         this.mediaRecorder.addEventListener('stop', () => {;
+            this.isRecording = false;
             this.recordingBlob = new Blob(recordedChunks);
          });
       },
@@ -157,11 +187,18 @@ export default {
          this.$refs.webcam.start();
       },
       onError(error) {
+         this.errorMessage = error;
          console.log("On Error Event", error);
       },
       onRecordToggle() {
          if(this.isRecording) {
             this.shouldStopRecording = true;
+            // Timeout fallback for Safari, which only fires the dataavailable event once on stop
+            setTimeout(() => {
+               if(this.mediaRecorder.state == 'recording') {
+                  this.mediaRecorder.stop();
+               }
+            }, 1000);
          }
          else {
             this.isRecording = true;
@@ -195,20 +232,27 @@ export default {
             }).catch(err => {
                console.log(err);
                this.progress = 0;
-            });1
+            });
       },
       updateProgress(percentage) {
          this.progress = percentage;
       },
-      requestMedia() {
-         try {
-            const stream = navigator.mediaDevices.getUserMedia({video: true});
-         }
-         catch(error) {
-            this.permission = 'unsupported';
-            console.log(error);
-         }
-      }
+      // requestMedia() {
+      //    try {
+      //       const stream = navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(res => {
+      //          console.log(res);
+      //          this.permission = 'granted';
+      //       }).catch(err => {
+      //          console.log(err);
+      //          this.permission = 'denied';
+      //       });
+      //
+      //    }
+      //    catch(error) {
+      //       this.permission = 'unsupported';
+      //       console.log(error);
+      //    }
+      // }
    },
    filters: {
       removeParentheses: function(value) {

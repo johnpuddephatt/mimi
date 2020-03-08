@@ -16,11 +16,11 @@ export default {
   props: {
     width: {
       type: [Number, String],
-      default: "100%"
+      default: 640
     },
     height: {
       type: [Number, String],
-      default: 500
+      default: 480
     },
     autoplay: {
       type: Boolean,
@@ -41,13 +41,6 @@ export default {
     playsinline: {
       type: Boolean,
       default: true
-    },
-    resolution: {
-      type: Object,
-      default: null,
-      validator: value => {
-        return value.height && value.width;
-      }
     }
   },
 
@@ -224,10 +217,10 @@ export default {
     testMediaAccess() {
       let constraints = { video: true, audio: true };
 
-      if (this.resolution) {
+      if (this.height && this.width) {
         constraints.video = {};
-        constraints.video.height = this.resolution.height;
-        constraints.video.width = this.resolution.width;
+        constraints.video.height = this.height;
+        constraints.video.width = this.width;
       }
 
       navigator.mediaDevices
@@ -247,12 +240,14 @@ export default {
      * load the camera passed as index!
      */
     loadCamera(device) {
-      let constraints = { video: { deviceId: { exact: device } }, audio: true };
+      let constraints = { video: { deviceId: device, facingMode: "user" }, audio: true };
+      // let constraints = { video: true, audio: true };
 
-      if (this.resolution) {
-        constraints.video.height = this.resolution.height;
-        constraints.video.width = this.resolution.width;
-      }
+      // if (this.height && this.width) {
+      //   constraints.video = {};
+      //   constraints.video.height = this.height;
+      //   constraints.video.width = this.width;
+      // }
 
       navigator.mediaDevices
         .getUserMedia(constraints)
