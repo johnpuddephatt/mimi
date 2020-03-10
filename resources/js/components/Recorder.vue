@@ -1,7 +1,8 @@
 <template>
 
 <div class="card">
-   <h5 class="card-header">Record video
+   <h5 class="card-header">
+      Record video
       <div v-if="devices.length > 1" class="float-right">
          <select v-model="deviceId">
             <option v-for="device in devices" :key="device.deviceId" :value="device.deviceId">{{ device.label | removeParentheses }}</option>
@@ -16,27 +17,17 @@
          {{ errorMessage }}
       </div>
    </div>
-   <div v-else-if="cameraType == 'mediaRecorder'" class="card-body webcam-wrapper">
-      <video-player v-if="recordingData" :source="recordingUrl" type="video/MP4"></video-player>
-      <vue-web-cam v-show="!recordingData" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
+
+   <div v-else-if="recordingData" class="card-body webcam-wrapper">
+      <video-player v-if="recordingData" :source="recordingUrl" :type="mimeType"></video-player>
    </div>
-   <div v-else-if="cameraType == 'fallback'" class="card-body" :class="recordingData ? 'webcam-wrapper': ''">
-      <video-player v-if="recordingData" :source="recordingUrl" type="video/MP4"></video-player>
+   <div v-else class="card-body" :class="cameraType == 'mediaRecorder' ? 'webcam-wrapper': ''">
+      <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
       <div v-else>
          <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
-         <input @change="onFileInputChange" type="file" name="video" accept="video/*" capture="user">
+         <input @change="onFileInputChange" type="file" name="video" accept="video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*" capture="user">
       </div>
    </div>
-
-   <!-- <div v-else-if="permission == 'denied'" class="card-body">
-      <h3>Whoops.</h3>
-      <p>We don't seem to be able to access your camera, you may need to take a look at your settings to find out how to enable it.</p>
-   </div>
-
-   <div v-else-if="permission == 'unsupported'" class="card-body">
-      <p>This device doesn't support requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
-      <input type="file" name="video" accept="video/*" capture="user" id="video-input">
-   </div> -->
 
    <div v-else class="card-body">
       <h3>Welcome</h3>
@@ -77,6 +68,7 @@ export default {
          progress: 0,
          shouldStopRecording: false,
          recordingData: '',
+         recordingMimeType: '',
          mediaRecorder: null,
          deviceId: null,
          devices: [],
@@ -92,7 +84,18 @@ export default {
          if(this.recordingData) {
             return URL.createObjectURL(this.recordingData);
          }
+      },
+      mimeType: function() {
+         switch (this.recordingMimeType) {
+            case 'video/ogg':
+            case 'video/mp4':
+            case 'video/webm':
+            break;
+            default: false;
+         }
       }
+
+
    },
    watch: {
       camera: function(id) {
@@ -115,7 +118,7 @@ export default {
 
       openCamera() {
          if(window.navigator.mediaDevices &&window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
-            this.cameraType = 'mediaRecorder';
+            this.cameraType = 'fallback';
          }
          else {
             this.cameraType = 'fallback';
@@ -136,7 +139,7 @@ export default {
          const recordedChunks = [];
 
          this.mediaRecorder = new MediaRecorder(stream, options);
-         console.log('Mime:',this.mediaRecorder.mimeType);
+         this.recordingMimeType = this.mediaRecorder.mimeType;
 
          this.mediaRecorder.addEventListener('dataavailable', (e) => {
             console.log(this.mediaRecorder.state);
@@ -217,23 +220,8 @@ export default {
       },
       onFileInputChange(evt) {
          this.recordingData = evt.target.files[0];
-      },
-      // requestMedia() {
-      //    try {
-      //       const stream = navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(res => {
-      //          console.log(res);
-      //          this.permission = 'granted';
-      //       }).catch(err => {
-      //          console.log(err);
-      //          this.permission = 'denied';
-      //       });
-      //
-      //    }
-      //    catch(error) {
-      //       this.permission = 'unsupported';
-      //       console.log(error);
-      //    }
-      // }
+         this.recordingMimeType = evt.target.files[0].type;
+      }
    },
    filters: {
       removeParentheses: function(value) {
