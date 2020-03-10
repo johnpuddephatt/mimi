@@ -80,8 +80,6 @@ export default {
          mediaRecorder: null,
          deviceId: null,
          devices: [],
-         // permission: '',
-         // permissionsApiSupported: true,
          cameraType: false,
          errorMessage: '',
       };
@@ -112,38 +110,15 @@ export default {
       }
    },
    created() {
-      // this.checkPermissions();
    },
    methods: {
-      // checkPermissions() {
-      //
-      //       if(window.navigator.permissions) {
-      //          var vm = this;
-      //          window.navigator.permissions.query({
-      //             name: 'camera'
-      //          })
-      //          .then(function(result) {
-      //             vm.permission = result.state;
-      //             result.onchange = function() {
-      //                vm.permission = result.state;
-      //             }
-      //          }).catch(err => {
-      //             console.warn(error);
-      //          });
-      //       }
-      //       else {
-      //          console.log('permissions api not available.');
-      //          this.permission = 'unknown';
-      //          this.permissionsApiSupported = false;
-      //       }
-      // },
 
       openCamera() {
          if(window.navigator.mediaDevices &&window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
-            this.cameraType = 'fallback';
+            this.cameraType = 'mediaRecorder';
          }
          else {
-            this.cameraType = 'mediaRecorder';
+            this.cameraType = 'fallback';
          }
 
       },
