@@ -17,12 +17,15 @@
       </div>
    </div>
    <div v-else-if="cameraType == 'mediaRecorder'" class="card-body webcam-wrapper">
-      <video-player v-if="recordingBlob" :source="recordingBlobUrl" type="video/MP4"></video-player>
-      <vue-web-cam v-show="!recordingBlob" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
+      <video-player v-if="recordingData" :source="recordingUrl" type="video/MP4"></video-player>
+      <vue-web-cam v-show="!recordingData" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
    </div>
-   <div v-else-if="cameraType == 'fileInput'" class="card-body">
-      <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
-      <input type="file" name="video" accept="video/*" capture="user" id="video-input">
+   <div v-else-if="cameraType == 'fallback'" class="card-body" :class="recordingData ? 'webcam-wrapper': ''">
+      <video-player v-if="recordingData" :source="recordingUrl" type="video/MP4"></video-player>
+      <div v-else>
+         <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
+         <input @change="onFileInputChange" type="file" name="video" accept="video/*" capture="user">
+      </div>
    </div>
 
    <!-- <div v-else-if="permission == 'denied'" class="card-body">
@@ -39,12 +42,12 @@
       <h3>Welcome</h3>
       <button class="btn btn-primary" @click="openCamera">Start</button>
    </div>
-   <div class="card-footer" v-if="isStarted && !recordingBlob">
+   <div class="card-footer" v-if="isStarted && !recordingData">
       <button type="button" class="btn btn-success" @click="onCapture">Capture Photo</button>
       <button type="button" class="btn btn-danger" @click="onRecordToggle">{{ isRecording ? 'Stop recording' : 'Start recording' }}</button>
    </div>
 
-   <div class="card-footer" v-if="recordingBlob">
+   <div class="card-footer" v-if="recordingData">
       <button type="button" class="btn btn-success" @click="onUpload">Upload</button>
       <button type="button" class="btn btn-danger" @click="onRestart">Restart</button>
       {{progress}}%
@@ -73,7 +76,7 @@ export default {
          isRecording: false,
          progress: 0,
          shouldStopRecording: false,
-         recordingBlob: '',
+         recordingData: '',
          mediaRecorder: null,
          deviceId: null,
          devices: [],
@@ -87,9 +90,9 @@ export default {
       device: function() {
          return this.devices.find(n => n.deviceId === this.deviceId);
       },
-      recordingBlobUrl: function() {
-         if(this.recordingBlob) {
-            return URL.createObjectURL(this.recordingBlob);
+      recordingUrl: function() {
+         if(this.recordingData) {
+            return URL.createObjectURL(this.recordingData);
          }
       }
    },
@@ -137,10 +140,10 @@ export default {
 
       openCamera() {
          if(window.navigator.mediaDevices &&window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
-            this.cameraType = 'mediaRecorder';
+            this.cameraType = 'fallback';
          }
          else {
-            this.cameraType = 'fileInput';
+            this.cameraType = 'mediaRecorder';
          }
 
       },
@@ -172,7 +175,7 @@ export default {
 
          this.mediaRecorder.addEventListener('stop', () => {;
             this.isRecording = false;
-            this.recordingBlob = new Blob(recordedChunks);
+            this.recordingData = new Blob(recordedChunks);
          });
       },
       onStopped(stream) {
@@ -216,12 +219,12 @@ export default {
          console.log("On Camera Change Event", deviceId);
       },
       onRestart() {
-         this.recordingBlob = null;
+         this.recordingData = null;
       },
       onUpload() {
          const data = new FormData();
          data.append('title', 'Vue');
-         data.append('video', this.recordingBlob);
+         data.append('video', this.recordingData);
          axios.post('/upload', data, {
             headers: {'Content-Type': `multipart/form-data; boundary=${data._boundary}`},
             onUploadProgress: progressEvent => this.updateProgress(Math.round( (progressEvent.loaded * 100) / progressEvent.total ))
@@ -236,6 +239,9 @@ export default {
       },
       updateProgress(percentage) {
          this.progress = percentage;
+      },
+      onFileInputChange(evt) {
+         this.recordingData = evt.target.files[0];
       },
       // requestMedia() {
       //    try {
