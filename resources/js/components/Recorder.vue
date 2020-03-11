@@ -118,7 +118,7 @@ export default {
 
       openCamera() {
          if(window.navigator.mediaDevices &&window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
-            this.cameraType = 'fallback';
+            this.cameraType = 'mediaRecorder';
          }
          else {
             this.cameraType = 'fallback';
