@@ -2,8 +2,10 @@
    <video
       class="video-js vjs-big-play-centered"
       controls
+      preload="none"
       width="640"
       height="264"
+      data-setup="{}"
       playsinline
     >
       <source :src="source" :type="type" />
