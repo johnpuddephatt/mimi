@@ -200,6 +200,7 @@ export default {
       },
       onRestart() {
          this.recordingData = false;
+         this.progress = 0;
       },
       onUpload() {
          const data = new FormData();
@@ -211,10 +212,8 @@ export default {
          })
             .then(res => {
                console.log(res);
-               this.progress = 0;
             }).catch(err => {
                console.log(err);
-               this.progress = 0;
             });
       },
       updateProgress(percentage) {
