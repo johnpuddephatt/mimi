@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class Video extends Model
 {
@@ -27,5 +28,9 @@ class Video extends Model
       else {
          return false;
       }
+   }
+
+   public function getTimeToConvertAttribute() {
+      return Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($this->converted_for_streaming_at));
    }
 }

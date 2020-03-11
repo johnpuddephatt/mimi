@@ -18,6 +18,7 @@
                   @foreach($videos as $video)
                      @if($video->playlist)
                         <video-player source="{{ $video->playlist }}" type="application/x-mpegURL"></video-player>
+                        <p class="badge badge-secondary">This took {{$video->TimeToConvert }} seconds to convert</p>
                      @else
                         Coming soon
                      @endif
