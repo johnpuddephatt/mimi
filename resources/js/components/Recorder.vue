@@ -19,9 +19,10 @@
    </div>
 
    <div v-else-if="recordingData" class="card-body webcam-wrapper">
-      <video-player v-if="recordingData" :source="recordingUrl" :type="mimeType"></video-player>
+      <video-player :source="recordingUrl" :type="mimeType"></video-player>
    </div>
-   <div v-else class="card-body" :class="cameraType == 'mediaRecorder' ? 'webcam-wrapper': ''">
+
+   <div v-else-if="cameraType" class="card-body" :class="cameraType == 'mediaRecorder' ? 'webcam-wrapper': ''">
       <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
       <div v-else>
          <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
@@ -33,6 +34,7 @@
       <h3>Welcome</h3>
       <button class="btn btn-primary" @click="openCamera">Start</button>
    </div>
+
    <div class="card-footer" v-if="isStarted && !recordingData">
       <button type="button" class="btn btn-success" @click="onCapture">Capture Photo</button>
       <button type="button" class="btn btn-danger" @click="onRecordToggle">{{ isRecording ? 'Stop recording' : 'Start recording' }}</button>
@@ -67,7 +69,7 @@ export default {
          isRecording: false,
          progress: 0,
          shouldStopRecording: false,
-         recordingData: '',
+         recordingData: false,
          recordingMimeType: '',
          mediaRecorder: null,
          deviceId: null,
@@ -117,7 +119,7 @@ export default {
    methods: {
 
       openCamera() {
-         if(window.navigator.mediaDevices &&window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+         if(window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
             this.cameraType = 'mediaRecorder';
          }
          else {
@@ -197,7 +199,7 @@ export default {
          console.log("On Camera Change Event", deviceId);
       },
       onRestart() {
-         this.recordingData = null;
+         this.recordingData = false;
       },
       onUpload() {
          const data = new FormData();
