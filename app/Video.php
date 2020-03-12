@@ -10,10 +10,9 @@ class Video extends Model
 {
 
     protected $fillable = [
-        'title',
-        'original_name',
         'disk',
-        'path',
+        'video_path',
+        'thumbnail_path',
         'converted_for_streaming_at'
     ];
 

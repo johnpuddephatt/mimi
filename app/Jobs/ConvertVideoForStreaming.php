@@ -47,7 +47,7 @@ class ConvertVideoForStreaming implements ShouldQueue
 
         // open the uploaded video from the right disk...
         FFMpeg::fromDisk($this->video->disk)
-            ->open($this->video->path)
+            ->open($this->video->video_path)
 
             // Add filter
             ->addFilter('-vf', "crop='min(iw,ih)':'min(iw,ih)',scale=480:480")

@@ -1,57 +1,82 @@
 <template>
 
-<div class="card">
-   <h5 class="card-header">
-      Record video
-      <div v-if="devices.length > 1" class="float-right">
-         <select v-model="deviceId">
-            <option v-for="device in devices" :key="device.deviceId" :value="device.deviceId">{{ device.label | removeParentheses }}</option>
-         </select>&nbsp;
-      </div>
-   </h5>
-
-   <div v-if="errorMessage" class="card-body">
-      <h2>An error has occured</h2>
-      <p>Unfortunately we have not been able to access your camera. This might be because you haven’t given us permission to, or because your phone or computer doesn’t support doing this.</p>
-      <div class="alert alert-warning">
-         {{ errorMessage }}
+   <div v-if="errorMessage" class="card">
+      <h5 class="card-header">Error</h5>
+      <div class="card-body">
+         <p>Unfortunately we have not been able to access your camera. This might be because you haven’t given us permission to, or because your phone or computer doesn’t support doing this.</p>
+         <div class="alert alert-warning">
+            {{ errorMessage }}
+         </div>
       </div>
    </div>
 
-   <div v-else-if="recordingData" class="card-body webcam-wrapper">
-      <video-player :source="recordingUrl" :type="mimeType"></video-player>
-   </div>
-
-   <div v-else-if="cameraType" class="card-body" :class="cameraType == 'mediaRecorder' ? 'webcam-wrapper': ''">
-      <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcam" :device-id="deviceId" width="640" height="480" @started="onStarted" @stopped="onStopped" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" />
-      <div v-else>
-         <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
-         <input @change="onFileInputChange" type="file" name="video" accept="video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*" capture="user">
+   <div class="card" v-else-if="thumbnailData">
+      <h5 class="card-header">Review photo and upload</h5>
+      <div class="card-body has-square-media">
+         <img :src="thumbnailUrl" />
+      </div>
+      <div class="card-footer">
+         <button type="button" class="btn btn-danger" @click="onRetakePhoto">Retake photo</button>
+         <button type="button" class="btn btn-success" @click="onUpload">Upload</button>
+         {{progress}}%
       </div>
    </div>
 
-   <div v-else class="card-body">
-      <h3>Welcome</h3>
-      <button class="btn btn-primary" @click="openCamera">Start</button>
+   <div class="card" v-else-if="isReadyToCapturePhoto">
+      <h5 class="card-header">Take your photo</h5>
+      <div class="card-body" :class="cameraType == 'mediaRecorder' ? 'has-square-media': ''">
+         <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcamPhoto" :device-id="deviceId" width="640" height="480" @photo="onPhotoReady" @error="onError" @cameras="onCamerasPhoto" @camera-change="onCameraChange" />
+         <div v-else>
+            <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
+            <input @change="onPhotoInputChange" type="file" name="photo" accept="image/*" capture="user">
+         </div>
+      </div>
+      <div class="card-footer">
+         <button type="button" class="btn btn-danger" @click="onRestart">Start again</button>
+         <button type="button" class="btn btn-success" @click="onCapturePhoto">Take Photo</button>
+      </div>
    </div>
 
-   <div class="card-footer" v-if="isStarted && !recordingData">
-      <button type="button" class="btn btn-success" @click="onCapture">Capture Photo</button>
-      <button type="button" class="btn btn-danger" @click="onRecordToggle">{{ isRecording ? 'Stop recording' : 'Start recording' }}</button>
+   <div class="card" v-else-if="recordingData">
+      <h5 class="card-header">Review video</h5>
+      <div class="card-body has-square-media">
+         <video-player :source="recordingUrl" :type="mimeType"></video-player>
+      </div>
+      <div class="card-footer">
+         <button type="button" class="btn btn-danger" @click="onRestart">Re-record video</button>
+         <button type="button" class="btn btn-success" @click="onReadyToCapturePhoto">Next</button>
+      </div>
    </div>
 
-   <div class="card-footer" v-if="recordingData">
-      <button type="button" class="btn btn-success" @click="onUpload">Upload</button>
-      <button type="button" class="btn btn-danger" @click="onRestart">Restart</button>
-      {{progress}}%
+   <div class="card" v-else-if="cameraType" >
+      <h5 class="card-header">Record your video
+         <div v-if="devices.length > 1" class="float-right">
+            <select v-model="deviceId">
+               <option v-for="device in devices" :key="device.deviceId" :value="device.deviceId">{{ device.label | removeParentheses }}</option>
+            </select>&nbsp;
+         </div>
+      </h5>
+      <div class="card-body" :class="cameraType == 'mediaRecorder' ? 'has-square-media': ''">
+         <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcamVideo" :device-id="deviceId" width="640" height="480" @cameras="onCamerasVideo" @started="onStartedVideo" @error="onError" @camera-change="onCameraChange" />
+         <div v-else>
+            <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
+            <input @change="onVideoInputChange" type="file" name="video" accept="video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*" capture="user">
+         </div>
+      </div>
+      <div class="card-footer" v-if="isStarted">
+         <button type="button" class="btn btn-danger" @click="onRecordToggle">{{ isRecording ? 'Stop recording' : 'Start recording' }}</button>
+      </div>
    </div>
 
-   <div v-if="img">
-      <h2>Captured Image</h2>
-      <figure class="figure">
-         <img :src="img" class="img-responsive" />
-      </figure>
+   <div v-else class="card">
+      <h5 class="card-header">Welcome</h5>
+      <div class="card-body">
+         <button class="btn btn-primary" @click="openCamera">Start</button>
+      </div>
    </div>
+
+
+
 </div>
 </template>
 
@@ -64,12 +89,13 @@ export default {
    },
    data() {
       return {
-         img: null,
          isStarted: false,
          isRecording: false,
          progress: 0,
          shouldStopRecording: false,
+         isReadyToCapturePhoto: false,
          recordingData: false,
+         thumbnailData: false,
          recordingMimeType: '',
          mediaRecorder: null,
          deviceId: null,
@@ -87,6 +113,11 @@ export default {
             return URL.createObjectURL(this.recordingData);
          }
       },
+      thumbnailUrl: function() {
+         if(this.thumbnailData) {
+            return URL.createObjectURL(this.thumbnailData);
+         }
+      },
       mimeType: function() {
          switch (this.recordingMimeType) {
             case 'video/ogg':
@@ -100,17 +131,20 @@ export default {
 
    },
    watch: {
-      camera: function(id) {
-         this.deviceId = id;
+      camera: function(deviceId) {
+         this.deviceId = deviceId;
       },
-      devices: function() {
+      devices: function(devices) {
+         console.log('watch:devices');
          // Once we have a list select the first one
-         const [first, ...tail] = this.devices;
-         if(this.devices.indexOf(localStorage.getItem('deviceId'))) {
-            this.deviceId = localStorage.getItem('deviceId');
-         }
-         if (first && !this.deviceId) {
-            this.deviceId = first.deviceId;
+         if(devices.length) {
+            const [first, ...tail] = this.devices;
+            if(this.devices.indexOf(localStorage.getItem('deviceId'))) {
+               this.deviceId = localStorage.getItem('deviceId');
+            }
+            if (first && !this.deviceId) {
+               this.deviceId = first.deviceId;
+            }
          }
       }
    },
@@ -127,10 +161,19 @@ export default {
          }
 
       },
-      onCapture() {
-         this.img = this.$refs.webcam.capture();
+      onCapturePhoto() {
+         this.$refs.webcamPhoto.capture();
       },
-      onStarted(stream) {
+      onPhotoReady(blob) {
+         this.thumbnailData = blob;
+      },
+      onRetakePhoto() {
+         this.thumbnailData = false;
+      },
+      onReadyToCapturePhoto() {
+         this.isReadyToCapturePhoto = true;
+      },
+      onStartedVideo(stream) {
          this.isStarted = true;
 
          console.log("On Started Event", stream);
@@ -150,6 +193,7 @@ export default {
             };
             if(this.shouldStopRecording && this.isRecording && this.mediaRecorder.state == 'recording') {
                this.mediaRecorder.stop();
+               console.log('default stop event');
             }
          });
 
@@ -157,17 +201,6 @@ export default {
             this.isRecording = false;
             this.recordingData = new Blob(recordedChunks);
          });
-      },
-      onStopped(stream) {
-         console.log("On Stopped Event", stream);
-      },
-      onStop() {
-         console.log("On stop");
-         this.$refs.webcam.stop();
-      },
-      onStart() {
-         console.log("On start");
-         this.$refs.webcam.start();
       },
       onError(error) {
          this.errorMessage = error;
@@ -180,6 +213,7 @@ export default {
             setTimeout(() => {
                if(this.mediaRecorder.state == 'recording') {
                   this.mediaRecorder.stop();
+                  console.log('fallback stop event');
                }
             }, 1000);
          }
@@ -190,7 +224,13 @@ export default {
             console.log('media recorder started');
          }
       },
-      onCameras(cameras) {
+      onCamerasPhoto(cameras) {
+         console.log("On Cameras photo event");
+         this.devices = cameras;
+         this.$refs.webcamPhoto.start();
+      },
+      onCamerasVideo(cameras) {
+         console.log("On Cameras video event");
          this.devices = cameras;
       },
       onCameraChange(deviceId) {
@@ -201,11 +241,12 @@ export default {
       onRestart() {
          this.recordingData = false;
          this.progress = 0;
+         this.readyToCapturePhoto = false;
       },
       onUpload() {
          const data = new FormData();
-         data.append('title', 'Vue');
          data.append('video', this.recordingData);
+         data.append('thumbnail', this.thumbnailData);
          axios.post('/upload', data, {
             headers: {'Content-Type': `multipart/form-data; boundary=${data._boundary}`},
             onUploadProgress: progressEvent => this.updateProgress(Math.round( (progressEvent.loaded * 100) / progressEvent.total ))
@@ -219,9 +260,12 @@ export default {
       updateProgress(percentage) {
          this.progress = percentage;
       },
-      onFileInputChange(evt) {
+      onVideoInputChange(evt) {
          this.recordingData = evt.target.files[0];
          this.recordingMimeType = evt.target.files[0].type;
+      },
+      onPhotoInputChange(evt) {
+         this.thumbnailData = evt.target.files[0];
       }
    },
    filters: {
@@ -235,12 +279,13 @@ export default {
 
 <style>
 
-   .webcam-wrapper {
+   .has-square-media {
       padding-top: 100%;
       position: relative;
    }
 
-   .webcam-wrapper video {
+   .has-square-media video,
+   .has-square-media img {
       position: absolute;
       margin: 0;
       top: 0;

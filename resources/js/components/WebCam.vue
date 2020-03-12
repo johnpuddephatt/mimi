@@ -259,7 +259,9 @@ export default {
      * capture screenshot
      */
     capture() {
-      return this.getCanvas().toDataURL(this.screenshotFormat);
+      this.getCanvas().toBlob((blob) => {
+         this.$emit("photo", blob);
+      });
     },
 
     /**

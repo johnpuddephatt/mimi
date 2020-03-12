@@ -5,6 +5,7 @@
       preload="none"
       width="640"
       height="264"
+      :poster="poster"
       data-setup="{}"
       playsinline
     >
@@ -19,7 +20,7 @@
 import videojs from "video.js";
 
 export default {
-   props: ['source', 'type'],
+   props: ['source', 'type', 'poster'],
    data() {
       return {
       };
