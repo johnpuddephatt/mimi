@@ -29,6 +29,10 @@ class Video extends Model
       }
    }
 
+   public function getThumbnailAttribute() {
+     return Storage::disk($this->disk)->url($this->thumbnail_path);
+   }
+
    public function getTimeToConvertAttribute() {
       return Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($this->converted_for_streaming_at));
    }

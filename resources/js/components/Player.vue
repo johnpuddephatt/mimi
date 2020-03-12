@@ -47,5 +47,10 @@ export default {
       max-width: 100%;
       display: block;
       height: 100%;
+      object-fit: cover;
+   }
+
+   .vjs-poster {
+      background-size: cover;
    }
 </style>

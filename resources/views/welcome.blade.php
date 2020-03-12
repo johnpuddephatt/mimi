@@ -17,7 +17,7 @@
             @if(count($videos))
                   @foreach($videos as $video)
                      @if($video->playlist)
-                        <video-player source="{{ $video->playlist }}" poster="{{ $video->thumbnail_path }}" type="application/x-mpegURL"></video-player>
+                        <video-player source="{{ $video->playlist }}" poster="{{ $video->thumbnail }}" type="application/x-mpegURL"></video-player>
                         <p class="badge badge-secondary">This took {{$video->TimeToConvert }} seconds to convert</p>
                      @else
                         Coming soon

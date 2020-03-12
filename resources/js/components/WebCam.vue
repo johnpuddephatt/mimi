@@ -261,7 +261,7 @@ export default {
     capture() {
       this.getCanvas().toBlob((blob) => {
          this.$emit("photo", blob);
-      });
+      }, "image/jpeg", 0.8);
     },
 
     /**

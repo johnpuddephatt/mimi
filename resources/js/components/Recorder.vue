@@ -10,6 +10,13 @@
       </div>
    </div>
 
+   <div class="card" v-else-if="uploadComplete">
+      <h5 class="card-header">Upload complete</h5>
+      <div class="card-body has-square-media">
+         Your video has been uploaded!
+      </div>
+   </div>
+
    <div class="card" v-else-if="thumbnailData">
       <h5 class="card-header">Review photo and upload</h5>
       <div class="card-body has-square-media">
@@ -91,6 +98,7 @@ export default {
       return {
          isStarted: false,
          isRecording: false,
+         uploadComplete : false,
          progress: 0,
          shouldStopRecording: false,
          isReadyToCapturePhoto: false,
@@ -127,16 +135,13 @@ export default {
             default: false;
          }
       }
-
-
    },
    watch: {
       camera: function(deviceId) {
          this.deviceId = deviceId;
       },
       devices: function(devices) {
-         console.log('watch:devices');
-         // Once we have a list select the first one
+=         // Once we have a list select the first one
          if(devices.length) {
             const [first, ...tail] = this.devices;
             if(this.devices.indexOf(localStorage.getItem('deviceId'))) {
@@ -176,8 +181,6 @@ export default {
       onStartedVideo(stream) {
          this.isStarted = true;
 
-         console.log("On Started Event", stream);
-
          const options = {
             // mimeType: 'video/webm'
          };
@@ -187,13 +190,11 @@ export default {
          this.recordingMimeType = this.mediaRecorder.mimeType;
 
          this.mediaRecorder.addEventListener('dataavailable', (e) => {
-            console.log(this.mediaRecorder.state);
             if (e.data.size > 0) {
                recordedChunks.push(e.data);
             };
             if(this.shouldStopRecording && this.isRecording && this.mediaRecorder.state == 'recording') {
                this.mediaRecorder.stop();
-               console.log('default stop event');
             }
          });
 
@@ -204,7 +205,6 @@ export default {
       },
       onError(error) {
          this.errorMessage = error;
-         console.log("On Error Event", error);
       },
       onRecordToggle() {
          if(this.isRecording) {
@@ -213,7 +213,6 @@ export default {
             setTimeout(() => {
                if(this.mediaRecorder.state == 'recording') {
                   this.mediaRecorder.stop();
-                  console.log('fallback stop event');
                }
             }, 1000);
          }
@@ -221,22 +220,18 @@ export default {
             this.isRecording = true;
             this.shouldStopRecording = false;
             this.mediaRecorder.start(1000);
-            console.log('media recorder started');
          }
       },
       onCamerasPhoto(cameras) {
-         console.log("On Cameras photo event");
          this.devices = cameras;
          this.$refs.webcamPhoto.start();
       },
       onCamerasVideo(cameras) {
-         console.log("On Cameras video event");
          this.devices = cameras;
       },
       onCameraChange(deviceId) {
          this.deviceId = deviceId;
          localStorage.setItem('deviceId', deviceId);
-         console.log("On Camera Change Event", deviceId);
       },
       onRestart() {
          this.recordingData = false;
@@ -252,7 +247,7 @@ export default {
             onUploadProgress: progressEvent => this.updateProgress(Math.round( (progressEvent.loaded * 100) / progressEvent.total ))
          })
             .then(res => {
-               console.log(res);
+               this.uploadComplete = true;
             }).catch(err => {
                console.log(err);
             });
