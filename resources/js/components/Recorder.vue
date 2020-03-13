@@ -33,7 +33,7 @@
    </div>
 
    <div class="card" v-else-if="isReadyToCapturePhoto">
-      <h5 class="card-header">Take your photo {{isReadyToCapturePhoto}}</h5>
+      <h5 class="card-header">Take your photo</h5>
       <div class="card-body" :class="cameraType == 'mediaRecorder' ? 'has-square-media': ''">
          <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcamPhoto" :device-id="deviceId" width="640" height="480" @photo="onPhotoReady" @error="onError" @cameras="onCamerasPhoto" @camera-change="onCameraChange" />
          <div v-else>
@@ -48,7 +48,7 @@
    </div>
 
    <div class="card" v-else-if="recordingData">
-      <h5 class="card-header">Review video <small class="float-right">{{recordingMimeType}}</small></h5>
+      <h5 class="card-header">Review video</h5>
       <div class="card-body has-square-media">
          <video-player :source="recordingUrl" :type="mimeType"></video-player>
       </div>
@@ -139,6 +139,8 @@ export default {
                return 'video/mp4';
             case 'video/webm':
                return 'video/webm';
+            case 'video/quicktime':
+               return 'video/quicktime';
             break;
             default: '';
          }
