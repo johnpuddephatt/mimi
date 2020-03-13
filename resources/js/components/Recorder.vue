@@ -12,7 +12,7 @@
 
    <div class="card" v-else-if="uploadComplete">
       <h5 class="card-header">Upload complete</h5>
-      <div class="card-body has-square-media">
+      <div class="card-body">
          Your video has been uploaded!
       </div>
    </div>
