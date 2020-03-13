@@ -13,7 +13,10 @@
    <div class="card" v-else-if="uploadComplete">
       <h5 class="card-header">Upload complete</h5>
       <div class="card-body">
-         Your video has been uploaded!
+         Your video has been uploaded. Once it’s ready it will appear below!
+      </div>
+      <div class="card-footer">
+         <button type="button" class="btn btn-danger" @click="onRestart">Start again</button>
       </div>
    </div>
 
@@ -30,11 +33,11 @@
    </div>
 
    <div class="card" v-else-if="isReadyToCapturePhoto">
-      <h5 class="card-header">Take your photo</h5>
+      <h5 class="card-header">Take your photo {{isReadyToCapturePhoto}}</h5>
       <div class="card-body" :class="cameraType == 'mediaRecorder' ? 'has-square-media': ''">
          <vue-web-cam v-if="cameraType == 'mediaRecorder'" ref="webcamPhoto" :device-id="deviceId" width="640" height="480" @photo="onPhotoReady" @error="onError" @cameras="onCamerasPhoto" @camera-change="onCameraChange" />
          <div v-else>
-            <p>This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which give access to the camera on lots of devices!</p>
+            <p class="alert alert-warning">This device doesn't support mediaRecorder/requestMedia, so we can’t access the webcam directly. Instead we'll show a file upload button, which gives access to the camera on most devices!</p>
             <input @change="onPhotoInputChange" type="file" name="photo" accept="image/*" capture="user">
          </div>
       </div>
@@ -129,10 +132,15 @@ export default {
       mimeType: function() {
          switch (this.recordingMimeType) {
             case 'video/ogg':
+               return 'video/ogg';
             case 'video/mp4':
+            case 'video/x-matroska':
+            case 'video/x-matroska;codecs=avc1,opus':
+               return 'video/mp4';
             case 'video/webm':
+               return 'video/webm';
             break;
-            default: false;
+            default: '';
          }
       }
    },
@@ -141,7 +149,7 @@ export default {
          this.deviceId = deviceId;
       },
       devices: function(devices) {
-=         // Once we have a list select the first one
+         // Once we have a list select the first one
          if(devices.length) {
             const [first, ...tail] = this.devices;
             if(this.devices.indexOf(localStorage.getItem('deviceId'))) {
@@ -151,6 +159,9 @@ export default {
                this.deviceId = first.deviceId;
             }
          }
+      },
+      recordingData: function() {
+         console.log('recordingData has changed');
       }
    },
    created() {
@@ -228,6 +239,7 @@ export default {
       },
       onCamerasVideo(cameras) {
          this.devices = cameras;
+         this.$refs.webcamVideo.start();
       },
       onCameraChange(deviceId) {
          this.deviceId = deviceId;
@@ -236,7 +248,9 @@ export default {
       onRestart() {
          this.recordingData = false;
          this.progress = 0;
-         this.readyToCapturePhoto = false;
+         this.isReadyToCapturePhoto = false;
+         this.thumbnailData = false;
+         this.uploadComplete = false;
       },
       onUpload() {
          const data = new FormData();
@@ -273,23 +287,4 @@ export default {
 
 
 <style>
-
-   .has-square-media {
-      padding-top: 100%;
-      position: relative;
-   }
-
-   .has-square-media video,
-   .has-square-media img {
-      position: absolute;
-      margin: 0;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      width: 100%;
-      display: block;
-      object-fit: cover
-   }
 </style>

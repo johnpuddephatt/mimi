@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -20,17 +21,25 @@ class Video extends Model
        'converted_for_streaming_at',
     ];
 
+    protected $appends = ['playlist','thumbnail'];
+
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope('processed', function (Builder $builder) {
+            $builder->whereNotNull('converted_for_streaming_at');
+        });
+   }
+
     public function getPlaylistAttribute() {
       if(Storage::disk($this->disk)->exists("/video/processed/{$this->id}.m3u8")) {
          return Storage::disk($this->disk)->url("/video/processed/{$this->id}.m3u8");
       }
-      else {
-         return false;
-      }
    }
 
    public function getThumbnailAttribute() {
-     return Storage::disk($this->disk)->url($this->thumbnail_path);
+     if($this->thumbnail_path) {
+        return Storage::disk($this->disk)->url($this->thumbnail_path);
+     }
    }
 
    public function getTimeToConvertAttribute() {

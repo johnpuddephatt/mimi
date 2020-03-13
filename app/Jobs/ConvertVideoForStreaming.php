@@ -13,6 +13,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
+
 
 class ConvertVideoForStreaming implements ShouldQueue
 {
@@ -69,6 +71,9 @@ class ConvertVideoForStreaming implements ShouldQueue
            $this->video->update([
                'converted_for_streaming_at' => Carbon::now(),
            ]);
+
+           // Update the cache of
+           Cache::forever('video_count', Video::count());
 
     }
 }

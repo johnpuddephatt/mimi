@@ -11,10 +11,11 @@
 |
 */
 
-Route::get('/', 'VideoController@index');
+
+Route::get('count', 'VideoController@count');
 Route::post('upload', 'VideoController@store');
 Route::get('upload', 'VideoController@done');
 
-Auth::routes();
+Route::get('/{channel?}', 'VideoController@index');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes();

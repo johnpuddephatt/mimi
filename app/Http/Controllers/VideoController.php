@@ -4,16 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVideoRequest;
 use Illuminate\Support\Facades\Storage;
-use App\Jobs\ConvertVideoForDownloading;
+use App\Jobs\RotateAndCropImage;
 use App\Jobs\ConvertVideoForStreaming;
 use App\Video;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class VideoController extends Controller
 {
-    public function index() {
-        $videos = Video::latest()->paginate(9);
-        return view('welcome', compact('videos'));
+    public function index(Request $request, $channel = null) {
+
+      if($request->ajax()){
+        $videos = Video::latest()->get();
+        return response()->json($videos);
+      }
+      else {
+        return view('welcome');
+      }
     }
+
+    public function count() {
+      return response()->json([
+         'video_count' => Cache::get('video_count', 0)
+      ], 200);
+   }
 
     public function done() {
         return 'Done';
@@ -23,11 +37,12 @@ class VideoController extends Controller
     {
         $video = Video::create([
             'disk'              => 'public',
-            'video_path'        => $request->video->store('/video/original', 'public'),
-            'thumbnail_path'    => $request->thumbnail->store('/video/thumbnail', 'public')
+            'video_path'        => $request->video->store('video/original', 'public'),
+            'thumbnail_path'    => $request->thumbnail ? $request->thumbnail->store('video/thumbnail', 'public') : '',
         ]);
 
         $this->dispatch(new ConvertVideoForStreaming($video));
+        $this->dispatch(new RotateAndCropImage($video));
 
         return response()->json([
             'id' => $video->id,
