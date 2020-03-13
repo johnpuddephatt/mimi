@@ -48,7 +48,7 @@
    </div>
 
    <div class="card" v-else-if="recordingData">
-      <h5 class="card-header">Review video</h5>
+      <h5 class="card-header">Review video <small class="float-right">{{recordingMimeType}}</small></h5>
       <div class="card-body has-square-media">
          <video-player :source="recordingUrl" :type="mimeType"></video-player>
       </div>
@@ -195,7 +195,7 @@ export default {
          this.isStarted = true;
 
          const options = {
-            // mimeType: 'video/webm'
+            mimeType: 'video/webm'
          };
          const recordedChunks = [];
 
