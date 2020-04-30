@@ -39,7 +39,7 @@ class RotateAndCropImage implements ShouldQueue
     {
       if($this->video->thumbnail_path) {
         $image = Storage::disk($this->video->disk)->path($this->video->thumbnail_path);
-        $this->video->thumbnail = \Image::make($image)->orientate()->fit(480,480)->save();
+        \Image::make($image)->orientate()->fit(480,480)->save();
       }
     }
 }
