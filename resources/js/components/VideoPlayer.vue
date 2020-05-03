@@ -3,10 +3,10 @@
       <video
          class="video-js vjs-big-play-centered"
          controls
-         preload="none"
+         preload="metadata"
          width="640"
          height="264"
-         :poster="poster"
+
          playsinline
          ref="player"
        >

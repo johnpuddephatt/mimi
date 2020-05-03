@@ -17,7 +17,7 @@
               <b-button
                 tag="a"
                 size="is-medium"
-                href="{{ $course->link() }}"
+                href="{{ route('course.single', ['course' => $course->id ]) }}"
                 class="is-justify-between"
                 icon-right="arrow-right"
                 expanded
@@ -25,7 +25,14 @@
                   {{ $course->title }}
               </b-button>
             @empty
-              UH OH. You're not enrolled in anything.
+              <section class="section is-medium has-background-light has-text-centered">
+                @if(Auth::user()->is_admin)
+                  <a class="button" href="{{ route('course.new') }}">Add the first course</a>
+                @else
+                  <p>You’re not enrolled in any courses.</p>
+                @endif
+
+              </section>
             @endforelse
           </div>
         </div>

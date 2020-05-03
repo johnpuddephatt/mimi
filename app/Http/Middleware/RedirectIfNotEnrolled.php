@@ -18,9 +18,13 @@ class RedirectIfNotEnrolled
      */
     public function handle($request, Closure $next, $guard = null)
     {
-      if(!Auth::User()->is_admin && !Auth::User()->courses()->find($request->route('course')->id)) {
-        return redirect(RouteServiceProvider::HOME);
+      if(
+        Auth::User()->is_admin
+        || ($request->route('course') && Auth::User()->courses()->find($request->route('course')->id))
+        || ($request->route('lesson') && Auth::User()->courses()->find($request->route('lesson')->course->id))
+      ){
+        return $next($request);
       }
-      return $next($request);
+      return redirect(RouteServiceProvider::HOME);
     }
 }

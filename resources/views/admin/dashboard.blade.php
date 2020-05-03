@@ -1,55 +1,50 @@
 @extends('layouts.app')
 
 @section('content')
-  <section class="section is-medium">
-    <div class="container">
-      <div class="columns is-centered">
-        <div class="column is-8-tablet is-7-desktop is-6-widescreen">
-          <div class="box">
-            <h3 class="title has-text-centered">Ciao, capo 👑️</h3>
-            <p class="subtitle has-text-centered">Manage courses and users here</p>
+<section class="section is-medium">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8-tablet is-7-desktop is-6-widescreen">
+        <div class="box">
+          <h3 class="title has-text-centered">Ciao, capo 👑️</h3>
+          <p class="subtitle has-text-centered">Manage courses here</p>
+          <nav class="panel is-shadowless is-bordered">
 
-<h4>Courses</h4>
+            @forelse($courses as $course)
+            <div class="panel-block is-justify-between">
+              {{ $course->title }}
 
-
-              <nav class="panel">
-                <p class="panel-heading">Courses</p>
-                <p class="panel-tabs">
-                  <a class="is-active">Active</a>
-                  <a>Expired</a>
+              <b-field>
+                <p class="control">
+                  <b-button type="is-primary" tag="a" href="{{ route('course.edit', ['course'=> $course->id]) }}">
+                    Edit
+                  </b-button>
                 </p>
-                @forelse($courses as $course)
-                  <div class="panel-block" >
-                    {{ $course->title }}
-                    <div class="field is-grouped">
-                      <b-field>
-                        <p class="control">
-                          <b-button type="is-primary">
-                             Edit
-                          </b-button>
-                        </p>
-                        <p class="control">
-                          <b-dropdown position="is-bottom-left">
-                            <b-button type="is-primary" slot="trigger">
-                              <b-icon icon="menu-down"></b-icon>
-                            </b-button>
-                            <b-dropdown-item>Delete</b-dropdown-item>
-                            <b-dropdown-item>Copy invite link</b-dropdown-item>
-                          </b-dropdown>
-                        </p>
-                      </b-field>
-                  </div>
-                  </div>
-                @empty
-                <section class="section">
-                  No courses to show you.
-                </section>
-                @endforelse
-              </nav>
-
-          </div>
+                <p class="control">
+                  <b-dropdown position="is-bottom-left">
+                    <b-button type="is-primary" slot="trigger">
+                      <b-icon icon="menu-down"></b-icon>
+                    </b-button>
+                    <b-dropdown-item>Delete</b-dropdown-item>
+                    <b-dropdown-item>Copy invite link</b-dropdown-item>
+                  </b-dropdown>
+                </p>
+              </b-field>
+            </div>
+            @empty
+              <section class="section is-medium has-background-light has-text-centered">
+                No courses to show you.
+              </section>
+            @endforelse
+            <div class="panel-block">
+              <b-button tag="a" href="{{ route('course.new') }}" class="is-outlined is-fullwidth">
+                Add new course
+              </b-button>
+            </div>
+          </nav>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 @endsection

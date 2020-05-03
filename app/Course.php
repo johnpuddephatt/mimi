@@ -11,16 +11,19 @@ class Course extends Model
       'title', 'description'
   ];
 
+  protected $with = ['lessons'];
+
   public function hash() {
     return \Hashids::encode($this->id);
-  }
-
-  public function link() {
-    return '/course/' . $this->id;
   }
 
   public function users()
   {
     return $this->belongsToMany('App\User', 'enrolments');
+  }
+
+  public function lessons()
+  {
+    return $this->hasMany('App\Lesson');
   }
 }

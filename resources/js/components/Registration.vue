@@ -50,15 +50,9 @@
       </b-step-item>
 
       <b-step-item label="Photo" :clickable="true">
-        <photo-booth v-if="!user.photo && activeStep == 2" @photo="onPhoto"></photo-booth>
-        <div v-else>
-          <div class="has-square-media">
-            <img :src="photoUrl" />
-            <b-button rounded class="retake-photo" icon-right="camera-retake" @click.prevent="retakePhoto" />
-          </div>
-          <hr>
-          <b-button type="is-primary" @click.prevent="onSubmit" :loading="isRegistering" expanded>Register</b-button>
-        </div>
+        <camera-field mode="photo" v-if="activeStep == 2" @photo="(blob) => this.user.photo = blob"></camera-field>
+        <hr>
+        <b-button type="is-primary" @click.prevent="onSubmit" :loading="isRegistering" expanded>Register</b-button>
       </b-step-item>
     </b-steps>
   </form>
@@ -83,12 +77,13 @@
 </template>
 
 <script>
-import PhotoBooth from "./PhotoBooth";
+import CameraField from "./CameraField";
+
 
 export default {
   props: ['course','admin'],
   components: {
-    'photo-booth': PhotoBooth,
+    'camera-field': CameraField,
   },
   data() {
     return {
@@ -110,19 +105,10 @@ export default {
 
   },
   computed: {
-    photoUrl: function() {
-      if (this.user.photo) {
-        return URL.createObjectURL(this.user.photo);
-      }
-    }
+
   },
   methods: {
-    onPhoto(blob) {
-      this.user.photo = blob;
-    },
-    retakePhoto() {
-      this.user.photo = null;
-    },
+
     onSubmit() {
       this.isRegistering = true;
       const data = new FormData();
@@ -168,12 +154,5 @@ export default {
 <style>
 nav.steps {
   padding: 1em 0;
-}
-
-.retake-photo {
-  position: absolute;
-  top: 1em;
-  right: 1em;
-
 }
 </style>

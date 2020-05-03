@@ -10,7 +10,6 @@ use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -93,16 +92,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data) {
 
-        if(isset($data['photo'])) {
-          $photo_path = $data['photo']->store('users/thumbnail', 'public');
-          $full_photo_path = Storage::disk('public')->path($photo_path);
-          \Image::make($full_photo_path)->orientate()->fit(480,480)->save();
-        }
-
         $user =  User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
-            'photo' => $photo_path ?? null,
+            'photo' => $data['photo'],
             'description' => $data['description'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -113,9 +106,6 @@ class RegisterController extends Controller
           $user->courses()->attach(\Hashids::decode($data['course']));
         }
 
-
         return $user;
-
-
     }
 }

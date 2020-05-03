@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreVideoRequest;
+use App\Http\Requests\StoreVideo;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\RotateAndCropImage;
 use App\Jobs\ConvertVideoForStreaming;
@@ -33,7 +33,7 @@ class VideoController extends Controller
         return 'Done';
     }
 
-    public function store(StoreVideoRequest $request)
+    public function store(StoreVideo $request)
     {
         $video = Video::create([
             'disk'              => 'public',
@@ -42,7 +42,10 @@ class VideoController extends Controller
         ]);
 
         $this->dispatch(new ConvertVideoForStreaming($video));
-        $this->dispatch(new RotateAndCropImage($video));
+
+        if($request->thumbnail) {
+          $this->dispatch(new RotateAndCropImage($video));
+        }
 
         return response()->json([
             'id' => $video->id,

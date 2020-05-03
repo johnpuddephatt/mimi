@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreVideoRequest extends FormRequest
+class StoreLesson extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,10 @@ class StoreVideoRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'video' => 'required|file|mimetypes:video/*'
-        ];
+      return [
+          'title' => 'required|max:255',
+          'instructions' => 'required',
+          'video' => 'required',
+      ];
     }
 }

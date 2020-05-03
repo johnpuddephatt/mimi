@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Course;
+use App\Http\Requests\StoreCourse;
 
 class CourseController extends Controller
 {
@@ -18,14 +19,38 @@ class CourseController extends Controller
     }
 
     /**
+     * Create a new course
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function new() {
+        return view('course.new');
+    }
+
+    public function create(StoreCourse $request) {
+      $course = Course::create($request->all());
+      return redirect()->route('course.edit', ['course' => $course->id]);
+    }
+
+    /**
      * Show a single course
      *
      * @return \Illuminate\Http\Response
      */
 
     public function single(Course $course) {
-      if(\Auth::User()->courses())
-      return view('course.single', compact('course'));
+        return view('course.single', compact('course'));
+    }
+
+    /**
+     * Edit a single course
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function edit(Course $course) {
+        return view('course.edit', compact('course'));
     }
 
     /**
@@ -40,16 +65,12 @@ class CourseController extends Controller
         return view('home', compact('courses'));
       }
       else {
-        $enrolled_course_count = \Auth::User()->courses()->count();
-        if($enrolled_course_count < 1) {
-            return view('home');
-        }
-        elseif($enrolled_course_count > 1) {
-          \Auth::User()->courses()->count();
-          return view('home', compact('courses'));
+        $courses = \Auth::User()->courses;
+        if($courses->count() == 1) {
+          return redirect()->route('course.single', ['course' => $courses->first()]);
         }
         else {
-          return redirect()->route('course', [\Auth::User()->courses()->first()]);
+          return view('home', compact('courses'));
         }
       }
     }

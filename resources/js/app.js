@@ -1,16 +1,15 @@
 require('./bootstrap');
 
 import Vue from 'vue';
-import '@mdi/font/css/materialdesignicons.css' // <-- Just here
+// import '@mdi/font/css/materialdesignicons.css' // <-- Just here
 import Buefy from 'buefy'
 Vue.use(Buefy)
 
 Vue.component('video-recorder', require('./components/Recorder.vue').default);
-Vue.component('video-player', require('./components/Player.vue').default);
+Vue.component('video-player', require('./components/VideoPlayer.vue').default);
 Vue.component('video-playlist', require('./components/Playlist.vue').default);
 Vue.component('registration-form', require('./components/Registration.vue').default);
-Vue.component('photo-booth', require('./components/PhotoBooth.vue').default);
-
+Vue.component('lesson-form', require('./components/Lesson.vue').default);
 
 const app = new Vue({
     el: '#app',

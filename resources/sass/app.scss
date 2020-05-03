@@ -9,6 +9,10 @@
  image-rendering: -webkit-optimize-contrast;
 }
 
+.is-bordered {
+  border: 1px solid $light;
+}
+
 .is-justify-between {
   justify-content: space-between;
 }

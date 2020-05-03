@@ -12,7 +12,7 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css" rel="stylesheet">
         <!-- Scripts -->
         <script defer src="{{ asset('js/app.js') }}"></script>
 

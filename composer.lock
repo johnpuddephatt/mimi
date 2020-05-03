@@ -4597,12 +4597,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpuddephatt/admini.git",
-                "reference": "17e67baa36e3f4e5e1de84505e1ad5cbd8e0b87c"
+                "reference": "906ee83a5bfd6a13fae3ca89a018aa6699afc1db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpuddephatt/admini/zipball/17e67baa36e3f4e5e1de84505e1ad5cbd8e0b87c",
-                "reference": "17e67baa36e3f4e5e1de84505e1ad5cbd8e0b87c",
+                "url": "https://api.github.com/repos/johnpuddephatt/admini/zipball/906ee83a5bfd6a13fae3ca89a018aa6699afc1db",
+                "reference": "906ee83a5bfd6a13fae3ca89a018aa6699afc1db",
                 "shasum": ""
             },
             "require": {
@@ -4642,7 +4642,7 @@
                 "admin",
                 "laravel"
             ],
-            "time": "2020-04-30T23:43:06+00:00"
+            "time": "2020-05-01T16:05:42+00:00"
         },
         {
             "name": "mockery/mockery",
