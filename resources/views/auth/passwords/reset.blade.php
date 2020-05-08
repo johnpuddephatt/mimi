@@ -2,109 +2,45 @@
 
 @section('content')
 
-    <section class="hero is-primary">
-        <div class="hero-body">
-            <div class="container">
-                <h1 class="title">
-                    Reset Password
-                </h1>
-            </div>
-        </div>
-    </section>
+  <section class="section is-medium">
+   <div class="container">
+     <div class="columns is-centered">
+       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
+         <form action="{{ route('password.request') }}" method="POST" class="box">
+            @csrf
+            <h3 class="title has-text-centered">Dimenticato? <span class="emoji">🤔</span></h3>
+            <p class="subtitle has-text-centered">Change your password below</p>
+            @if (session('status'))
+              <div class="notification is-primary">
+                {{ session('status') }}
+              </div>
+            @endif
+           <div class="field">
+             <label for="email" class="label">Email</label>
+             <div class="control has-icons-left">
+               <input name="email" type="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+               <span class="icon is-left"><i class="mdi mdi-email mdi-24px"></i></span>
+             </div>
+           </div>
 
+           <div class="field">
+             <label for="password" class="label">Password</label>
+             <div class="control has-icons-left">
+               <input name="password" type="password" placeholder="*******" class="input" required>
+               <span class="icon is-left"><i class="mdi mdi-key mdi-24px"></i></span>
+             </div>
+           </div>
 
-    <div class="columns is-marginless is-centered">
-        <div class="column is-5">
-            <div class="card">
-                <header class="card-header">
-                    <p class="card-header-title">Reset Password</p>
-                </header>
+           <div class="field">
+             <button type="submit" class="button is-primary is-fullwidth">
+               Reset password
+             </button>
+           </div>
+         </form>
 
-                <div class="card-content">
-                    @if (session('status'))
-                        <div class="notification is-info">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+       </div>
+     </div>
+   </div>
+ </section>
 
-                    <form class="password-reset-form" method="POST" action="{{ route('password.request') }}">
-
-                        {{ csrf_field() }}
-
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-
-                        <div class="field is-horizontal">
-                            <div class="field-label">
-                                <label class="label">E-Mail Address</label>
-                            </div>
-
-                            <div class="field-body">
-                                <div class="field">
-                                    <p class="control">
-                                        <input class="input" id="email" type="email" name="email"
-                                               value="{{ old('email') }}" required autofocus>
-                                    </p>
-
-                                    @if ($errors->has('email'))
-                                        <p class="help is-danger">
-                                            {{ $errors->first('email') }}
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="field is-horizontal">
-                            <div class="field-label">
-                                <label class="label">Password</label>
-                            </div>
-
-                            <div class="field-body">
-                                <div class="field">
-                                    <p class="control">
-                                        <input class="input" id="password" type="password" name="password" required>
-                                    </p>
-
-                                    @if ($errors->has('password'))
-                                        <p class="help is-danger">
-                                            {{ $errors->first('password') }}
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="field is-horizontal">
-                            <div class="field-label">
-                                <label class="label">Confirm Password</label>
-                            </div>
-
-                            <div class="field-body">
-                                <div class="field">
-                                    <p class="control">
-                                        <input class="input" id="password-confirm" type="password" name="password_confirmation" required>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="field is-horizontal">
-                            <div class="field-label"></div>
-
-                            <div class="field-body">
-                                <div class="field is-grouped">
-                                    <div class="control">
-                                        <button type="submit" class="button is-primary">Reset Password </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection

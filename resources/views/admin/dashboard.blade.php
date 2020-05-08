@@ -4,7 +4,7 @@
 <section class="section is-medium">
   <div class="container">
     <div class="columns is-centered">
-      <div class="column is-8-tablet is-7-desktop is-6-widescreen">
+      <div class="column is-7-tablet is-6-desktop is-5-widescreen">
         <div class="box">
           <h3 class="title has-text-centered">Ciao, capo 👑️</h3>
           <p class="subtitle has-text-centered">Manage courses here</p>
@@ -16,19 +16,19 @@
 
               <b-field>
                 <p class="control">
-                  <b-button type="is-primary" tag="a" href="{{ route('course.edit', ['course'=> $course->id]) }}">
+                  <b-button tag="a" href="{{ route('course.edit', ['course'=> $course->id]) }}">
                     Edit
                   </b-button>
                 </p>
-                <p class="control">
+                {{-- <p class="control">
                   <b-dropdown position="is-bottom-left">
-                    <b-button type="is-primary" slot="trigger">
+                    <b-button slot="trigger">
                       <b-icon icon="menu-down"></b-icon>
                     </b-button>
                     <b-dropdown-item>Delete</b-dropdown-item>
                     <b-dropdown-item>Copy invite link</b-dropdown-item>
                   </b-dropdown>
-                </p>
+                </p> --}}
               </b-field>
             </div>
             @empty
@@ -37,7 +37,7 @@
               </section>
             @endforelse
             <div class="panel-block">
-              <b-button tag="a" href="{{ route('course.new') }}" class="is-outlined is-fullwidth">
+              <b-button type="is-primary" tag="a" href="{{ route('course.new') }}" class="is-fullwidth">
                 Add new course
               </b-button>
             </div>

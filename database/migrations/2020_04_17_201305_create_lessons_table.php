@@ -18,6 +18,7 @@ class CreateLessonsTable extends Migration
             $table->timestamps();
             $table->string('title');
             $table->text('instructions');
+            $table->integer('number')->unsigned();
             $table->integer('video_id')->references('id')->on('videos')->onDelete('cascade');
             $table->integer('course_id')->references('id')->on('courses')->onDelete('cascade');
         });

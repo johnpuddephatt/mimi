@@ -2,8 +2,12 @@
 @import "checkmark";
 @import "square-media";
 
+.back-link {
+  display: inline-block;
+  margin-bottom: .5em;
+}
 .navbar {
-  box-shadow: $white-bis 0 0 2em 3em;
+  box-shadow: $white-bis 0 0 0.75em 0.75em;
 }
 .navbar-brand img {
  image-rendering: -webkit-optimize-contrast;
@@ -23,4 +27,48 @@
 
 .navbar-item .tag {
   margin-left: 0.5em;
+}
+
+// .instruction-card {
+//   position: sticky;
+//   top: 5.5em;
+// }
+.instruction-card {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1.5em;
+  .card-content {
+    padding: 3rem;
+  }
+  .card-image {
+    flex: 0 0 50%;
+  }
+}
+
+.reply-card {
+  display: flex;
+  flex-direction: row;
+
+  + .reply-card {
+    margin-top: 1.5em;
+  }
+}
+
+.comment-author {
+  display: inline-flex;
+  background-color: #000000aa;
+  border-radius: 9999px;
+
+  p {
+    color: white;
+    padding-right: 1em;
+    line-height: 32px;
+  }
+  flex-direction: row;
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+  figure {
+    margin-right: .25em;
+  }
 }

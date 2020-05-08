@@ -7,6 +7,7 @@
       <div class="columns is-centered">
         <div class="column is-6-tablet is-5-desktop is-4-widescreen">
           <form action="/login/" method="post" class="box">
+            @csrf
              <h3 class="title has-text-centered">Ciao! <span class="emoji">😃</span></h3>
              <p class="subtitle has-text-centered">You can log in below</p>
             <div class="field">

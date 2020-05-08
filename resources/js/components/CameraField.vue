@@ -1,55 +1,81 @@
 <template>
 
 <div class="camera-wrapper">
-  <div class="notification is-danger" v-if="errorMessage">{{errorMessage}}</div>
+  <div class="notification is-danger" v-if="errorMessage && !errorMessage.toString().startsWith('NotAllowedError')">{{ errorMessage }}</div>
 
-  <div v-if="photoData" class="has-square-media">
-    <img :src="photoUrl" />
-  </div>
+  <!-- Camera preview -->
 
-  <div v-else-if="videoData" class="card-body has-square-media">
-    <video-player :source="videoUrl" :type="videoData.type"></video-player>
-  </div>
-
-  <div v-else class="has-square-media">
-    <b-loading :is-full-page="false" :active="!isLoaded"></b-loading>
-    <vue-web-cam ref="webcam" :device-id="deviceId" @started="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onPhotoReady" width="640" height="480" />
-  </div>
-
-  <div class="camera-controls has-background-light is-bordered has-text-centered">
-
-    <div v-if="photoData || videoData">
-      <b-button size="is-medium" class="restart-camera" icon-right="camera-retake" @click.prevent="onRestart">Start again</b-button>
+  <div v-if="value">
+    <div v-if="mode == 'photo'" class="has-square-media">
+      <img :src="dataUrl" />
     </div>
+
+    <div v-else class="card-body">
+      <video-player :source="dataUrl" :type="mimeType || value.type ||  'application/x-mpegURL'"></video-player>
+    </div>
+
+    <div class="camera-controls has-background-light is-bordered has-text-centered">
+        <b-button class="restart-camera" icon-right="camera-retake" @click.prevent="onRestart">Start again</b-button>
+    </div>
+  </div>
+
+  <!-- Camera capture -->
+  <div v-else>
+
+    <section v-if="cameraType == 'fallback' || errorMessage" class="section is-medium has-background-light has-text-centered">
+      <b-upload @input="onFileInputChange" type="file" name="file" :accept="accept[mode]" capture="user">
+        <a class="button is-primary">
+          <b-icon icon="camera"></b-icon>
+          <span>Add your {{ mode }}</span>
+        </a>
+      </b-upload>
+    </section>
+
     <div v-else>
-      <b-tooltip v-show="!isRecording" label="Change camera" type="is-dark" animated position="is-bottom" :delay="1000" class="change-camera-tooltip">
-        <b-button class="change-camera" icon-right="camera-switch" @click.prevent="nextCamera"/>
-      </b-tooltip>
+      <b-loading :is-full-page="false" :active="!isLoaded"></b-loading>
+      <div class="has-square-media">
+        <span v-if="isRecording"  class="recording-indicator tag is-black">Rec</span>
+        <vue-web-cam ref="webcam" :device-id="deviceId" @started="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onData" width="640" height="480" />
+      </div>
+      <div class="camera-controls has-background-light is-bordered has-text-centered">
+        <b-tooltip v-if="devices.length > 1" v-show="!isRecording" label="Change camera" type="is-dark" animated position="is-bottom" :delay="1000" class="change-camera-tooltip">
+          <b-button size="is-medium" class="change-camera" icon-right="camera-switch" @click.prevent="nextCamera"/>
+        </b-tooltip>
 
-      <b-tooltip v-if="mode == 'video'" :label="isRecording ? 'Stop recording' : 'Start recording'" type="is-dark" animated position="is-bottom" :delay="1000" class="shutter-tooltip">
-        <b-button size="is-large" type="is-danger" @click.prevent="onRecordToggle" class="take-photo" icon-right="radiobox-blank" />
-      </b-tooltip>
+        <b-tooltip v-if="mode == 'video'" :label="isRecording ? 'Stop recording' : 'Start recording'" type="is-dark" animated position="is-bottom" :delay="1000" class="shutter-tooltip">
+          <b-button size="is-large" type="is-danger" @click.prevent="onRecordToggle" class="take-photo" icon-right="radiobox-blank" />
+        </b-tooltip>
 
-      <b-tooltip v-else label="Take photo" type="is-dark" animated position="is-bottom" :delay="1000" class="shutter-tooltip">
-        <b-button size="is-large" type="is-danger" @click.prevent="onCapture" class="take-photo" icon-right="camera-iris" />
-      </b-tooltip>
+        <b-tooltip v-else label="Take photo" type="is-dark" animated position="is-bottom" :delay="1000" class="shutter-tooltip">
+          <b-button size="is-large" type="is-danger" @click.prevent="onCapture" class="take-photo" icon-right="camera-iris"/>
+        </b-tooltip>
+
+        <b-tooltip label="Select a file from your device" type="is-dark" animated position="is-bottom" :delay="1000" class="file-upload-tooltip">
+          <b-upload @input="onFileInputChange" size="is-medium" type="file" name="file" :accept="accept[mode]" capture="user">
+            <b-button tag="a" size="is-medium" class="file-upload" icon-right="file-upload">
+            </b-button>
+          </b-upload>
+        </b-tooltip>
+      </div>
     </div>
-
   </div>
 </div>
 </template>
 
 <script>
 import VueWebCam from "./WebCam";
+var platform = require('platform');
 
 export default {
   components: {
-    'vue-web-cam': VueWebCam,
+    'vue-web-cam': VueWebCam
   },
   props: {
     mode: {
       default: 'photo',
       type: String
+    },
+    value: {
     }
   },
   data() {
@@ -61,12 +87,16 @@ export default {
       isStarted: false,
       isLoaded: false,
       isSetupVideo: false,
-      photoData: null,
-      videoData: null,
+      rawMimeType: null,
+      newValue: null,
       mediaRecorder: null,
       isRecording: false,
       shouldStopRecording: false,
       errorMessage: null,
+      accept: {
+        photo: 'image/*',
+        video: 'video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*'
+      }
     };
   },
   computed: {
@@ -74,22 +104,15 @@ export default {
       return this.devices.find(n => n.deviceId === this.deviceId);
     },
     mimeType: function() {
-      if (this.recordingMimeType.startsWith('video/x-matroska')) {
+      if (this.rawMimeType && this.rawMimeType.startsWith('video/x-matroska')) {
         return 'video/mp4';
       } else {
-        return this.recordingMimeType;
+        return this.rawMimeType;
       }
     },
-    photoUrl: function() {
-      if (this.photoData) {
-        return URL.createObjectURL(this.photoData);
-      }
-    },
-    videoUrl: function() {
-      if (this.videoData) {
-        return URL.createObjectURL(this.videoData);
-      }
-    },
+    dataUrl: function() {
+      return this.value instanceof Blob ? URL.createObjectURL(this.value) : this.value;
+    }
   },
   watch: {
     devices: function(devices) {
@@ -106,21 +129,24 @@ export default {
     },
 
   },
-  created() {},
+
+  created: function () {
+    if(this.mode == 'video' && !window.MediaRecorder) {
+      this.cameraType = 'fallback';
+    }
+  },
+
   methods: {
 
     onCapture() {
       this.$refs.webcam.capture();
     },
 
-    onPhotoReady(blob) {
-      this.photoData = blob;
-      this.$emit("photo", this.photoData);
-    },
-
-    onVideoReady(blob) {
-      this.videoData = blob;
-      this.$emit("video", this.videoData);
+    onData(blob) {
+      this.isLoaded = false;
+      this.isSetupVideo = false;
+      this.rawMimeType = blob.type;
+      this.$emit('input', blob)
     },
 
     onStarted(stream) {
@@ -131,9 +157,13 @@ export default {
         this.isLoaded = true;
       }, 1000)
     },
+
     onError(error) {
+      this.cameraType = 'fallback';
       this.errorMessage = error;
+      axios.post('/log', {'error': `${ platform.description }\n${ error }`});
     },
+
     onRecordToggle() {
       if (!this.isSetupVideo) {
         this.setupVideo();
@@ -154,19 +184,20 @@ export default {
     },
 
     onRestart() {
-      this.videoData = null;
-      this.photoData = null;
+      this.$emit('input', null)
     },
 
-    onVideoInputChange(evt) {
-      this.videoData = evt.target.files[0];
-      // this.recordingMimeType = evt.target.files[0].type;
+    onFileInputChange(file) {
+      console.log(file.type);
+      this.rawMimeType = file.type || '';
+      this.$emit('input', file);
     },
 
     onCameras(cameras) {
       this.devices = cameras;
-      // this.$refs.webcam.start();
+      this.$refs.webcam.start();
     },
+
     onCameraChange(deviceId) {
       this.deviceId = deviceId;
     },
@@ -203,7 +234,7 @@ export default {
         let blob = new Blob(recordedChunks, {
           type: this.recordingMimeType
         });
-        this.onVideoReady(blob);
+        this.onData(blob);
       });
 
       this.isSetupVideo = true;
@@ -214,20 +245,27 @@ export default {
 
 
 <style>
-.camera-wrapper {}
+.camera-wrapper {
+  position: relative;
+}
 
-.camera-wrapper .has-square-media {
+.field .camera-wrapper .has-square-media {
   border-radius: 5px 5px 0 0;
-  border: 1px solid #efefef;
-  border-bottom: none;
+  border: 1px solid #dbdbdb;
 }
 
 .camera-controls {
   padding: .5em 0;
-  border-radius: 0 0 5px 5px;
 }
 
-.camera-controls button {
+.field .camera-controls {
+  border-radius: 0 0 5px 5px;
+  border: 1px solid #dbdbdb;
+  border-top: none;
+}
+
+.camera-controls button,
+.camera-controls a {
   border-radius: 9999px;
 }
 
@@ -236,13 +274,38 @@ export default {
 }
 
 .change-camera-tooltip {
-  margin-left: -3rem;
-  margin-right: .3rem;
+  margin-left: -5rem;
+  margin-right: 1.5rem;
 }
 
-.retake-photo {
+.file-upload-tooltip {
+  margin-left: 1.5rem;
+  margin-right: -5rem;
+}
+
+
+.recording-indicator {
   position: absolute;
-  top: 1em;
-  right: 1em;
+  right: .5em;
+  top: .5em;
+  z-index: 9;
+  padding-right: 2em !important;
+}
+
+.recording-indicator::after {
+  width: .75em;
+  height: .75em;
+  position: absolute;
+  right: .75em;
+  background-color: red;
+  border-radius: 9999px;
+  content: '';
+  animation: pulse 1s infinite ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.75);
+  }
 }
 </style>

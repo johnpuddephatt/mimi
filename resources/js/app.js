@@ -5,11 +5,12 @@ import Vue from 'vue';
 import Buefy from 'buefy'
 Vue.use(Buefy)
 
-Vue.component('video-recorder', require('./components/Recorder.vue').default);
-Vue.component('video-player', require('./components/VideoPlayer.vue').default);
 Vue.component('video-playlist', require('./components/Playlist.vue').default);
 Vue.component('registration-form', require('./components/Registration.vue').default);
 Vue.component('lesson-form', require('./components/Lesson.vue').default);
+Vue.component('video-player', require('./components/VideoPlayer.vue').default);
+Vue.component('reply', require('./components/Reply.vue').default);
+Vue.component('camera-field', require('./components/CameraField.vue').default);
 
 const app = new Vue({
     el: '#app',

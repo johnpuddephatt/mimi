@@ -14,4 +14,11 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
    .browserSync('public.mimi.localhost')
-   .copy('resources/images/**','public/images');
+   .copy('resources/images/**','public/images')
+   .webpackConfig(webpack => {
+      return {
+        output: {
+          chunkFilename: '[name].[chunkhash].js',
+        },
+      };
+    });

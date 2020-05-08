@@ -4,7 +4,7 @@
 <section class="section is-medium">
   <div class="container">
     <div class="columns is-centered">
-      <div class="column is-6-tablet is-5-desktop is-4-widescreen">
+      <div class="column is-7-tablet is-6-desktop is-5-widescreen">
         <div class="box">
           <h3 class="title has-text-centered">Modifica corso ✏️</h3>
           <p class="subtitle has-text-centered">You can edit this course below</p>
@@ -21,6 +21,7 @@
           <b-tabs position="is-centered" type="is-toggle">
             <b-tab-item label="Overview">
               <form action="/admin/course/update/{{ $course->id }}" method="post">
+                @method('PUT')
                 <div class="field">
                   <label for="title" class="label">Title</label>
                   <div class="control">
@@ -42,27 +43,37 @@
 
             </b-tab-item>
             <b-tab-item label="Lessons">
-              @forelse($course->lessons as $lesson)
-                We have lessons!
-              @empty
-                <section class="section is-medium has-background-light has-text-centered">
-                  Lessons will appear here.
-                </section>
-              @endforelse
-              <a class="button is-fullwidth" href="{{ route('lesson.new', ['course' => $course->id]) }}">Add new lesson</a>
+              <nav class="panel is-shadowless">
+                @forelse($course->lessons as $lesson)
+                  <div class="panel-block is-justify-between">
+                    <span><strong>{{ $lesson->number }}.&nbsp;</strong> {{ $lesson->title }}</span>
+                    <b-button size="is-small" tag="a" href="{{ route('lesson.edit', ['course' => $course->id, 'lesson'=> $lesson->id]) }}">
+                      Edit
+                    </b-button>
+                  </div>
+                @empty
+                  <section class="section is-medium has-background-light has-text-centered">
+                    Lessons will appear here once added.
+                  </section>
+                @endforelse
+              </nav>
+              <b-button expanded tag="a" type="is-primary" href="{{ route('lesson.new', ['course' => $course->id]) }}">Add new lesson</b-button>
 
             </b-tab-item>
             <b-tab-item label="Enrolments">
 
               @forelse($course->users as $user)
-                We have people!
+                <div class="panel-block is-justify-between">
+                  <span>{{ $user->first_name }} {{ $user->last_name }}</span>
+                </div>
               @empty
                 <section class="section is-medium has-background-light has-text-centered">
-                  Enrolled users will appear here.
+                  Users will appear here once enrolled.
                 </section>
               @endforelse
               <div class="notification">
-                Get invitation link
+                <h4>Invite people to this course</h4>
+                <input id="course-invite-link" class="input" type="text" value="{{ route('register') . '?course=' . $course->hash() }}">
               </div>
             </b-tab-item>
           </b-tabs>

@@ -2,71 +2,37 @@
 
 @section('content')
 
+  <section class="section is-medium">
+   <div class="container">
+     <div class="columns is-centered">
+       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
+         <form action="{{ route('password.email') }}" method="POST" class="box">
+            @csrf
+            <h3 class="title has-text-centered">Dimenticato? <span class="emoji">🤔</span></h3>
+            <p class="subtitle has-text-centered">Reset your password below</p>
+            @if (session('status'))
+              <div class="notification is-primary">
+                {{ session('status') }}
+              </div>
+            @endif
+           <div class="field">
+             <label for="email" class="label">Email</label>
+             <div class="control has-icons-left">
+               <input name="email" type="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+               <span class="icon is-left"><i class="mdi mdi-email mdi-24px"></i></span>
+             </div>
+           </div>
 
-    <section class="hero is-primary">
-        <div class="hero-body">
-            <div class="container">
-                <h1 class="title">
-                    Reset Password
-                </h1>
-            </div>
-        </div>
-    </section>
+           <div class="field">
+             <button type="submit" class="button is-primary is-fullwidth">
+               Send password reset link
+             </button>
+           </div>
+         </form>
 
-    <div class="columns is-marginless is-centered">
-        <div class="column is-5">
-            <div class="card">
-                <header class="card-header">
-                    <p class="card-header-title">Reset Password</p>
-                </header>
+       </div>
+     </div>
+   </div>
+ </section>
 
-                <div class="card-content">
-                    @if (session('status'))
-                        <div class="notification">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    <form class="forgot-password-form" method="POST" action="{{ route('password.email') }}">
-
-                        {{ csrf_field() }}
-
-                        <div class="field is-horizontal">
-                            <div class="field-label">
-                                <label class="label">E-Mail Address</label>
-                            </div>
-
-                            <div class="field-body">
-                                <div class="field">
-                                    <p class="control">
-                                        <input class="input" id="email" type="email" name="email"
-                                               value="{{ old('email') }}" required autofocus>
-                                    </p>
-
-                                    @if ($errors->has('email'))
-                                        <p class="help is-danger">
-                                            {{ $errors->first('email') }}
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="field is-horizontal">
-                            <div class="field-label"></div>
-
-                            <div class="field-body">
-                                <div class="field is-grouped">
-                                    <div class="control">
-                                        <button type="submit" class="button is-primary">Send Password Reset Link
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection

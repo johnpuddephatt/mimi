@@ -42,9 +42,10 @@ class User extends Authenticatable
     protected static function boot() {
       parent::boot();
       static::saving(function ($model) {
-        $model->photo = $model->photo->store('users/thumbnail', 'public');
-        $model_photo_path = Storage::disk('public')->path($model->photo);
-        \Image::make($model_photo_path)->orientate()->fit(480,480)->save();
+        $photo = $model->photo->store('users/thumbnail', 'public');
+        $photo_path = Storage::disk('public')->path($photo);
+        \Image::make($photo_path)->orientate()->fit(480,480)->save();
+        $model->photo = Storage::disk('public')->url($photo);
       });
     }
 
@@ -53,5 +54,9 @@ class User extends Authenticatable
       return $this->belongsToMany('App\Course', 'enrolments');
     }
 
+    public function comments()
+    {
+      return $this->hasMany('App\Comment');
+    }
 
 }

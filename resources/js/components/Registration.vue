@@ -1,6 +1,22 @@
 <template>
 <section>
-  <form ref="form" v-if="!isRegistering" class="box register-form">
+  <div v-if="isRegistering" class="box register-form">
+    <div v-if="!isRegistered">
+      <h3 class="title has-text-centered">Un momento <span class="emoji">⌛</span></h3>
+      <p class="subtitle has-text-centered">This shouldn’t take long</p>
+    </div>
+    <div v-else>
+      <h3 class="title has-text-centered">Congratulazioni <span class="emoji">👍</span></h3>
+      <p class="subtitle has-text-centered">Your account has been created</p>
+    </div>
+    <div class="circle-loader" :class="isRegistered? 'load-complete' : ''">
+      <div v-if="isRegistered" class="checkmark draw"></div>
+    </div>
+    <div class="has-text-centered" v-if="isRegistered">
+      <b-button tag="a" href="/" icon-right="arrow-right">Start learning</b-button>
+    </div>
+  </div>
+  <form ref="form" v-else class="box register-form">
     <h3 class="title has-text-centered">Benvenuta <span class="emoji">👋</span></h3>
     <p class="subtitle has-text-centered">Enter your details below to begin</p>
     <b-notification
@@ -40,7 +56,7 @@
 
       <b-step-item label="Introduce" :clickable="true">
 
-        <b-field>
+        <b-field label="Introduce yourself">
           <b-input v-model="user.description" name="description" type="textarea" maxlength="120" rows="6" placeholder="Introduce yourself to the other students.">
           </b-input>
         </b-field>
@@ -50,41 +66,20 @@
       </b-step-item>
 
       <b-step-item label="Photo" :clickable="true">
-        <camera-field mode="photo" v-if="activeStep == 2" @photo="(blob) => this.user.photo = blob"></camera-field>
+        <b-field label="Photo">
+          <camera-field mode="photo" v-if="activeStep == 2" v-model="user.photo"></camera-field>
+        </b-field>
         <hr>
         <b-button type="is-primary" @click.prevent="onSubmit" :loading="isRegistering" expanded>Register</b-button>
       </b-step-item>
     </b-steps>
   </form>
-
-  <div v-else class="box register-form">
-    <div v-if="!isRegistered">
-      <h3 class="title has-text-centered">Un momento <span class="emoji">⌛</span></h3>
-      <p class="subtitle has-text-centered">This shouldn’t take long</p>
-    </div>
-    <div v-else>
-      <h3 class="title has-text-centered">Congratulazioni <span class="emoji">👍</span></h3>
-      <p class="subtitle has-text-centered">Your account has been created</p>
-    </div>
-    <div class="circle-loader" :class="isRegistered? 'load-complete' : ''">
-      <div v-if="isRegistered" class="checkmark draw"></div>
-    </div>
-    <div class="has-text-centered" v-if="isRegistered">
-      <b-button tag="a" href="/" icon-right="arrow-right">Start learning</b-button>
-    </div>
-  </div>
 </section>
 </template>
 
 <script>
-import CameraField from "./CameraField";
-
-
 export default {
   props: ['course','admin'],
-  components: {
-    'camera-field': CameraField,
-  },
   data() {
     return {
       activeStep: 0,
@@ -102,7 +97,6 @@ export default {
     }
   },
   mounted() {
-
   },
   computed: {
 
@@ -114,7 +108,9 @@ export default {
       const data = new FormData();
 
       for (let [key, value] of Object.entries(this.user)) {
-        data.append(key,value);
+        if(value) {
+          data.append(key,value);
+        }
       }
 
       if(this.course) {

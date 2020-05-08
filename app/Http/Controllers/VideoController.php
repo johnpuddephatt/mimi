@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Cache;
 
 class VideoController extends Controller
 {
+    public function single(Video $video) {
+      return response()->json($video);
+    }
+
     public function index(Request $request, $channel = null) {
 
       if($request->ajax()){

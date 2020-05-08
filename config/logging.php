@@ -35,6 +35,12 @@ return [
     */
 
     'channels' => [
+
+        'frontend' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/frontend.log'),
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

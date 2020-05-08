@@ -23,6 +23,16 @@ class Video extends Model
 
     protected $appends = ['playlist','thumbnail'];
 
+    public function video()
+    {
+      return $this->hasOne('App\Lesson');
+    }
+
+    public function comment()
+    {
+      return $this->hasOne('App\Comment');
+    }
+
     protected static function boot() {
         parent::boot();
         static::addGlobalScope('processed', function (Builder $builder) {

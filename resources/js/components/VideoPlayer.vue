@@ -1,11 +1,13 @@
 <template>
-   <div>
+   <div class="has-square-media">
+      <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
       <video
          class="video-js vjs-big-play-centered"
          controls
-         preload="metadata"
+         preload="meta"
          width="640"
          height="264"
+         :autoplay="autoplay"
 
          playsinline
          ref="player"
@@ -22,15 +24,19 @@
 import videojs from "video.js";
 
 export default {
-   props: ['source', 'type', 'poster'],
+   props: ['source', 'type', 'poster', 'autoplay'],
    data() {
       return {
-         player: null
+        isLoading: true,
+        player: null
       };
    },
+
    mounted() {
       this.player = videojs(this.$refs.player);
-      // console.log(this.$refs.player);
+      this.player.ready(()=> {
+        this.isLoading = false;
+      })
    },
    beforeDestroy() {
       this.player.dispose();
@@ -44,5 +50,33 @@ export default {
 
    .vjs-poster {
       background-size: cover;
+   }
+
+   .video-js .vjs-big-play-button {
+     height: 2em;
+     width: 2em;
+     margin-left: -1em;
+     margin-top: -1em;
+     border-radius: 9999px;
+     background-color: #00C2CDaa;
+     border: none;
+   }
+
+   .video-js:hover .vjs-big-play-button, .video-js .vjs-big-play-button:focus {
+     background-color: #00C2CDff;
+   }
+
+   .video-js .vjs-big-play-button .vjs-icon-placeholder::before {
+     line-height: 1.333em;
+     color: #fff;
+     font-size: 1.5em;
+   }
+
+   .video-js .vjs-control-bar {
+     background-color: #00C2CDaa;
+   }
+
+   .vjs-fullscreen video {
+     object-fit: contain !important;
    }
 </style>
