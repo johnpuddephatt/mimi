@@ -22,7 +22,7 @@
         <reply :lesson_id="{{ $lesson->id }}" :user_id="{{ Auth::user()->id }}"></reply>
 
         @foreach($lesson->comments as $comment)
-          @if($comment->video->playlist)
+          @if($comment->video && $comment->video->playlist)
             <div class="card reply-card">
               <div class="column is-paddingless is-6-widescreen">
 
