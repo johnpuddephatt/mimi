@@ -6,19 +6,25 @@
 
     <h3 class="is-size-4 replies-heading">Replies</h3>
     <div v-if="isSaved">
-      <video-player v-if="newVideoPlaylist" :source="newVideoPlaylist" type="application/x-mpegURL"></video-player>
-      <transition v-else name="fade">
-        <b-notification type="is-warning" role="alert">
+
+        <transition v-if="newVideoPlaylist" name="fade">
+          <div class="card reply-card">
+            <div class="column is-paddingless is-6-widescreen">
+              <video-player :source="newVideoPlaylist" type="application/x-mpegURL"></video-player>
+            </div>
+          </div>
+        </transition>
+        <b-notification v-else type="is-warning" role="alert">
           Your video is being processed.
         </b-notification>
-      </transition>
+
     </div>
 
     <b-modal :active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
       <div v-if="isSaving" class="modal-card">
         <section class="modal-card-body has-text-centered">
           <div v-if="isSaved">
-            <h3 class="title">Ottime <span class="emoji">✨</span></h3>
+            <h3 class="title">Ottimo <span class="emoji">✨</span></h3>
             <p class="subtitle">Your reply has been saved</p>
           </div>
           <div v-else>

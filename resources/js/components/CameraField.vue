@@ -104,11 +104,7 @@ export default {
       return this.devices.find(n => n.deviceId === this.deviceId);
     },
     mimeType: function() {
-      if (this.rawMimeType && this.rawMimeType.startsWith('video/x-matroska')) {
-        return 'video/mp4';
-      } else {
-        return this.rawMimeType;
-      }
+      return (this.rawMimeType && (this.rawMimeType.startsWith('video/x-matroska') || this.rawMimeType.startsWith('video/quicktime'))) ? 'video/mp4' : this.rawMimeType;
     },
     dataUrl: function() {
       return this.value instanceof Blob ? URL.createObjectURL(this.value) : this.value;

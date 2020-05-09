@@ -24,7 +24,7 @@ class StoreCourse extends FormRequest
     public function rules()
     {
       return [
-          'title' => 'required|unique:courses,title,' . $this->id . ',id|max:255',
+          'title' => 'required|max:255',
           'description' => 'required',
       ];
     }

@@ -17,7 +17,7 @@
     </div>
   </div>
   <form ref="form" v-else class="box register-form">
-    <h3 class="title has-text-centered">Benvenuta <span class="emoji">👋</span></h3>
+    <h3 class="title has-text-centered">Ti diamo il benvenuto <span class="emoji">👋</span></h3>
     <p class="subtitle has-text-centered">Enter your details below to begin</p>
     <b-notification
           v-if="errors.course"
@@ -40,11 +40,11 @@
         </b-field>
 
         <b-field label="Email" :message="errors.email" :type="errors.email ? 'is-danger' : null">
-          <b-input type="email" name="email" v-model="user.email"></b-input>
+          <b-input required type="email" name="email" v-model="user.email"></b-input>
         </b-field>
 
-        <b-field label="Password" :message="errors.password" :type="errors.password ? 'is-danger' : null">
-          <b-input v-model="user.password" name="password" type="password" password-reveal>
+        <b-field label="Password" :message="errors.password || 'Minimum 8 characters'" :type="errors.password ? 'is-danger' : null">
+          <b-input v-model="user.password" name="password" type="password" password-reveal minlength="8" required>
           </b-input>
         </b-field>
 

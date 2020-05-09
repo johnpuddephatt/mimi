@@ -1,7 +1,7 @@
 <template>
   <div v-if="isSaving" class="box register-form">
     <div v-if="isSaved">
-      <h3 class="title has-text-centered">Ottime <span class="emoji">✨</span></h3>
+      <h3 class="title has-text-centered">Ottimo <span class="emoji">✨</span></h3>
       <p class="subtitle has-text-centered">Your lesson has been {{ data ? 'updated' : 'created' }}</p>
     </div>
     <div v-else>

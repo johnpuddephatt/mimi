@@ -57,7 +57,7 @@ class LessonController extends Controller
     public function update(StoreLesson $request, Course $course, Lesson $lesson) {
 
       // If we already have a video with the same playlist...
-      if(strpos($request->video, 'https://') !== 0) {
+      if(!is_string($request->video)) {
 
         $video = Video::create([
           'disk'              => 'public',

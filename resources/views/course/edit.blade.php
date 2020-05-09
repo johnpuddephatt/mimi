@@ -20,7 +20,8 @@
 
           <b-tabs position="is-centered" type="is-toggle">
             <b-tab-item label="Overview">
-              <form action="/admin/course/update/{{ $course->id }}" method="post">
+              <form action="{{ route('course.update', ['course' => $course->id ]) }}" method="post">
+                @csrf
                 @method('PUT')
                 <div class="field">
                   <label for="title" class="label">Title</label>
@@ -35,9 +36,7 @@
                   </div>
                 </div>
                 <div class="field">
-                  <b-button tag="a" href="{{ route('course.update', ['course' => $course->id ]) }}" type="is-primary" class="is-fullwidth">
-                    Update
-                  </b-button>
+                  <b-button tag="input" native-type="submit" value="Update" type="is-primary" class="is-fullwidth"></b-button>
                 </div>
               </form>
 

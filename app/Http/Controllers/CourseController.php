@@ -53,6 +53,11 @@ class CourseController extends Controller
         return view('course.edit', compact('course'));
     }
 
+    public function update(Course $course, StoreCourse $request) {
+      $course->update($request->all());
+      return view('course.edit', compact('course'));
+      }
+
     /**
      * Show the application dashboard.
      *

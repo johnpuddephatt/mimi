@@ -24,6 +24,13 @@ class Comment extends Model
       'video_id' => 'integer'
     ];
 
+    protected static function boot() {
+      parent::boot();
+      static::addGlobalScope('order', function (Builder $builder) {
+        $builder->orderBy('id', 'desc');
+      });
+    }
+
     public function user()
     {
       return $this->belongsTo('App\User');
