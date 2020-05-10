@@ -5,7 +5,7 @@
     </b-button>
 
     <h3 class="is-size-4 replies-heading">Replies</h3>
-    <div v-if="isSaved">
+    <div v-if="isSaved" class="new-reply-preview">
 
         <transition v-if="newVideoPlaylist" name="fade">
           <div class="card reply-card">
@@ -180,4 +180,9 @@ export default {
 .replies-heading {
   margin-bottom: 1rem;
 }
+
+.new-reply-preview {
+  margin-bottom: 1.5rem;
+}
+
 </style>
