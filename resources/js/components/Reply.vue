@@ -114,7 +114,7 @@ export default {
         .then(response => {
 
           this.reply = response.data;
-          axios.post('/log', {'error': `REPLY FIELD RESPONSE\n${ platform.description }\n${ response.data }`});
+          axios.post('/log', {'error': `REPLY FIELD RESPONSE\n${ platform.description }\n${ JSON.stringify(response.data) }`});
 
           var videoReadyCheck = setInterval(
             () => {
