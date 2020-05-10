@@ -12,6 +12,9 @@
             <div class="column is-paddingless is-6-widescreen">
               <video-player :source="newVideoPlaylist" type="application/x-mpegURL"></video-player>
             </div>
+            <div class="column is-6-widescreen">
+
+            </div>
           </div>
         </transition>
         <b-notification v-else type="is-warning" role="alert">
