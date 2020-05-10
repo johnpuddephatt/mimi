@@ -157,7 +157,7 @@ export default {
     onError(error) {
       this.cameraType = 'fallback';
       this.errorMessage = error;
-      axios.post('/log', {'error': `${ platform.description }\n${ error }`});
+      axios.post('/log', {'CameraField error': `${ platform.description }\n${ error }`});
     },
 
     onRecordToggle() {

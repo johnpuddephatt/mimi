@@ -4,7 +4,7 @@
       <video
          class="video-js vjs-big-play-centered"
          controls
-         preload="meta"
+         preload="metadata"
          width="640"
          height="264"
          :autoplay="autoplay"

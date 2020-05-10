@@ -59,6 +59,8 @@
 </template>
 
 <script>
+var platform = require('platform');
+
 export default {
   props: ['user_id', 'lesson_id', 'parent_id'],
   data() {
@@ -107,7 +109,9 @@ export default {
           timeout: 30000
         })
         .then(response => {
+
           this.reply = response.data;
+          axios.post('/log', {'reply field axios response': `${ platform.description }\n${ response.data }`});
 
           var videoReadyCheck = setInterval(
             () => {
@@ -139,6 +143,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
+          axios.post('/log', {'reply field axios error': `${ platform.description }\n${ error.response.data.message }`});
           this.errors = error.response.data.errors || '';
         });
     },
