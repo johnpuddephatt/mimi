@@ -99,7 +99,7 @@ export default {
           data.append(key, value);
         }
       }
-      axios.post('/log', {'error': `REPLY FIELD SENDING\n${ platform.description }\n${ JSON.stringify(data) }`});
+      axios.post('/log', {'error': `REPLY FIELD SENDING\n${ platform.description }\n${ JSON.stringify(this.reply) }`});
 
       axios({
           method: 'post',
