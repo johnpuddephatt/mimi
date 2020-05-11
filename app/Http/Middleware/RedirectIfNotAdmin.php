@@ -19,8 +19,16 @@ class RedirectIfNotAdmin
     public function handle($request, Closure $next, $guard = null)
     {
       if(!Auth::User()->is_admin) {
-        return redirect(RouteServiceProvider::HOME);
+        if ($request->expectsJson()) {
+          abort(
+            response()->json(['message' => 'You don’t have permission to do that'], 403)
+          );
+        }
+        else {
+          return redirect(RouteServiceProvider::HOME);
+        }
       }
+
       return $next($request);
     }
 }

@@ -121,7 +121,7 @@ export default {
         .catch(error => {
           this.isSaving = false;
           this.$buefy.snackbar.open({
-                  message: `<strong>Error:</strong> ${error.response.data.message}`,
+                  message: `<b>Error:</b> ${error.response.data.message}`,
                   type: 'is-danger',
                   position: 'is-bottom',
                   duration: 5000

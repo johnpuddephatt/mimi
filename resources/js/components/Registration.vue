@@ -135,7 +135,7 @@ export default {
           this.isRegistering = false;
           this.activeStep = 0;
           this.$buefy.snackbar.open({
-                  message: `<strong>Error:</strong> ${error.response.data.message}`,
+                  message: `<b>Error:</b> ${error.response.data.message}`,
                   type: 'is-danger',
                   position: 'is-bottom',
                   duration: 5000

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Comment;
+use App\Lesson;
 use App\Video;
 use App\Http\Requests\StoreComment;
 use Illuminate\Support\Facades\Storage;
@@ -28,14 +29,12 @@ class CommentController extends Controller
      */
 
 
-    public function create(StoreComment $request) {
+    public function create(Lesson $lesson, StoreComment $request) {
 
       $video = Video::create([
         'disk'              => 'public',
         'video_path'        => $request->video->store('video/original', 'public'),
       ]);
-
-      \Log::channel('frontend')->info('L38 of CommentController\n' . $video);
 
       $this->dispatch(new ConvertVideoForStreaming($video));
 

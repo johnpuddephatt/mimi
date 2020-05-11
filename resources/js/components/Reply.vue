@@ -99,11 +99,10 @@ export default {
           data.append(key, value);
         }
       }
-      axios.post('/log', {'error': `REPLY FIELD SENDING\n${ platform.description }\n${ JSON.stringify(this.reply) }`});
 
       axios({
           method: 'post',
-          url: `/admin/comment/create`,
+          url: `/lesson/${this.reply.lesson_id}/comment`,
           data: data,
           headers: {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
@@ -114,13 +113,12 @@ export default {
         .then(response => {
 
           this.reply = response.data;
-          axios.post('/log', {'error': `REPLY FIELD RESPONSE\n${ platform.description }\n${ JSON.stringify(response.data) }`});
 
           var videoReadyCheck = setInterval(
             () => {
               axios({
                   method: 'get',
-                  url: `/admin/video/${this.reply.video_id}`
+                  url: `/lesson/${this.reply.lesson_id}/video/${this.reply.video_id}`
                 })
                 .then(response => {
                   if(response.data.converted_for_streaming_at) {
@@ -141,7 +139,7 @@ export default {
         .catch(error => {
           this.isSaving = false;
           this.$buefy.snackbar.open({
-            message: `<strong>Error:</strong> ${error.response.data.message}`,
+            message: `<b>Error:</b> ${error.response.data.message}`,
             type: 'is-danger',
             position: 'is-bottom',
             duration: 5000

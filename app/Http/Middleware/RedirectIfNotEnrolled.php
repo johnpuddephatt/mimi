@@ -25,6 +25,14 @@ class RedirectIfNotEnrolled
       ){
         return $next($request);
       }
-      return redirect(RouteServiceProvider::HOME);
+
+      if ($request->expectsJson()) {
+        abort(
+          response()->json(['message' => 'You’re not enrolled on this course'], 403)
+        );
+      }
+      else {
+        return redirect(RouteServiceProvider::HOME);
+      }
     }
 }

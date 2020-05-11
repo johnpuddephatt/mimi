@@ -93,8 +93,8 @@ class LessonController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function single(Course $course, $lesson_id) {
-      $lesson = Lesson::with('comments')->findOrFail($lesson_id);
+    public function single(Course $course, Lesson $lesson) {
+      $lesson->load('comments');
       return view('lesson.single', compact('lesson'));
     }
 
