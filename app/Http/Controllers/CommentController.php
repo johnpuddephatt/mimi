@@ -35,6 +35,8 @@ class CommentController extends Controller
         'video_path'        => $request->video->store('video/original', 'public'),
       ]);
 
+      \Log::channel('frontend')->info('L38 of CommentController\n' . $video);
+
       $this->dispatch(new ConvertVideoForStreaming($video));
 
       return Comment::create([
