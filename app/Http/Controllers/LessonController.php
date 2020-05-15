@@ -94,7 +94,10 @@ class LessonController extends Controller
      */
 
     public function single(Course $course, Lesson $lesson) {
-      $lesson->load('comments');
+      $lesson->load('comments.comments');
+      // $lesson->load(['comments' => function ($query) {
+      //   $query->where('parent_id', null);
+      // }]);
       return view('lesson.single', compact('lesson'));
     }
 

@@ -42,8 +42,8 @@ class CommentController extends Controller
           'type' => $request->type,
 
           'user_id' => $request->user_id,
-          'parent_id' => $request->parent_id,
-          'lesson_id' => $request->lesson_id,
+          'comment_id' => $request->comment_id,
+          'lesson_id' => $request->comment_id ? null : $request->lesson_id,
 
           'video_id' => $video->id,
       ]);

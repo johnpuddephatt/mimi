@@ -47,8 +47,11 @@ class Video extends Model
    }
 
    public function getThumbnailAttribute() {
-     if($this->thumbnail_path) {
-        return Storage::disk($this->disk)->url($this->thumbnail_path);
+     if(Storage::disk($this->disk)->exists("/video/thumbnail/{$this->id}.jpg")) {
+        return Storage::disk($this->disk)->url("/video/thumbnail/{$this->id}.jpg");
+     }
+     else {
+       return '//placehold.it/400x400';
      }
    }
 

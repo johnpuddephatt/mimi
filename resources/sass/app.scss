@@ -43,33 +43,98 @@
   }
   .card-image {
     flex: 0 0 50%;
+
   }
 }
 
 .reply-card {
-  display: flex;
-  flex-direction: row;
-
-  + .reply-card {
-    margin-top: 1.5em;
+  border-radius: $radius;
+  overflow: hidden;
+  .card-image {
+    position: relative;
+    background-color: $grey-lighter;
+    &::before {
+      content: "\F101";
+      font-size: 2.5em;
+      background-color: transparentize($turquoise,0.3);
+      color: white;
+      height: 1.5em;
+      width: 1.5em;
+      line-height: 1.5em;
+      text-align: center;
+      border-radius: 9999px;
+      z-index: 9;
+      font-family: 'VideoJS';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      transition: background-color 1s;
+    }
+    &:hover {
+      &::before {
+        background-color: transparentize($turquoise,0);
+      }
+    }
+    img {
+      object-fit: cover;
+    }
+  }
+  &__loading {
+    .card-image::before {
+      content: none;
+    }
+  }
+  .card-content {
+    display: flex;
+    flex-direction: row;
+  }
+  &__add {
+    min-height: 25em;
+    background-color: transparent;
+    box-shadow: none;
+    border: 2px dashed $grey-lighter;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2em;
   }
 }
 
+.reply-modal {
+  .animation-content {
+    border-radius: $radius;
+    overflow: hidden;
+    width: 100%;
+    max-width: 175vh;
+    display: flex;
+
+    @media screen and (orientation: portrait) {
+      flex-direction: column;
+      margin: 0;
+      border-radius: 0;
+      min-height: 100vh;
+    }
+  }
+}
+
+
 .comment-author {
   display: inline-flex;
-  background-color: #000000aa;
-  border-radius: 9999px;
+  flex-direction: row;
 
   p {
-    color: white;
+    margin-top: auto;
+    margin-bottom: auto;
     padding-right: 1em;
-    line-height: 32px;
+    line-height: 1.2;
+    span {
+      display: block;
+    }
   }
-  flex-direction: row;
-  position: absolute;
-  top: 0.5em;
-  left: 0.5em;
+
   figure {
-    margin-right: .25em;
+    margin-right: .5em;
   }
 }

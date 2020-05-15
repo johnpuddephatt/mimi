@@ -6,49 +6,45 @@
     <h3 class="title has-text-centered is-size-2">The chat room 💬</h3>
     <p class="subtitle has-text-centered is-size-3">{{str_pad($lesson->number, 2, '0', STR_PAD_LEFT)}}. {{ $lesson->title}}</p>
 
-    <div class="columns is-centered">
-      <div class="column is-10-tablet is-9-desktop is-8-widescreen">
-        <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
-        <div class="card instruction-card">
-          <div class="card-image">
-            <video-player autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
-          </div>
-          <div class="card-content">
-            <h3 class="is-size-4">Istruzioni 📝</h3>
-            <div>{{ $lesson->instructions }}</div>
+    @if($lesson->video)
+      <div class="columns is-centered">
+        <div class="column is-10-tablet is-9-desktop is-8-widescreen">
+          <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
+          <div class="card instruction-card">
+            <div class="card-image">
+              <video-player autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
+            </div>
+            <div class="card-content">
+              <h3 class="is-size-4">Istruzioni 📝</h3>
+              <div>{{ $lesson->instructions }}</div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <reply :lesson_id="{{ $lesson->id }}" :user_id="{{ Auth::user()->id }}"></reply>
+      <h2>Responses</h2>
 
+      <div class="columns is-multiline">
+
+        <create-reply :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
         @foreach($lesson->comments as $comment)
-          @if($comment->video && $comment->video->playlist)
-            <div class="card reply-card">
-              <div class="column is-paddingless is-6-widescreen">
-
-                <video-player source="{{ $comment->video->playlist }}" type="application/x-mpegURL"></video-player>
-                <div class="comment-author">
-                  <figure class="image is-32x32">
-                    <img class="is-rounded" src="{{url($comment->user->photo) }}" />
-                  </figure>
-                  <p class="is-size-7">{{$comment->user->first_name}}</p>
-                </div>
-              </div>
-              <div class="column is-6-widescreen">
-                <div class="section has-text-centered">
-                  <br><br>
-                  <p>Comments will be shown here</p>
-                  <br>
-                  <b-button disabled>Write a reply</b-button>
-                </div>
-              </div>
-            </div>
-          @else
-
-          @endif
+          <div class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative">
+            <reply-card :user='@json(Auth::user()->only(['id','first_name','photo']))' thumbnail="{{ $comment->video->thumbnail }}" video="{{ $comment->video->playlist }}" time="{{ $comment->video->converted_for_streaming_at }}"></reply-card>
+            @if(Auth::user()->is_admin)
+              @if($comment->comments->count())
+                <b-tooltip  label="You’ve replied to this" type="is-dark" animated position="is-bottom" :delay="1000" class="admin-check-button--tooltip">
+                  <b-icon class="admin-check-button" type="is-light" icon="check"/>
+                </b-tooltip>
+              @else
+                <create-reply :comment_id="{{ $comment->id }}" :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
+              @endif
+            @endif
+          </div>
         @endforeach
       </div>
-    </div>
+    @else
+      <div class="notification is-warning">Lesson video has not yet processed. Please try again later.</div>
+    @endif
   </div>
 </section>
 @endsection

@@ -1,4 +1,5 @@
 <template>
+  <div class="video-player--wrapper">
    <div class="has-square-media">
       <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
       <video
@@ -18,6 +19,7 @@
          </p>
       </video>
    </div>
+ </div>
 </template>
 
 <script>
@@ -48,6 +50,15 @@ export default {
 <style>
    @import '~video.js/dist/video-js.css';
 
+   .video-player--wrapper {
+     position: relative;
+     flex-grow: 0;
+   }
+
+   .video-player--wrapper .has-square-media {
+     border: none;
+   }
+
    .vjs-poster {
       background-size: cover;
    }
@@ -72,8 +83,26 @@ export default {
      font-size: 1.5em;
    }
 
+   .video-js.vjs-ended .vjs-big-play-button {
+     display: block;
+   }
+
+   .video-js.vjs-ended .vjs-big-play-button .vjs-icon-placeholder::before {
+      content: "\F116";
+   }
+
    .video-js .vjs-control-bar {
      background-color: #00C2CDaa;
+   }
+
+   .vjs-has-started .vjs-control-bar {
+     transform: translateY(100%);
+     transition: 400ms 750ms;
+   }
+
+   .vjs-has-started:hover .vjs-control-bar {
+     transform: translateY(0%);
+     transition: 200ms 0ms;
    }
 
    .vjs-fullscreen video {

@@ -13,7 +13,7 @@
       <div v-if="isSaved" class="checkmark draw"></div>
     </div>
     <div class="has-text-centered" v-if="isSaved">
-      <b-button tag="a" href="/" icon-right="arrow-right">View this lesson</b-button>
+      <b-button tag="a" href="/admin/" icon-right="arrow-right">Back to admin dashboard</b-button>
     </div>
     <div class="has-text-centered" v-else>
       {{ uploadProgress }}% uploaded

@@ -1,15 +1,25 @@
 require('./bootstrap');
 
 import Vue from 'vue';
-// import '@mdi/font/css/materialdesignicons.css' // <-- Just here
 import Buefy from 'buefy'
-Vue.use(Buefy)
+import VueTimeago from 'vue-timeago'
+
+Vue.use(Buefy);
+
+Vue.use(VueTimeago, {
+  name: 'timeago',
+  locale: 'en',
+  locales: {
+    'en': require('date-fns/locale/en'),
+  }
+})
 
 Vue.component('video-playlist', require('./components/Playlist.vue').default);
 Vue.component('registration-form', require('./components/Registration.vue').default);
 Vue.component('lesson-form', require('./components/Lesson.vue').default);
 Vue.component('video-player', require('./components/VideoPlayer.vue').default);
-Vue.component('reply', require('./components/Reply.vue').default);
+Vue.component('create-reply', require('./components/CreateReply.vue').default);
+Vue.component('reply-card', require('./components/ReplyCard.vue').default);
 Vue.component('camera-field', require('./components/CameraField.vue').default);
 
 const app = new Vue({

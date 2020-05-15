@@ -18,9 +18,9 @@ class CreateCommentsTable extends Migration
             $table->timestamps();
             $table->string('type')->nullable()->default('video');
             $table->text('video_id')->nullable();
-            $table->integer('lesson_id');
+            $table->integer('lesson_id')->nullable();
             $table->integer('user_id');
-            $table->integer('parent_id')->nullable();
+            $table->integer('comment_id')->nullable();
         });
     }
 

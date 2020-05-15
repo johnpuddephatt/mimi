@@ -51,26 +51,23 @@ class ConvertVideoForStreaming implements ShouldQueue
 
             // Add filter
             ->addFilter('-vf', "crop='min(iw,ih)':'min(iw,ih)',scale=480:480")
-
            // call the 'exportForHLS' method and specify the disk to which we want to export...
             ->exportForHLS()
             ->toDisk($this->video->disk)
-
            // we'll add different formats so the stream will play smoothly
-           // with all kinds of internet connections...
             ->addFormat($lowBitrateFormat)
             ->addFormat($highBitrateFormat)
-
            // call the 'save' method with a filename...
-            ->save('video/processed/' . $this->video->id . '.m3u8');
+            ->save('video/processed/' . $this->video->id . '.m3u8')
+
+            ->getFrameFromSeconds(0)
+            ->export()
+            ->toDisk($this->video->disk)
+            ->save('video/thumbnail/'. $this->video->id . '.jpg');
 
            // update the database so we know the convertion is done!
            $this->video->update([
                'converted_for_streaming_at' => Carbon::now(),
            ]);
-
-           // Update the cache of
-           Cache::forever('video_count', Video::count());
-
     }
 }

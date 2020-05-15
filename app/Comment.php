@@ -13,19 +13,24 @@ class Comment extends Model
         'type',
         'video_id',
         'lesson_id',
-        'parent_id',
+        'comment_id',
         'user_id'
     ];
 
     protected $casts = [
       'user_id' => 'integer',
       'lesson_id' => 'integer',
-      'parent_id' => 'integer',
+      'comment_id' => 'integer',
       'video_id' => 'integer'
     ];
 
+    protected $with = ['user'];
+
     protected static function boot() {
       parent::boot();
+      static::addGlobalScope('ready', function (Builder $builder) {
+        $builder->has('video');
+      });
       static::addGlobalScope('order', function (Builder $builder) {
         $builder->orderBy('id', 'desc');
       });
@@ -41,9 +46,9 @@ class Comment extends Model
       return $this->belongsTo('App\Lesson');
     }
 
-    public function parent()
+    public function comments()
     {
-      return $this->belongsTo('App\Comment');
+      return $this->hasMany('App\Comment');
     }
 
     public function video()
