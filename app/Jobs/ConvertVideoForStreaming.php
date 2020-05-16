@@ -63,7 +63,7 @@ class ConvertVideoForStreaming implements ShouldQueue
             ->addFilter('-vf', "crop='min(iw,ih)':'min(iw,ih)',scale=480:480")
            // call the 'exportForHLS' method and specify the disk to which we want to export...
             ->exportForHLS()
-            ->setSegmentLength(5)
+            ->setSegmentLength(15)
             ->toDisk($this->video->disk)
            // we'll add different formats so the stream will play smoothly
             ->addFormat($lowBitrateFormat)
