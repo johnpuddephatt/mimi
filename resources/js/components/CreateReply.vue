@@ -1,6 +1,7 @@
 <template>
 
   <div v-if="!isSaved" :class="comment_id ? '' : 'column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd'">
+
     <b-tooltip v-if="comment_id" label="Record admin reply" type="is-dark" animated position="is-left" :delay="1000" class="admin-reply-button--tooltip">
       <b-button class="admin-reply-button" @click="isReplyModalActive = true" size="is-light" icon-right="reply"/>
     </b-tooltip>
@@ -38,7 +39,7 @@
         <section class="modal-card-body is-paddingless" style="overflow: visible;">
           <camera-field v-model="reply.video" mode="video"></camera-field>
         </section>
-        <footer class="modal-card-foot is-paddingless">
+        <footer class="modal-card-foot has-background-light">
           <b-button :disabled="!reply.video" expanded type="is-primary" size="is-medium" @click.prevent="onSubmit" :loading="isSaving">Upload your reply</b-button>
         </footer>
       </div>
@@ -104,8 +105,13 @@ export default {
     }
   },
 
-  methods: {
+  watch: {
+    isReplyModalActive: function() {
+      this.$root.$refs.instructionVideo.pause();
+    }
+  },
 
+  methods: {
 
     onSubmit() {
       this.isSaving = true;

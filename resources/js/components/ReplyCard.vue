@@ -22,11 +22,11 @@
     <b-modal custom-class=" has-background-white-bis reply-modal" :active.sync="isReplyCardModalActive" has-modal-card trap-focus :destroy-on-hide="true" animation="zoom-in" aria-role="dialog" width="840px" aria-modal>
       <b-carousel @change="updateSlide($event)" :arrow="response_playlist ? true : false" :indicator="response_playlist ? true : false" :has-drag="true" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
        <b-carousel-item :key="0">
-         <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" :thumbnail="thumbnail" type="application/x-mpegURL"></video-player>
+         <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" :poster="thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
 
        <b-carousel-item v-if="response_playlist" :key="1">
-         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="response_playlist" :thumbnail="response_thumbnail" type="application/x-mpegURL"></video-player>
+         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="response_playlist" :poster="response_thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
    </b-carousel>
       <div class="modal-card">
@@ -65,6 +65,12 @@ export default {
     return {
       currentSlide: 0,
       isReplyCardModalActive: false
+    }
+  },
+
+  watch: {
+    isReplyCardModalActive: function() {
+      this.$root.$refs.instructionVideo.pause();
     }
   },
 

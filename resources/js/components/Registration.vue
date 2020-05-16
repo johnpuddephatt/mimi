@@ -57,7 +57,7 @@
       <b-step-item label="Introduce" :clickable="true">
 
         <b-field label="Introduce yourself">
-          <b-input v-model="user.description" name="description" type="textarea" maxlength="120" rows="6" placeholder="Introduce yourself to the other students.">
+          <b-input v-model="user.description" name="description" type="textarea" maxlength="120" rows="6" required placeholder="Introduce yourself to the other students.">
           </b-input>
         </b-field>
 

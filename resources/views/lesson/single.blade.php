@@ -8,11 +8,11 @@
 
     @if($lesson->video)
       <div class="columns is-centered">
-        <div class="column is-10-tablet is-9-desktop is-8-widescreen is-paddingless">
+        <div class="column is-12-tablet is-9-desktop is-8-widescreen is-paddingless">
           <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
           <div class="card instruction-card">
             <div class="card-image">
-              <video-player autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
+              <video-player ref="instructionVideo" autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
             </div>
             <div class="card-content">
               <h3 class="is-size-4">Istruzioni 📝</h3>
