@@ -26,7 +26,7 @@
        </b-carousel-item>
 
        <b-carousel-item v-if="admin_comment" :key="1">
-         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="video" type="application/x-mpegURL"></video-player>
+         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="admin_comment" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
    </b-carousel>
       <div class="modal-card">

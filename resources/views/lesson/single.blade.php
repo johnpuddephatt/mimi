@@ -36,7 +36,7 @@
                   <b-icon class="admin-check-button" type="is-light" icon="check"/>
                 </b-tooltip>
               @else
-                <create-reply :comment_id="{{ $comment->id }}" :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
+                <create-reply type="video" :comment_id="{{ $comment->id }}" :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
               @endif
             @endif
           </div>
