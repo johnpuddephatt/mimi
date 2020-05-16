@@ -8,7 +8,7 @@
 
     @if($lesson->video)
       <div class="columns is-centered">
-        <div class="column is-10-tablet is-9-desktop is-8-widescreen">
+        <div class="column is-10-tablet is-9-desktop is-8-widescreen is-paddingless">
           <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
           <div class="card instruction-card">
             <div class="card-image">
@@ -22,17 +22,17 @@
         </div>
       </div>
 
-      <h2>Responses</h2>
+      <h2 class="subtitle is-size-4 has-text-centered">Responses</h2>
 
       <div class="columns is-multiline">
 
         <create-reply :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
         @foreach($lesson->comments as $comment)
           <div class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative">
-            <reply-card :user='@json(Auth::user()->only(['id','first_name','photo']))' thumbnail="{{ $comment->video->thumbnail }}" video="{{ $comment->video->playlist }}" time="{{ $comment->video->converted_for_streaming_at }}"></reply-card>
+            <reply-card type="video" :user='@json(Auth::user()->only(['id','first_name','photo']))' thumbnail="{{ $comment->video->thumbnail }}" video="{{ $comment->video->playlist }}" @if($comment->videoComments->count()) admin_comment="{{$comment->videoComments->first()->video->playlist }}" @endif time="{{ $comment->video->converted_for_streaming_at }}"></reply-card>
             @if(Auth::user()->is_admin)
-              @if($comment->comments->count())
-                <b-tooltip  label="You’ve replied to this" type="is-dark" animated position="is-bottom" :delay="1000" class="admin-check-button--tooltip">
+              @if($comment->videoComments->count())
+                <b-tooltip  label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
                   <b-icon class="admin-check-button" type="is-light" icon="check"/>
                 </b-tooltip>
               @else

@@ -67,7 +67,9 @@
                     </div>
                 </div>
             </nav>
-            @yield('content')
+            <main>
+              @yield('content')
+            </main>
             <footer class="footer">
                 <div class="column has-text-centered">
                   <p class="menu-label">© 2019 Joy of Languages Limited.<br>Company number 11811277 registered in England & Wales.</p>

@@ -1,7 +1,7 @@
 <template>
 
   <div v-if="!isSaved" :class="comment_id ? '' : 'column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd'">
-    <b-tooltip v-if="comment_id" label="Record admin reply" type="is-dark" animated position="is-bottom" :delay="1000" class="admin-reply-button--tooltip">
+    <b-tooltip v-if="comment_id" label="Record admin reply" type="is-dark" animated position="is-left" :delay="1000" class="admin-reply-button--tooltip">
       <b-button class="admin-reply-button" @click="isReplyModalActive = true" size="is-light" icon-right="reply"/>
     </b-tooltip>
 
@@ -83,7 +83,7 @@
 var platform = require('platform');
 
 export default {
-  props: ['user', 'lesson_id', 'comment_id'],
+  props: ['user', 'lesson_id', 'comment_id', 'type'],
   data() {
     return {
       isReplyModalActive: false,
@@ -94,7 +94,7 @@ export default {
       errors: '',
       reply: {
         id: null,
-        type: null,
+        type: this.type,
         video: null,
         lesson_id: this.lesson_id,
         comment_id: this.comment_id,

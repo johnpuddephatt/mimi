@@ -4,7 +4,7 @@
 <section class="section is-medium">
   <div class="container">
     <div class="columns is-centered">
-      <div class="column is-7-tablet is-6-desktop is-5-widescreen">
+      <div class="column is-7-tablet is-6-desktop is-5-widescreen is-paddingless">
         <form action="/admin/course/create" method="post" class="box">
           @csrf
           <h3 class="title has-text-centered">Creare corso 🆕</h3>

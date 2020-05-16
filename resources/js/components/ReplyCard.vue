@@ -20,7 +20,15 @@
     </div>
 
     <b-modal custom-class=" has-background-white-bis reply-modal" :active.sync="isReplyCardModalActive" has-modal-card trap-focus :destroy-on-hide="true" animation="zoom-in" aria-role="dialog" width="840px" aria-modal>
-      <video-player class="column is-two-thirds is-paddingless" :autoplay="true" :source="video" type="application/x-mpegURL"></video-player>
+      <b-carousel :arrow="admin_comment ? true : false" :indicator="admin_comment ? true : false" :has-drag="true" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
+       <b-carousel-item :key="0">
+         <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" type="application/x-mpegURL"></video-player>
+       </b-carousel-item>
+
+       <b-carousel-item v-if="admin_comment" :key="1">
+         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="video" type="application/x-mpegURL"></video-player>
+       </b-carousel-item>
+   </b-carousel>
       <div class="modal-card">
         <header class="modal-card-head is-radiusless comment-author">
           <figure class="image is-48x48">
@@ -32,15 +40,15 @@
           </p>
         </header>
         <section class="modal-card-body">
-          Comments...
+          <b-button expanded v-if="admin_comment" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show response' : 'Show original'"></b-button>
         </section>
         <footer class="modal-card-foot is-radiusless">
           <div class="field is-grouped">
             <div class="control is-expanded">
-              <input type="text" value="" name="email" class="input is-flat" placeholder="Enter your reply">
+              <input type="text" value="" name="comment" disabled class="input" placeholder="Enter your reply">
             </div>
             <div class="control">
-              <button class="button">Add</button>
+              <button class="button" disabled>Add</button>
             </div>
           </div>
         </footer>
@@ -52,9 +60,10 @@
 
 <script>
 export default {
-  props: ['thumbnail', 'video', 'user', 'time'],
+  props: ['thumbnail', 'video', 'user', 'time', 'admin_comment'],
   data() {
     return {
+      currentSlide: 0,
       isReplyCardModalActive: false
     }
   },

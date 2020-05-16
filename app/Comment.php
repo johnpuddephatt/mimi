@@ -51,6 +51,12 @@ class Comment extends Model
       return $this->hasMany('App\Comment');
     }
 
+    public function videoComments()
+    {
+      return $this->hasMany('App\Comment')->where('type', 'video');
+    }
+
+
     public function video()
     {
       return $this->belongsTo('App\Video');

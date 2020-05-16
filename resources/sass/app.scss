@@ -30,20 +30,26 @@
   margin-left: 0.5em;
 }
 
+main {
+  min-height: 82.5vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 // .instruction-card {
 //   position: sticky;
 //   top: 5.5em;
 // }
 .instruction-card {
+  margin-bottom: 1.5em;
   display: flex;
   flex-direction: row;
-  margin-bottom: 1.5em;
-  .card-content {
-    padding: 3rem;
+  @media screen and (orientation: portrait) {
+    flex-direction: column;
   }
   .card-image {
     flex: 0 0 50%;
-
   }
 }
 
@@ -90,7 +96,7 @@
     flex-direction: row;
   }
   &__add {
-    min-height: 25em;
+    min-height: 22.5em;
     background-color: transparent;
     box-shadow: none;
     border: 2px dashed $grey-lighter;
@@ -102,7 +108,7 @@
   }
 }
 
-.reply-modal {
+.modal {
   .animation-content {
     border-radius: $radius;
     overflow: hidden;
@@ -114,11 +120,29 @@
       flex-direction: column;
       margin: 0;
       border-radius: 0;
-      min-height: 100vh;
+      // min-height: 100vh;
+      margin-top: auto;
+      background-color: $white-bis;
+      .modal-card {
+        flex-grow: 1;
+        min-height: calc(100vh - 100vw);
+      }
     }
   }
 }
 
+.reply-modal {
+  .modal-card-foot {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .field {
+    width: 100%;
+    .control {
+      margin-right: 5px !important;
+    }
+  }
+}
 
 .comment-author {
   display: inline-flex;

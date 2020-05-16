@@ -26,13 +26,25 @@
 import videojs from "video.js";
 
 export default {
-   props: ['source', 'type', 'poster', 'autoplay'],
+   props: ['play', 'source', 'type', 'poster', 'autoplay'],
    data() {
       return {
         isLoading: true,
         player: null
       };
    },
+
+   watch: {
+    	play: function(newVal, oldVal) { // watch it
+        if(newVal == false) {
+          this.player.pause();
+        }
+        if(newVal == true) {
+          this.player.play();
+        }
+
+      }
+  },
 
    mounted() {
       this.player = videojs(this.$refs.player);
@@ -91,17 +103,25 @@ export default {
       content: "\F116";
    }
 
-   .video-js .vjs-control-bar {
-     background-color: #00C2CDaa;
-   }
+  .video-js .vjs-control-bar {
+    background-color: #00C2CDaa;
+    bottom: 4em;
+    left: 2.5em;
+    right: 2.5em;
+    width: auto;
+    border-radius: 5px;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    height: 4em;
+  }
 
    .vjs-has-started .vjs-control-bar {
-     transform: translateY(100%);
+     opacity: 0;
      transition: 400ms 750ms;
    }
 
    .vjs-has-started:hover .vjs-control-bar {
-     transform: translateY(0%);
+     opacity: 1;
      transition: 200ms 0ms;
    }
 
