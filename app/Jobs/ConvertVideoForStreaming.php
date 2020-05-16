@@ -42,8 +42,18 @@ class ConvertVideoForStreaming implements ShouldQueue
     public function handle()
     {
         // create some video formats...
-        $lowBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(200);
-        $highBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(1000);
+        $lowBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(200)->setAdditionalParameters(
+          [
+            "-preset",
+            "ultrafast"
+          ]
+        );
+        $highBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(1000)->setAdditionalParameters(
+          [
+            "-preset",
+            "ultrafast"
+          ]
+        );
 
         // open the uploaded video from the right disk...
         FFMpeg::fromDisk($this->video->disk)
