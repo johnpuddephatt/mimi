@@ -2,7 +2,7 @@
 <div class="video-player--wrapper">
   <div class="has-square-media">
     <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
-    <video class="video-js vjs-big-play-centered" controls preload="none" width="640" height="264" :autoplay="autoplay" :poster="poster" playsinline ref="player">
+    <video class="video-js vjs-big-play-centered" controls preload="auto" width="640" height="264" :autoplay="autoplay" :poster="poster" playsinline ref="player">
       <source :src="source" :type="type" />
       <p class="vjs-no-js">
         To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
