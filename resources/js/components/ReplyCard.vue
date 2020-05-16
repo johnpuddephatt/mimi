@@ -26,7 +26,7 @@
        </b-carousel-item>
 
        <b-carousel-item v-if="response_playlist" :key="1">
-         <video-player :play="currentSlide == 1 ? true : false" :autoplay="true" :source="response_playlist" :thumbnail="response_thumbnail" type="application/x-mpegURL"></video-player>
+         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="response_playlist" :thumbnail="response_thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
    </b-carousel>
       <div class="modal-card">
