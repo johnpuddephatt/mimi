@@ -39,11 +39,11 @@ export default {
 
   mounted() {
     this.player = videojs(this.$refs.player, {
-      html5: {
-        hls: {
-          overrideNative: true
-        }
-      }
+      // html5: {
+      //   hls: {
+      //     overrideNative: true
+      //   }
+      // }
     });
     this.player.ready(() => {
 
