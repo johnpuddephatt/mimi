@@ -22,7 +22,7 @@ class ConvertVideoForStreaming implements ShouldQueue
 
     public $video;
 
-    public $timeout = 600;
+    public $timeout = 1800;
 
     /**
      * Create a new job instance.
