@@ -5,7 +5,7 @@
       <video
          class="video-js vjs-big-play-centered"
          controls
-         preload="metadata"
+         preload="none"
          width="640"
          height="264"
          :autoplay="autoplay"
@@ -37,9 +37,11 @@ export default {
    watch: {
     	play: function(newVal, oldVal) { // watch it
         if(newVal == false) {
+          this.isLoading = false;
           this.player.pause();
         }
         if(newVal == true) {
+          this.isLoading = false;
           this.player.play();
         }
 
@@ -50,7 +52,11 @@ export default {
       this.player = videojs(this.$refs.player);
       this.player.ready(()=> {
         this.isLoading = false;
-      })
+      });
+      this.player.ended(()=> {
+        console.log('ended');
+        this.isLoading = false;
+      });
    },
    beforeDestroy() {
       this.player.dispose();

@@ -20,13 +20,13 @@
     </div>
 
     <b-modal custom-class=" has-background-white-bis reply-modal" :active.sync="isReplyCardModalActive" has-modal-card trap-focus :destroy-on-hide="true" animation="zoom-in" aria-role="dialog" width="840px" aria-modal>
-      <b-carousel :arrow="admin_comment ? true : false" :indicator="admin_comment ? true : false" :has-drag="true" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
+      <b-carousel @change="updateSlide($event)" :arrow="response_playlist ? true : false" :indicator="response_playlist ? true : false" :has-drag="true" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
        <b-carousel-item :key="0">
-         <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" type="application/x-mpegURL"></video-player>
+         <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" :thumbnail="thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
 
-       <b-carousel-item v-if="admin_comment" :key="1">
-         <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="admin_comment" type="application/x-mpegURL"></video-player>
+       <b-carousel-item v-if="response_playlist" :key="1">
+         <video-player :play="currentSlide == 1 ? true : false" :autoplay="true" :source="response_playlist" :thumbnail="response_thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
    </b-carousel>
       <div class="modal-card">
@@ -40,7 +40,7 @@
           </p>
         </header>
         <section class="modal-card-body">
-          <b-button expanded v-if="admin_comment" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show response' : 'Show original'"></b-button>
+          <b-button expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show response' : 'Show original'"></b-button>
         </section>
         <footer class="modal-card-foot is-radiusless">
           <div class="field is-grouped">
@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  props: ['thumbnail', 'video', 'user', 'time', 'admin_comment'],
+  props: ['thumbnail', 'video', 'user', 'time', 'response_playlist', 'response_thumbnail'],
   data() {
     return {
       currentSlide: 0,
@@ -73,6 +73,10 @@ export default {
     },
 
     updateProgress(progress) {
+    },
+
+    updateSlide(value) {
+      this.currentSlide = value;
     }
   }
 };

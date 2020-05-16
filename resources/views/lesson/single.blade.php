@@ -29,7 +29,9 @@
         <create-reply :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
         @foreach($lesson->comments as $comment)
           <div class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative">
-            <reply-card type="video" :user='@json(Auth::user()->only(['id','first_name','photo']))' thumbnail="{{ $comment->video->thumbnail }}" video="{{ $comment->video->playlist }}" @if($comment->videoComments->count()) admin_comment="{{$comment->videoComments->first()->video->playlist }}" @endif time="{{ $comment->video->converted_for_streaming_at }}"></reply-card>
+            <p>Video: {{ $comment->video->playlist }}</p>
+            @if($comment->videoComments->count()) <p>reply: {{$comment->videoComments->first()->video->playlist }}</p>@endif
+            <reply-card type="video" :user='@json(Auth::user()->only(['id','first_name','photo']))' thumbnail="{{ $comment->video->thumbnail }}" video="{{ $comment->video->playlist }}" @if($comment->videoComments->count()) response_playlist="{{$comment->videoComments->first()->video->playlist }}" response_thumbnail="{{$comment->videoComments->first()->video->thumbnail }}" @endif time="{{ $comment->video->converted_for_streaming_at }}"></reply-card>
             @if(Auth::user()->is_admin)
               @if($comment->videoComments->count())
                 <b-tooltip  label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
