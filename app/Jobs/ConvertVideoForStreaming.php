@@ -45,9 +45,7 @@ class ConvertVideoForStreaming implements ShouldQueue
         $lowBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(200)->setAdditionalParameters(
           [
             "-preset",
-            "ultrafast"
-          ],
-          [
+            "ultrafast",
             "-r",
             "16.667"
           ]
@@ -55,9 +53,7 @@ class ConvertVideoForStreaming implements ShouldQueue
         $highBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(1000)->setAdditionalParameters(
           [
             "-preset",
-            "veryfast"
-          ],
-          [
+            "veryfast",
             "-r",
             "16.667"
           ]
