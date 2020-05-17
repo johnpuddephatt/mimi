@@ -40,9 +40,9 @@
           </p>
         </header>
         <section class="modal-card-body">
-          <b-button expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show response' : 'Show original'"></b-button>
+          <b-button expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show feedback' : 'Show original'"></b-button>
         </section>
-        <footer class="modal-card-foot is-radiusless">
+        <!-- <footer class="modal-card-foot is-radiusless">
           <div class="field is-grouped">
             <div class="control is-expanded">
               <input type="text" value="" name="comment" disabled class="input" placeholder="Enter your reply">
@@ -51,7 +51,7 @@
               <button class="button" disabled>Add</button>
             </div>
           </div>
-        </footer>
+        </footer> -->
       </div>
     </b-modal>
 

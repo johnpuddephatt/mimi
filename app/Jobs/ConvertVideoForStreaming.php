@@ -42,14 +42,18 @@ class ConvertVideoForStreaming implements ShouldQueue
     public function handle()
     {
         // create some video formats...
-        $lowBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(200)->setAdditionalParameters(
+        $lowBitrateFormat  = (new X264('aac','libx264'))->setPasses(1)->setKiloBitrate(200)->setAdditionalParameters(
           [
+            "-preset",
+            "ultrafast",
             "-r",
             16.667
           ]
         );
-        $highBitrateFormat  = (new X264('aac','libx264'))->setKiloBitrate(1000)->setAdditionalParameters(
+        $highBitrateFormat  = (new X264('aac','libx264'))->setPasses(1)->setKiloBitrate(1000)->setAdditionalParameters(
           [
+            "-preset",
+            "veryfast",
             "-r",
             16.667
           ]
