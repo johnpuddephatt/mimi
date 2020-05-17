@@ -132,7 +132,7 @@ export default {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
           },
           onUploadProgress: progressEvent => this.updateProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)),
-          timeout: 30000
+          timeout: 90000
         })
         .then(response => {
 
