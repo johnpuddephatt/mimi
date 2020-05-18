@@ -46,7 +46,7 @@ class LessonController extends Controller
       return Lesson::create([
           'title' => $request->title,
           'instructions' => $request->instructions,
-          'number' => $request->number,
+          'number' => intval($request->number),
           'course_id' => $request->course_id,
 
           'video_id' => $video->id,
