@@ -30,7 +30,8 @@ class LessonController extends Controller
      */
 
     public function new(Course $course) {
-        $lesson_count = $course->lessons->count();
+
+        $lesson_count = ($course::has('lessons') ? $course->lessons()->orderBy('number', 'desc')->first()->number : 1);
         return view('lesson.new', compact('course','lesson_count'));
     }
 
