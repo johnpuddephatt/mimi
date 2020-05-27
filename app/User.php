@@ -44,7 +44,7 @@ class User extends Authenticatable
       static::saving(function ($model) {
         $photo = $model->photo->store('users/thumbnail', 'public');
         $photo_path = Storage::disk('public')->path($photo);
-        \Image::make($photo_path)->orientate()->fit(480,480)->save();
+        \Image::make($photo_path)->orientate()->fit(480,480)->save()->destroy();
         $model->photo = Storage::disk('public')->url($photo);
       });
     }

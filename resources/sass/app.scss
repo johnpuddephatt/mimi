@@ -105,10 +105,16 @@ main {
     flex-direction: row;
     align-items: center;
     padding: 2em;
+    justify-content: center;
   }
 }
 
-.modal {
+.modal-card {
+  max-width: 100%;
+}
+
+.create-reply-card {
+
   .animation-content {
     border-radius: $radius-large;
     overflow: hidden;

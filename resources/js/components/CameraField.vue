@@ -1,13 +1,6 @@
 <template>
 
 <div class="camera-wrapper">
-  <b-notification
-    type="is-danger"
-    has-icon
-    role="alert"
-    v-if="errorMessage"
-    message="errorMessage">
-  </b-notification>
 
   <!-- Camera preview -->
 
@@ -28,13 +21,25 @@
   <!-- Camera capture -->
   <div v-else>
 
-    <section v-if="cameraType == 'fallback' || errorMessage" class="section is-medium has-background-light has-text-centered">
-      <b-upload @input="onFileInputChange" type="file" name="file" :accept="accept[mode]" capture="user">
-        <a class="button is-primary">
-          <b-icon icon="camera"></b-icon>
-          <span>Add your {{ mode }}</span>
-        </a>
-      </b-upload>
+    <section v-if="cameraType == 'fallback' || errorMessage" class="section has-background-light has-text-centered">
+
+      <!-- <b-notification
+        type="is-info"
+        has-icon
+        role="alert"
+        v-if="warningMessage"
+        closable="false"
+        :message="warningMessage">
+      </b-notification> -->
+
+      <div class="reply-card__add">
+        <b-upload @input="onFileInputChange" type="file" name="file" :accept="accept[mode]" capture="user">
+          <a class="button">
+            <b-icon icon="camera"></b-icon>
+            <span>Add your {{ mode }}</span>
+          </a>
+        </b-upload>
+      </div>
     </section>
 
     <div v-else>
@@ -99,6 +104,7 @@ export default {
       isRecording: false,
       shouldStopRecording: false,
       errorMessage: null,
+      warningMessage: null,
       accept: {
         photo: 'image/*',
         video: 'video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*'
@@ -134,6 +140,9 @@ export default {
 
   created: function () {
     if(this.mode == 'video' && !window.MediaRecorder) {
+      if(platform.product != 'iPad' && platform.product != 'iPhone') {
+        this.warningMessage = "Your browser doesn’t support accessing your camera directly.";
+      }
       this.cameraType = 'fallback';
     }
   },
@@ -165,19 +174,33 @@ export default {
       axios.post('/log', {'error': `CAMERAFIELD ERROR\n${ platform.description }\n${ error }`});
 
       if (error.name == "NotFoundError") {
-        this.errorMessage = "Could not find your camera and/or microphone. Please ensure it is connected and enabled, then refresh the page to try again.";
+        this.errorMessage = "<strong>Camera or microphone not found</strong><br>A suitable camera and/or microphone could not be found on your device. Please ensure your devices are connected and turned on, then refresh this page to try again.";
       } else if (error.name == "NotReadableError") {
-          this.errorMessage = "Your camera and/or microphone appear to already be in use.";
+          this.errorMessage = "<strong>Camera or microphone busy</strong><br>Your camera and/or microphone appear to already be in use by another website or application. Try closing any applications using your camera/microphone and refreshing this page.";
       } else if (error.name == "OverconstrainedError") {
-        this.errorMessage = "A suitable camera and/or microphone could not be found.";
+        this.errorMessage = "<strong>Camera or microphone not found</strong><br>A suitable camera and/or microphone could not be found on your device. Please ensure your devices are connected and turned on, then refresh this page.";
       } else if (error.name == "NotAllowedError") {
-        this.errorMessage = "<h3>Could not access camera</h3><p>Please give your browser permission to access your camera and/or microphone, then refresh the page to try again.</p>";
+        this.errorMessage = `<strong>Permission denied</strong><br>Please give your browser permission to access your camera and/or microphone, then refresh this page to try again.<br><br>• <a target='_blank' href='https://support.google.com/chrome/answer/2693767'>Enable access in Google Chrome</a><br>• <a target='_blank' href='https://support.mozilla.org/en-US/kb/how-manage-your-camera-and-microphone-permissions'>Enable access in Firefox</a><br>• <a target='_blank' href='https://support.apple.com/en-gb/guide/safari/ibrwe2159f50/mac'>Enable access in Safari</a><br><br>Alternatively, click ‘OK’ followed by ‘Add your ${ this.mode }’ to continue in file upload mode.`;
       } else if (error.name == "TypeError") {
         this.errorMessage = "Sorry, something went wrong. Please try again.";
       } else if(error.name == "NoGetUserMedia") {
-        this.errorMessage = "Your browser doesn’t support accessing your camera directly.";
+        if(platform.product != 'iPad' || platform.product != 'iPhone') {
+          this.warningMessage = "Your browser doesn’t support accessing your camera directly.";
+        }
       } else {
         this.errorMessage = "Unknown error: " + error
+      }
+
+      if(this.errorMessage) {
+        this.$buefy.dialog.alert({
+          title: 'Error',
+          message: this.errorMessage,
+          type: 'is-danger',
+          hasIcon: true,
+          icon: 'error_outline',
+          ariaRole: 'alertdialog',
+          ariaModal: true
+        })
       }
     },
 

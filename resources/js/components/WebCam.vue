@@ -125,7 +125,7 @@ export default {
           });
 
           if(!videoDevices.length) {
-            this.$emit("error", {name: 'NotFoundError'})
+            this.$emit("error", {name: 'NotFoundError', message: 'WebCam.vue couldn’t find at least one video device'})
           }
           else {
             for (let i = 0; i !== deviceInfos.length; ++i) {

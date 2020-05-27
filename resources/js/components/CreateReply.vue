@@ -12,7 +12,7 @@
       </b-button>
     </div>
 
-    <b-modal :active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
+    <b-modal custom-class="create-reply-modal":active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
       <div v-if="isSaving" class="modal-card">
         <section class="modal-card-body has-text-centered">
           <div v-if="isSaved">
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import NoSleep from 'nosleep.js';
 var platform = require('platform');
 
 export default {
@@ -93,6 +94,7 @@ export default {
       uploadProgress: null,
       newVideo: {},
       errors: '',
+      noSleep: null,
       reply: {
         id: null,
         type: this.type,
@@ -115,7 +117,8 @@ export default {
 
     onSubmit() {
       this.isSaving = true;
-
+      var noSleep = new NoSleep();
+      noSleep.enable();
       const data = new FormData();
 
       for (let [key, value] of Object.entries(this.reply)) {
@@ -137,7 +140,7 @@ export default {
         .then(response => {
 
           this.reply = response.data;
-
+          noSleep.disable();
           var videoReadyCheck = setInterval(
             () => {
               axios({
@@ -161,6 +164,7 @@ export default {
           )
         })
         .catch(error => {
+          noSleep.disable();
           this.isSaving = false;
           this.$buefy.snackbar.open({
             message: `<b>Error:</b> ${error.response.data.message}`,
@@ -168,7 +172,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `REPLY FIELD ERROR\n${ platform.description }\n${ error.response.data.message }`});
+          axios.post('/log', {'error': `REPLY FIELD ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
           this.errors = error.response.data.errors || '';
         });
     },
@@ -188,17 +192,14 @@ export default {
 };
 </script>
 
-
 <style>
-.modal-card {
-  max-width: 100%;
-}
 
 .admin-reply-button--tooltip, .admin-check-button--tooltip {
   position: absolute;
   top: 1.25em;
   right: 1.25em;
 }
+
 .admin-reply-button, .admin-check-button {
   border-radius: 9999px;
 }

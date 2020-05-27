@@ -27,7 +27,7 @@
           :closable="false"
           :message="errors.course[0]">
     </b-notification>
-    <b-steps size="is-small" v-model="activeStep" :animated="true" :has-navigation="false">
+    <b-steps size="is-small" mobile-mode="compact" v-model="activeStep" :animated="true" :has-navigation="false">
 
       <b-step-item label="Account" :clickable="true">
 
@@ -70,7 +70,7 @@
           <camera-field mode="photo" v-if="activeStep == 2" v-model="user.photo"></camera-field>
         </b-field>
         <hr>
-        <b-button type="is-primary" @click.prevent="onSubmit" :loading="isRegistering" expanded>Register</b-button>
+        <b-button :disabled="!user.photo" type="is-primary" @click.prevent="onSubmit" :loading="isRegistering" expanded>Register</b-button>
       </b-step-item>
     </b-steps>
   </form>
@@ -134,8 +134,9 @@ export default {
         .catch(error => {
           this.isRegistering = false;
           this.activeStep = 0;
+          console.log('foo',error);
           this.$buefy.snackbar.open({
-                  message: `<b>Error:</b> ${error.response.data.message}`,
+                  message: `<b>Error:</b> ${error.response.data}`,
                   type: 'is-danger',
                   position: 'is-bottom',
                   duration: 5000
