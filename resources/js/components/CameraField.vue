@@ -1,7 +1,13 @@
 <template>
 
 <div class="camera-wrapper">
-  <div class="notification is-danger" v-if="errorMessage && !errorMessage.toString().startsWith('NotAllowedError')">{{ errorMessage }}</div>
+  <b-notification
+    type="is-danger"
+    has-icon
+    role="alert"
+    sv-if="errorMessage"
+    message="errorMessage">
+  </b-notification>
 
   <!-- Camera preview -->
 
@@ -156,8 +162,23 @@ export default {
 
     onError(error) {
       this.cameraType = 'fallback';
-      this.errorMessage = error;
       axios.post('/log', {'error': `CAMERAFIELD ERROR\n${ platform.description }\n${ error }`});
+
+      if (error.name == "NotFoundError") {
+        this.errorMessage = "Could not find your camera and/or microphone. Please ensure it is connected and enabled, then refresh the page to try again.";
+      } else if (error.name == "NotReadableError") {
+          this.errorMessage = "Your camera and/or microphone appear to already be in use.";
+      } else if (error.name == "OverconstrainedError") {
+        this.errorMessage = "A suitable camera and/or microphone could not be found.";
+      } else if (error.name == "NotAllowedError") {
+        this.errorMessage = "<h3>Could not access camera</h3><p>Please give your browser permission to access your camera and/or microphone, then refresh the page to try again.</p>";
+      } else if (error.name == "TypeError") {
+        this.errorMessage = "Sorry, something went wrong. Please try again.";
+      } else if(error.name == "NoGetUserMedia") {
+        this.errorMessage = "Your browser doesn’t support accessing your camera directly.";
+      } else {
+        this.errorMessage = "Unknown error: " + error
+      }
     },
 
     onRecordToggle() {
@@ -184,7 +205,6 @@ export default {
     },
 
     onFileInputChange(file) {
-      console.log(file.type);
       this.rawMimeType = file.type || '';
       this.$emit('input', file);
     },

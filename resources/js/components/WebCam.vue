@@ -86,7 +86,7 @@ export default {
         // to keep a consistent interface
         if (!getUserMedia) {
           return Promise.reject(
-            new Error("getUserMedia is not implemented in this browser")
+            this.$emit("error", {name: 'NoGetUserMedia'})
           );
         }
 
@@ -119,10 +119,20 @@ export default {
       navigator.mediaDevices
         .enumerateDevices()
         .then(deviceInfos => {
-          for (let i = 0; i !== deviceInfos.length; ++i) {
-            let deviceInfo = deviceInfos[i];
-            if (deviceInfo.kind === "videoinput") {
-              this.cameras.push(deviceInfo);
+
+          let videoDevices = deviceInfos.filter((item) => {
+            return item.kind == 'videoinput'
+          });
+
+          if(!videoDevices.length) {
+            this.$emit("error", {name: 'NotFoundError'})
+          }
+          else {
+            for (let i = 0; i !== deviceInfos.length; ++i) {
+              let deviceInfo = deviceInfos[i];
+              if (deviceInfo.kind === "videoinput") {
+                this.cameras.push(deviceInfo);
+              }
             }
           }
         })
@@ -136,7 +146,7 @@ export default {
             this.camerasListEmitted = true;
           }
         })
-        .catch(error => this.$emit("notsupported", error));
+        .catch(error => this.$emit("error", error));
     },
 
     /**
