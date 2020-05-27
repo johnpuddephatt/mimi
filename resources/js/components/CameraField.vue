@@ -5,7 +5,7 @@
     type="is-danger"
     has-icon
     role="alert"
-    sv-if="errorMessage"
+    v-if="errorMessage"
     message="errorMessage">
   </b-notification>
 
