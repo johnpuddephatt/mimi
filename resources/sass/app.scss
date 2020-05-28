@@ -37,6 +37,12 @@ main {
   justify-content: center;
 }
 
+.box {
+  @media screen and (orientation: portrait) {
+    padding: $box-padding/2;
+  }
+}
+
 // .instruction-card {
 //   position: sticky;
 //   top: 5.5em;

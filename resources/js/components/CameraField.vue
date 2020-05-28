@@ -21,7 +21,7 @@
   <!-- Camera capture -->
   <div v-else>
 
-    <section v-if="cameraType == 'fallback' || errorMessage" class="section has-background-light has-text-centered">
+    <section v-if="cameraType == 'fallback'" class="section has-background-light has-text-centered">
 
       <!-- <b-notification
         type="is-info"
