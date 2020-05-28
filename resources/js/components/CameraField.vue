@@ -176,7 +176,7 @@ export default {
       if (error.name == "NotFoundError") {
         this.errorMessage = "<strong>Camera or microphone not found</strong><br>A suitable camera and/or microphone could not be found on your device. Please ensure your devices are connected and turned on, then refresh this page to try again.";
       } else if (error.name == "NotReadableError") {
-          this.errorMessage = "<strong>Camera or microphone busy</strong><br>Your camera and/or microphone appear to already be in use by another website or application. Try closing any applications using your camera/microphone and refreshing this page.";
+          this.errorMessage = "<strong>Couldn’t access your camera or microphone</strong><br>Your camera and/or microphone can’t be reached. They may be in use by another website or application. Try closing any applications using your camera/microphone and ensure you’ve given your browser permission to access your camera and/or microphone.";
       } else if (error.name == "OverconstrainedError") {
         this.errorMessage = "<strong>Camera or microphone not found</strong><br>A suitable camera and/or microphone could not be found on your device. Please ensure your devices are connected and turned on, then refresh this page.";
       } else if (error.name == "NotAllowedError") {
