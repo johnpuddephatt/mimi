@@ -197,7 +197,7 @@ export default {
           message: this.errorMessage,
           type: 'is-danger',
           hasIcon: true,
-          icon: 'error_outline',
+          icon: 'alert',
           ariaRole: 'alertdialog',
           ariaModal: true
         })
