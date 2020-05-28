@@ -39,7 +39,7 @@ main {
 
 .box {
   @media screen and (orientation: portrait) {
-    padding: $box-padding/2;
+    padding: $box-padding $box-padding/2;
   }
 }
 

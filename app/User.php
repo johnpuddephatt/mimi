@@ -42,10 +42,12 @@ class User extends Authenticatable
     protected static function boot() {
       parent::boot();
       static::saving(function ($model) {
-        $photo = $model->photo->store('users/thumbnail', 'public');
-        $photo_path = Storage::disk('public')->path($photo);
-        \Image::make($photo_path)->orientate()->fit(480,480)->save()->destroy();
-        $model->photo = Storage::disk('public')->url($photo);
+        if($model->photo) {
+          $photo = $model->photo->store('users/thumbnail', 'public');
+          $photo_path = Storage::disk('public')->path($photo);
+          \Image::make($photo_path)->orientate()->fit(480,480)->save()->destroy();
+          $model->photo = Storage::disk('public')->url($photo);
+        }
       });
     }
 
