@@ -10,6 +10,11 @@
             @csrf
              <h3 class="title has-text-centered">Ciao! <span class="emoji">😃</span></h3>
              <p class="subtitle has-text-centered">You can log in below</p>
+             @if($errors)
+               <div class="notification">
+                 {{ $errors }}
+               </div>
+             @endif
             <div class="field">
               <label for="email" class="label">Email</label>
               <div class="control has-icons-left">
@@ -37,9 +42,9 @@
             </div>
           </form>
           <div class="has-text-centered" class="control">
-             <a href="{{ route('password.request') }}">
+             {{-- <a href="{{ route('password.request') }}">
                Forgot Your Password?
-             </a>
+             </a> --}}
           </div>
         </div>
       </div>

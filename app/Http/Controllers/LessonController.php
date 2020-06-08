@@ -84,8 +84,6 @@ class LessonController extends Controller
             'course_id' => $request->course_id
         ]);
       }
-
-
     }
 
     /**
@@ -94,12 +92,9 @@ class LessonController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function single(Course $course, Lesson $lesson) {
+    public function single(Course $course, Lesson $lesson, $comment_id = null) {
       $lesson->load('comments.comments');
-      // $lesson->load(['comments' => function ($query) {
-      //   $query->where('parent_id', null);
-      // }]);
-      return view('lesson.single', compact('lesson'));
+      return view('lesson.single', $comment_id ? compact('lesson', 'comment_id') : compact('lesson'));
     }
 
     /**
@@ -110,7 +105,6 @@ class LessonController extends Controller
 
     public function edit(Course $course, Lesson $lesson) {
         $lesson->video = Video::find($lesson->video_id)->playlist;
-
         return view('lesson.edit', compact('course', 'lesson'));
     }
 }

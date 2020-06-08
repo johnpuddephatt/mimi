@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+use App\User;
+
+use Mail;
+use App\Mail\NewCommentNotification;
+use App\Mail\NewCommentFeedbackNotification;
+use App\Mail\NewCommentReplyNotification;
+
 class Comment extends Model
 {
 
@@ -56,10 +63,29 @@ class Comment extends Model
       return $this->hasMany('App\Comment')->where('type', 'video');
     }
 
-
     public function video()
     {
       return $this->belongsTo('App\Video');
     }
 
+    // A top-level video comment from a student
+    public function sendCommentNotification() {
+      $email = new NewCommentNotification($this);
+      $recipient = User::where('is_admin', true)->get();
+      Mail::to($recipient)->send($email);
+    }
+
+    // Feedback video from an admin
+    public function sendCommentFeedbackNotification() {
+      $email = new NewCommentFeedbackNotification($this);
+      $recipient = $this->comment()->user();
+      Mail::to($recipient)->send($email);
+    }
+
+    // A text comment from another student
+    public function sendCommentReplyNotification() {
+      $email = new NewCommentReplyNotification($this);
+      $recipient = $this->comment()->user();
+      Mail::to($recipient)->send($email);
+    }
 }

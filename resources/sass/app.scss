@@ -174,3 +174,14 @@ main {
     margin-right: .5em;
   }
 }
+
+.admin-reply-button--tooltip, .admin-check-button--tooltip {
+  position: absolute;
+  z-index: 9;
+  top: 1.25em;
+  right: 1.25em;
+}
+
+.admin-reply-button, .admin-check-button {
+  border-radius: 9999px;
+}

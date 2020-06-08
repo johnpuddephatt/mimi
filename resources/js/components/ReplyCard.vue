@@ -1,7 +1,14 @@
 <template>
   <div>
+    <div v-if="admin">
+      <b-tooltip v-if="response_playlist" label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
+        <b-icon class="admin-check-button" type="is-light" icon="check"/>
+      </b-tooltip>
+      <create-reply v-else type="video" :comment_id="comment_id" :lesson_id="lesson_id" :user="admin"></create-reply>
+    </div>
+
     <div class="card reply-card">
-      <div class="card-image" @click="isReplyCardModalActive = true">
+      <div class="card-image" @click="is_open = true">
         <figure class="image is-square">
           <img :src="thumbnail" alt="">
         </figure>
@@ -19,7 +26,7 @@
       </div>
     </div>
 
-    <b-modal custom-class=" has-background-white-bis reply-modal" :active.sync="isReplyCardModalActive" has-modal-card trap-focus :destroy-on-hide="true" animation="zoom-in" aria-role="dialog" width="840px" aria-modal>
+    <b-modal custom-class=" has-background-white-bis reply-modal" :active.sync="is_open" has-modal-card trap-focus :destroy-on-hide="true" animation="zoom-in" aria-role="dialog" width="840px" aria-modal>
       <b-carousel @change="updateSlide($event)" :arrow="response_playlist ? true : false" :indicator="response_playlist ? true : false" :has-drag="true" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
        <b-carousel-item :key="0">
          <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" :poster="thumbnail" type="application/x-mpegURL"></video-player>
@@ -60,17 +67,18 @@
 
 <script>
 export default {
-  props: ['thumbnail', 'video', 'user', 'time', 'response_playlist', 'response_thumbnail'],
+  props: ['thumbnail', 'video', 'user', 'time', 'response_playlist', 'response_thumbnail', 'is_open', 'comment_id', 'lesson_id', 'admin'],
   data() {
     return {
-      currentSlide: 0,
-      isReplyCardModalActive: false
+      currentSlide: 0
     }
   },
 
   watch: {
-    isReplyCardModalActive: function() {
-      this.$root.$refs.instructionVideo.pause();
+    is_open: function() {
+      if(this.is_open) {
+        this.$root.$refs.instructionVideo.pause();
+      }
     }
   },
 

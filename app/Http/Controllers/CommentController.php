@@ -38,7 +38,7 @@ class CommentController extends Controller
 
       $this->dispatch(new ConvertVideoForStreaming($video));
 
-      return Comment::create([
+      $comment = Comment::create([
           'type' => $request->type,
 
           'user_id' => $request->user_id,
@@ -47,5 +47,25 @@ class CommentController extends Controller
 
           'video_id' => $video->id,
       ]);
+
+      $comment->sendCommentNotification();
+
+      // if comment_id, this is a reply to a video:
+      // if($request->comment_id) {
+      //   // it's feedback
+      //   if($request->type == 'video') {
+      //     $comment->sendCommentFeedbackNotification();
+      //   }
+      //   // it's a comment
+      //   if($request->type == 'text') {
+      //     $comment->sendCommentReplyNotification();
+      //   }
+      // }
+      // else {
+      //   // top level reply, send email to admins
+      //   $comment->sendCommentNotification();
+      // }
+
+      return $comment;
     }
 }

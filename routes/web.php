@@ -20,6 +20,7 @@ Route::post('log', function (\Illuminate\Http\Request $request) {
 });
 
 Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('enrolled');
+Route::get('course/{course}/lesson/{lesson}/comment/{comment_id}', 'LessonController@single')->name('lesson.comment')->middleware('enrolled');
 Route::get('course/{course}/lesson/{lesson}', 'LessonController@single')->name('lesson.single')->middleware('enrolled');
 Route::post('lesson/{lesson}/comment', 'CommentController@create')->name('comment.create')->middleware('enrolled');
 Route::get('lesson/{lesson}/video/{video}', 'VideoController@single')->name('video.single')->middleware('enrolled');

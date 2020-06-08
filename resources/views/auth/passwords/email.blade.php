@@ -5,7 +5,7 @@
   <section class="section is-medium">
    <div class="container">
      <div class="columns is-centered">
-       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
+       <div class="column is-6-tablet is-5-desktop is-4-widescreen is-paddingless">
          <form action="{{ route('password.email') }}" method="POST" class="box">
             @csrf
             <h3 class="title has-text-centered">Dimenticato? <span class="emoji">🤔</span></h3>

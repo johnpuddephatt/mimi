@@ -193,15 +193,4 @@ export default {
 </script>
 
 <style>
-
-.admin-reply-button--tooltip, .admin-check-button--tooltip {
-  position: absolute;
-  top: 1.25em;
-  right: 1.25em;
-}
-
-.admin-reply-button, .admin-check-button {
-  border-radius: 9999px;
-}
-
 </style>
