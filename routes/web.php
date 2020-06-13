@@ -48,14 +48,18 @@ Route::get('admin/emails', function() {
 
 Route::get('admin/emails/newreply', function () {
     $reply = App\Reply::whereNull('reply_id')->latest()->first();
+    abort_if(!$reply, 404);
     return new App\Mail\NewReply($reply);
 })->name('admin.emails.newreply')->middleware('admin');;
 Route::get('admin/emails/newreplyfeedback', function () {
     $reply = App\Reply::whereNotNull('reply_id')->latest()->first();
+    abort_if(!$reply, 404);
     return new App\Mail\NewFeedback($reply);
 })->name('admin.emails.newfeedback')->middleware('admin');;
 
 Route::get('admin/emails/newcomment', function () {
     $comment = App\Comment::latest()->first();
+    abort_if(!$comment, 404);
     return new App\Mail\NewComment($comment);
+
 })->name('admin.emails.newcomment')->middleware('admin');;
