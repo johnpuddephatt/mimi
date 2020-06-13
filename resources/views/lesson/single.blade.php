@@ -33,7 +33,7 @@
               type="video"
               reply_id="{{ $reply->id }}"
               lesson_id="{{ $lesson->id }}"
-              :user='@json($reply->user->only(['id','first_name','photo']))'
+              @if($reply->user) :user='@json($reply->user->only(['id','first_name','photo']))' @endif
               :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
               thumbnail="{{ $reply->video->thumbnail }}"
               video="{{ $reply->video->playlist }}"
