@@ -40,7 +40,7 @@ class ReplyController extends Controller
 
       $this->dispatch(new ConvertVideoForStreaming($video));
 
-      $reply = Reply::create([
+      return Reply::create([
           'user_id' => $request->user_id,
           'reply_id' => $request->reply_id,
           'lesson_id' => $request->reply_id ? null : $request->lesson_id,
