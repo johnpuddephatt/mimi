@@ -92,9 +92,9 @@ class LessonController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function single(Course $course, Lesson $lesson, $comment_id = null) {
-      $lesson->load('comments.comments');
-      return view('lesson.single', $comment_id ? compact('lesson', 'comment_id') : compact('lesson'));
+    public function single(Course $course, Lesson $lesson, $reply_id = null, $show_feedback = false) {
+      $lesson->load('replies.feedback');
+      return view('lesson.single', $reply_id ? compact('lesson', 'reply_id', 'show_feedback') : compact('lesson'));
     }
 
     /**

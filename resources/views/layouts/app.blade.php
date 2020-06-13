@@ -8,7 +8,7 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }} {{ app()->version() }}</title>
+        <title>{{ config('app.name', 'Joy of Languages') }} {{ app()->version() }}</title>
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -24,7 +24,7 @@
                 <div class="container">
                     <div class="navbar-brand">
                         <a href="{{ url('/') }}" class="navbar-item">
-                           <img src="/images/logo.png" alt="">
+                           <img src="{{ asset('/images/logo.png') }}" alt="">
                         </a>
 
                         <div class="navbar-burger burger" data-target="navMenu">
@@ -50,6 +50,9 @@
                                       @if(Auth::user()->is_admin)
                                         <a class="navbar-item" href="{{ route('admin') }}">
                                           Admin
+                                        </a>
+                                        <a class="navbar-item" href="{{ route('admin.emails') }}">
+                                          Emails
                                         </a>
                                       @endif
                                         <a class="navbar-item" href="{{ route('logout') }}"

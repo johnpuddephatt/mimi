@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NewCommentNotification extends Mailable
+class NewComment extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -32,6 +32,6 @@ class NewCommentNotification extends Mailable
      */
     public function build()
     {
-      return $this->subject('There’s been a new reply')->markdown('emails.newcomment');
+        return $this->subject("You’ve received a new comment from {$this->comment->user->first_name}")->markdown('emails.newcomment');
     }
 }

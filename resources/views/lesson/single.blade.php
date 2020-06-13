@@ -23,32 +23,25 @@
 
       <h2 class="subtitle is-size-4 has-text-centered">Responses</h2>
       <div class="columns is-multiline">
-
         <create-reply type="video" :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
-        @foreach($lesson->comments as $comment)
+        @foreach($lesson->replies as $reply)
           <div class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative">
             <reply-card
-              @if(isset($comment_id) && ($comment->id == $comment_id)) :is_open="true" @endif
+              @if(isset($reply_id) && ($reply->id == $reply_id)) :auto_open="true"
+                @if(isset($show_feedback) && $show_feedback) :show_feedback="true" @endif
+              @endif
               type="video"
-              comment_id="{{ $comment->id }}"
+              reply_id="{{ $reply->id }}"
               lesson_id="{{ $lesson->id }}"
-              :user='@json($comment->user->only(['id','first_name','photo']))'
-              thumbnail="{{ $comment->video->thumbnail }}"
-              video="{{ $comment->video->playlist }}"
-              @if($comment->videoComments->count()) response_playlist="{{$comment->videoComments->first()->video->playlist }}" response_thumbnail="{{$comment->videoComments->first()->video->thumbnail }}" @endif
-              time="{{ $comment->video->converted_for_streaming_at }}"
-              @if(Auth::user()->is_admin) :admin='@json(Auth::user()->only(['id','first_name','photo']))' @endif
+              :user='@json($reply->user->only(['id','first_name','photo']))'
+              :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
+              thumbnail="{{ $reply->video->thumbnail }}"
+              video="{{ $reply->video->playlist }}"
+              @if($reply->feedback) response_playlist="{{$reply->feedback->video->playlist }}" response_thumbnail="{{$reply->feedback->video->thumbnail }}" @endif
+              time="{{ $reply->video->converted_for_streaming_at }}"
+              @if(Auth::user()->is_admin) :admin_user='@json(Auth::user()->only(['id','first_name','photo']))' @endif
               >
             </reply-card>
-            {{-- @if(Auth::user()->is_admin)
-              @if($comment->videoComments->count())
-                <b-tooltip  label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
-                  <b-icon class="admin-check-button" type="is-light" icon="check"/>
-                </b-tooltip>
-              @else
-                <create-reply type="video" :comment_id="{{ $comment->id }}" :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
-              @endif
-            @endif --}}
           </div>
         @endforeach
       </div>

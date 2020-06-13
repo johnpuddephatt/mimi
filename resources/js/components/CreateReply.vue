@@ -1,8 +1,8 @@
 <template>
 
-  <div v-if="!isSaved" :class="comment_id ? '' : 'column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd'">
+  <div v-if="!isSaved" :class="reply_id ? '' : 'column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd'">
 
-    <b-tooltip v-if="comment_id" label="Record admin reply" type="is-dark" animated position="is-left" :delay="1000" class="admin-reply-button--tooltip">
+    <b-tooltip v-if="reply_id" label="Record admin reply" type="is-dark" animated position="is-left" :delay="1000" class="admin-reply-button--tooltip">
       <b-button class="admin-reply-button" @click="isReplyModalActive = true" size="is-light" icon-right="reply"/>
     </b-tooltip>
 
@@ -46,7 +46,7 @@
     </b-modal>
   </div>
 
-  <b-tooltip v-else-if="comment_id" label="You’ve replied to this" type="is-dark" animated position="is-bottom" :delay="1000" class="admin-check-button--tooltip">
+  <b-tooltip v-else-if="reply_id" label="You’ve replied to this" type="is-dark" animated position="is-bottom" :delay="1000" class="admin-check-button--tooltip">
     <b-icon class="admin-check-button" type="is-light" icon="check"/>
   </b-tooltip>
 
@@ -85,7 +85,7 @@ import NoSleep from 'nosleep.js';
 var platform = require('platform');
 
 export default {
-  props: ['user', 'lesson_id', 'comment_id', 'type'],
+  props: ['user', 'lesson_id', 'reply_id'],
   data() {
     return {
       isReplyModalActive: false,
@@ -97,10 +97,9 @@ export default {
       noSleep: null,
       reply: {
         id: null,
-        type: this.type,
         video: null,
         lesson_id: this.lesson_id,
-        comment_id: this.comment_id,
+        reply_id: this.reply_id,
         user_id: this.user.id,
         video_id: null,
       }
@@ -129,7 +128,7 @@ export default {
 
       axios({
           method: 'post',
-          url: `/lesson/${this.reply.lesson_id}/comment`,
+          url: `/lesson/${this.reply.lesson_id}/reply`,
           data: data,
           headers: {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
@@ -141,6 +140,7 @@ export default {
 
           this.reply = response.data;
           noSleep.disable();
+          this.isSaved = true;
           var videoReadyCheck = setInterval(
             () => {
               axios({
@@ -157,11 +157,6 @@ export default {
                 })
             }, 5000
           );
-          setTimeout(
-            () => {
-              this.isSaved = true;
-            }, 1000
-          )
         })
         .catch(error => {
           noSleep.disable();

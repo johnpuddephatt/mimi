@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Comment;
-use App\Lesson;
-use App\Video;
 use App\Http\Requests\StoreComment;
 use Illuminate\Support\Facades\Storage;
-use App\Jobs\ConvertVideoForStreaming;
+
+use App\Comment;
+use App\Reply;
+use App\Lesson;
 
 class CommentController extends Controller
 {
@@ -22,50 +22,11 @@ class CommentController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Create a new course
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function create(StoreComment $request, Lesson $lesson, Reply $reply) {
+      return Comment::create($request->all());
+    }
 
-
-    public function create(Lesson $lesson, StoreComment $request) {
-
-      $video = Video::create([
-        'disk'              => 'public',
-        'video_path'        => $request->video->store('video/original', 'public'),
-      ]);
-
-      $this->dispatch(new ConvertVideoForStreaming($video));
-
-      $comment = Comment::create([
-          'type' => $request->type,
-
-          'user_id' => $request->user_id,
-          'comment_id' => $request->comment_id,
-          'lesson_id' => $request->comment_id ? null : $request->lesson_id,
-
-          'video_id' => $video->id,
-      ]);
-
-      $comment->sendCommentNotification();
-
-      // if comment_id, this is a reply to a video:
-      // if($request->comment_id) {
-      //   // it's feedback
-      //   if($request->type == 'video') {
-      //     $comment->sendCommentFeedbackNotification();
-      //   }
-      //   // it's a comment
-      //   if($request->type == 'text') {
-      //     $comment->sendCommentReplyNotification();
-      //   }
-      // }
-      // else {
-      //   // top level reply, send email to admins
-      //   $comment->sendCommentNotification();
-      // }
-
-      return $comment;
+    public function index(Lesson $lesson, Reply $reply) {
+      return $reply->comments;
     }
 }

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div v-if="admin">
+    <div v-if="admin_user">
       <b-tooltip v-if="response_playlist" label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
         <b-icon class="admin-check-button" type="is-light" icon="check"/>
       </b-tooltip>
-      <create-reply v-else type="video" :comment_id="comment_id" :lesson_id="lesson_id" :user="admin"></create-reply>
+      <create-reply v-else type="video" :reply_id="reply_id" :lesson_id="lesson_id" :user="admin_user"></create-reply>
     </div>
 
     <div class="card reply-card">
@@ -46,19 +46,11 @@
             <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
           </p>
         </header>
-        <section class="modal-card-body">
-          <b-button expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show feedback' : 'Show original'"></b-button>
-        </section>
-        <!-- <footer class="modal-card-foot is-radiusless">
-          <div class="field is-grouped">
-            <div class="control is-expanded">
-              <input type="text" value="" name="comment" disabled class="input" placeholder="Enter your reply">
-            </div>
-            <div class="control">
-              <button class="button" disabled>Add</button>
-            </div>
-          </div>
-        </footer> -->
+
+        <b-button class="is-radiusless" expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show feedback' : 'Show original'"></b-button>
+
+        <create-comment :user="active_user" :reply_id="reply_id" :lesson_id="lesson_id"></create-comment>
+
       </div>
     </b-modal>
 
@@ -67,9 +59,10 @@
 
 <script>
 export default {
-  props: ['thumbnail', 'video', 'user', 'time', 'response_playlist', 'response_thumbnail', 'is_open', 'comment_id', 'lesson_id', 'admin'],
+  props: ['thumbnail', 'video', 'user', 'active_user', 'time', 'response_playlist', 'response_thumbnail', 'auto_open', 'reply_id', 'lesson_id', 'admin_user', 'show_feedback'],
   data() {
     return {
+      is_open: false,
       currentSlide: 0
     }
   },
@@ -79,6 +72,17 @@ export default {
       if(this.is_open) {
         this.$root.$refs.instructionVideo.pause();
       }
+    }
+  },
+
+  mounted() {
+
+    if(this.auto_open) {
+      this.is_open = true;
+    }
+
+    if(this.show_feedback) {
+      this.updateSlide(1);
     }
   },
 

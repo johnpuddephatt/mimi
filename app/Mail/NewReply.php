@@ -2,27 +2,27 @@
 
 namespace App\Mail;
 
-use App\Comment;
+use App\Reply;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NewCommentFeedbackNotification extends Mailable
+class NewReply extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $comment;
+    public $reply;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Reply $reply)
     {
-      $this->comment = $comment;
+      $this->reply = $reply;
     }
 
     /**
@@ -32,6 +32,6 @@ class NewCommentFeedbackNotification extends Mailable
      */
     public function build()
     {
-      return $this->subject('You’ve received feedback!')->markdown('emails.newcommentfeedback');
+      return $this->subject("{$this->reply->user->first_name} has posted a video in {$this->reply->lesson->title}")->markdown('emails.newreply');
     }
 }

@@ -2,90 +2,47 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-
-use App\User;
 
 use Mail;
-use App\Mail\NewCommentNotification;
-use App\Mail\NewCommentFeedbackNotification;
-use App\Mail\NewCommentReplyNotification;
+use App\Mail\NewComment;
 
 class Comment extends Model
 {
-
     protected $fillable = [
-        'type',
-        'video_id',
-        'lesson_id',
-        'comment_id',
-        'user_id'
+      'reply_id',
+      'user_id',
+      'value'
     ];
 
     protected $casts = [
       'user_id' => 'integer',
-      'lesson_id' => 'integer',
-      'comment_id' => 'integer',
-      'video_id' => 'integer'
+      'reply_id' => 'integer',
     ];
 
     protected $with = ['user'];
 
     protected static function boot() {
       parent::boot();
-      static::addGlobalScope('ready', function (Builder $builder) {
-        $builder->has('video');
-      });
-      static::addGlobalScope('order', function (Builder $builder) {
-        $builder->orderBy('id', 'desc');
+
+      static::created(function($comment){
+        $comment->sendCommentNotification();
       });
     }
 
-    public function user()
-    {
+    public function user() {
       return $this->belongsTo('App\User');
     }
 
-    public function lesson()
-    {
-      return $this->belongsTo('App\Lesson');
-    }
-
-    public function comments()
-    {
-      return $this->hasMany('App\Comment');
-    }
-
-    public function videoComments()
-    {
-      return $this->hasMany('App\Comment')->where('type', 'video');
-    }
-
-    public function video()
-    {
-      return $this->belongsTo('App\Video');
-    }
-
-    // A top-level video comment from a student
-    public function sendCommentNotification() {
-      $email = new NewCommentNotification($this);
-      $recipient = User::where('is_admin', true)->get();
-      Mail::to($recipient)->send($email);
-    }
-
-    // Feedback video from an admin
-    public function sendCommentFeedbackNotification() {
-      $email = new NewCommentFeedbackNotification($this);
-      $recipient = $this->comment()->user();
-      Mail::to($recipient)->send($email);
+    public function reply() {
+      return $this->belongsTo('App\Reply');
     }
 
     // A text comment from another student
-    public function sendCommentReplyNotification() {
-      $email = new NewCommentReplyNotification($this);
-      $recipient = $this->comment()->user();
+    public function sendCommentNotification() {
+      $email = new NewComment($this);
+      $recipient = $this->reply->user;
       Mail::to($recipient)->send($email);
     }
+
 }

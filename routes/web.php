@@ -20,10 +20,13 @@ Route::post('log', function (\Illuminate\Http\Request $request) {
 });
 
 Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('enrolled');
-Route::get('course/{course}/lesson/{lesson}/comment/{comment_id}', 'LessonController@single')->name('lesson.comment')->middleware('enrolled');
+Route::get('course/{course}/lesson/{lesson}/reply/{reply_id}/{show_feedback?}', 'LessonController@single')->name('lesson.reply')->middleware('enrolled');
 Route::get('course/{course}/lesson/{lesson}', 'LessonController@single')->name('lesson.single')->middleware('enrolled');
-Route::post('lesson/{lesson}/comment', 'CommentController@create')->name('comment.create')->middleware('enrolled');
+Route::post('lesson/{lesson}/reply', 'ReplyController@create')->name('reply.create')->middleware('enrolled');
 Route::get('lesson/{lesson}/video/{video}', 'VideoController@single')->name('video.single')->middleware('enrolled');
+
+Route::post('lesson/{lesson}/reply/{reply}/comment', 'CommentController@create')->name('comment.create')->middleware('enrolled');
+Route::get('lesson/{lesson}/reply/{reply}/comments', 'CommentController@index')->name('comment.index')->middleware('enrolled');
 
 Route::get('admin', 'AdminController@overview')->name('admin')->middleware('admin');
 Route::get('admin/course/new', 'CourseController@new')->name('course.new')->middleware('admin');
@@ -38,7 +41,21 @@ Route::get('admin/course/{course}/lesson/{lesson}', 'LessonController@edit')->na
 Route::put('admin/course/{course}/lesson/{lesson}', 'LessonController@update')->name('lesson.update')->middleware('admin');
 Route::delete('admin/course/{course}/lesson/{lesson}', 'LessonController@delete')->name('lesson.delete')->middleware('admin');
 
-// Route::get('count', 'VideoController@count');
-// Route::post('upload', 'VideoController@store');
-// Route::get('upload', 'VideoController@done');
-// Route::get('/{channel?}', 'VideoController@index');
+
+Route::get('admin/emails', function() {
+  return view('admin.emails');
+})->name('admin.emails')->middleware('admin');
+
+Route::get('admin/emails/newreply', function () {
+    $reply = App\Reply::whereNull('reply_id')->latest()->first();
+    return new App\Mail\NewReply($reply);
+})->name('admin.emails.newreply')->middleware('admin');;
+Route::get('admin/emails/newreplyfeedback', function () {
+    $reply = App\Reply::whereNotNull('reply_id')->latest()->first();
+    return new App\Mail\NewFeedback($reply);
+})->name('admin.emails.newfeedback')->middleware('admin');;
+
+Route::get('admin/emails/newcomment', function () {
+    $comment = App\Comment::latest()->first();
+    return new App\Mail\NewComment($comment);
+})->name('admin.emails.newcomment')->middleware('admin');;

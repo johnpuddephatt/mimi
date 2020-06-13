@@ -1,10 +1,15 @@
 @component('mail::message')
 
-## {{ $comment->user->first_name }} has replied to {{ $comment->lesson->title }}
+@component('mail::avatar')
+{{ url($comment->user->photo) }}
+@endcomponent
 
-@component('mail::button', ['url' => route('lesson.comment', ['course' => $comment->lesson->course->id, 'lesson' => $comment->lesson->id, 'comment_id' => $comment->id ]) ])
+# “{{ \Illuminate\Support\Str::limit($comment->value, 150, $end='...') }}...”
+## {{$comment->user->first_name}} just replied to you in **“{{ $comment->reply->lesson->title }}”**
 
-Visit this reply
+@component('mail::button', ['url' => route('lesson.reply', ['course' => $comment->reply->lesson->course->id, 'lesson' => $comment->reply->lesson->id, 'reply_id' => $comment->reply->id ]) ])
+
+Read and reply
 
 @endcomponent
 

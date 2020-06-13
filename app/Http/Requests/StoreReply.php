@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreComment extends FormRequest
+class StoreReply extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,10 @@ class StoreComment extends FormRequest
     public function rules()
     {
       return [
+          'lesson_id' => 'required|integer',
           'user_id' => 'required|integer',
-          'reply_id' => 'required|integer',
-          'value' => 'required|max:255'
+          'video' => 'sometimes',
+          'reply_id' => 'sometimes|integer'
       ];
     }
 }

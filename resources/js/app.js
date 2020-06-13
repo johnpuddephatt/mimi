@@ -19,6 +19,7 @@ Vue.component('registration-form', require('./components/Registration.vue').defa
 Vue.component('lesson-form', require('./components/Lesson.vue').default);
 Vue.component('video-player', require('./components/VideoPlayer.vue').default);
 Vue.component('create-reply', require('./components/CreateReply.vue').default);
+Vue.component('create-comment', require('./components/CreateComment.vue').default);
 Vue.component('reply-card', require('./components/ReplyCard.vue').default);
 Vue.component('camera-field', require('./components/CameraField.vue').default);
 

@@ -42,8 +42,8 @@ class Lesson extends Model
       return $this->belongsTo('App\Course');
     }
 
-    public function comments()
+    public function replies()
     {
-      return $this->hasMany('App\Comment');
+      return $this->hasMany('App\Reply');
     }
 }

@@ -159,6 +159,11 @@ main {
 .comment-author {
   display: inline-flex;
   flex-direction: row;
+  border-bottom: none;
+
+  @media screen and (orientation: portrait) {
+    padding: 10px 20px;
+  }
 
   p {
     margin-top: auto;
