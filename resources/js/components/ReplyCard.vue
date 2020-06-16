@@ -27,7 +27,7 @@
     </div>
 
     <b-modal custom-class=" has-background-white-bis reply-modal" :active.sync="is_open" has-modal-card trap-focus :destroy-on-hide="true" animation="zoom-in" aria-role="dialog" width="840px" aria-modal>
-      <b-carousel @change="updateSlide($event)" :arrow="response_playlist ? true : false" :indicator="response_playlist ? true : false" :has-drag="true" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
+      <b-carousel @change="updateSlide($event)" :arrow="response_playlist ? true : false" :indicator="response_playlist ? true : false" :has-drag="false" v-model="currentSlide" class="column is-two-thirds is-paddingless" :autoplay="false" icon-size="is-medium">
        <b-carousel-item :key="0">
          <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" :poster="thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
@@ -49,7 +49,7 @@
 
         <b-button class="is-radiusless" expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show feedback' : 'Show original'"></b-button>
 
-        <create-comment :user="active_user" :reply_id="reply_id" :lesson_id="lesson_id"></create-comment>
+        <create-comment :user="active_user" :parent_user_name="user.first_name" :reply_id="reply_id" :lesson_id="lesson_id"></create-comment>
 
       </div>
     </b-modal>
