@@ -11,17 +11,19 @@
              <h3 class="title has-text-centered">Ciao! <span class="emoji">😃</span></h3>
              <p class="subtitle has-text-centered">You can log in below</p>
 
+             @error('email')
+               <p class="notification is-danger" role="alert">
+                 {{ $message }}
+               </p>
+             @enderror
+
             <div class="field">
               <label for="email" class="label">Email</label>
               <div class="control has-icons-left">
                 <input name="email" type="email" placeholder="e.g. bobsmith@gmail.com" class="input @error('email') is-danger @enderror" required>
                 <span class="icon is-left"><i class="mdi mdi-email mdi-24px"></i></span>
               </div>
-              @error('email')
-                <p class="help is-danger" role="alert">
-                  {{ $message }}
-                </p>
-              @enderror
+
             </div>
             <div class="field">
               <label for="password" class="label">Password</label>
@@ -29,11 +31,7 @@
                 <input name="password" type="password" placeholder="*******" class="input @error('password') is-danger @enderror" required>
                 <span class="icon is-left"><i class="mdi mdi-key mdi-24px"></i></span>
               </div>
-              @error('password')
-                <p class="help is-danger" role="alert">
-                  {{ $message }}
-                </p>
-              @enderror
+
             </div>
             <div class="field">
               <label for="" class="checkbox">
@@ -41,6 +39,8 @@
                Remember me
               </label>
             </div>
+
+
             <div class="field">
               <input type="submit" class="button is-primary is-fullwidth" value="Login">
             </div>
