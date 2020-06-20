@@ -53,11 +53,18 @@
   <div v-else class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd">
 
     <transition v-if="newVideo.playlist" name="fade">
-      <reply-card :user="user" :thumbnail="newVideo.thumbnail" :video="newVideo.playlist" :time="newVideo.converted_for_streaming_at"></reply-card>
+      <reply-card
+        :user="user"
+        :thumbnail="newVideo.thumbnail"
+        :video="newVideo.playlist"
+        :time="newVideo.converted_for_streaming_at"
+        :active_user="user"
+        :reply_id="reply.id"
+        :lesson_id="reply.lesson_id">
+      </reply-card>
     </transition>
 
     <div v-else class="card reply-card reply-card__loading">
-
       <div class="card-image">
         <figure class="image is-square">
           <b-loading></b-loading>
@@ -167,7 +174,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `REPLY FIELD ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+          axios.post('/log', {'error': `\nREPLY FIELD ERROR\n${ platform.description }\nError: ${ JSON.stringify(error) }\nReply data: ${JSON.stringify(this.reply)}\n\n`});
           this.errors = error.response.data.errors || '';
         });
     },

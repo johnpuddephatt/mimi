@@ -68,7 +68,7 @@ export default {
     axios({
         method: 'get',
         url: `/lesson/${this.lesson_id}/reply/${this.reply_id}/comments`,
-        timeout: 4000
+        timeout: 10000
       })
       .then(response => {
         this.comments = response.data;
@@ -76,6 +76,7 @@ export default {
       })
       .catch(error => {
         this.errorLoading = true;
+        axios.post('/log', {'error': `COMMENT GET ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
       })
   },
 
@@ -129,7 +130,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `COMMENT FIELD ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+          axios.post('/log', {'error': `COMMENT POST ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
           this.errors = error.response.data.errors || '';
         });
     },

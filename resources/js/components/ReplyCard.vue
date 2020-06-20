@@ -31,11 +31,10 @@
        <b-carousel-item :key="0">
          <video-player :play="currentSlide == 0 ? true : false" :autoplay="true" :source="video" :poster="thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
-
        <b-carousel-item v-if="response_playlist" :key="1">
          <video-player :play="currentSlide == 1 ? true : false" :autoplay="false" :source="response_playlist" :poster="response_thumbnail" type="application/x-mpegURL"></video-player>
        </b-carousel-item>
-   </b-carousel>
+      </b-carousel>
       <div class="modal-card">
         <header class="modal-card-head is-radiusless comment-author">
           <figure class="image is-48x48">
@@ -46,14 +45,10 @@
             <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
           </p>
         </header>
-
         <b-button class="is-radiusless" expanded v-if="response_playlist" @click.prevent="currentSlide = (currentSlide == 0 ? 1 : 0)" v-html="currentSlide == 0 ? 'Show feedback' : 'Show original'"></b-button>
-
         <create-comment :user="active_user" :parent_user_name="user.first_name" :reply_id="reply_id" :lesson_id="lesson_id"></create-comment>
-
       </div>
     </b-modal>
-
   </div>
 </template>
 
