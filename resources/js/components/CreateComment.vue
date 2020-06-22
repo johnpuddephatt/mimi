@@ -36,10 +36,10 @@
   <footer class="modal-card-foot is-radiusless">
     <div class="field is-grouped">
       <div class="control is-expanded">
-        <input ref="commentInput" :disabled="isSaving" v-model="newCommentValue" type="text" class="input" :placeholder="`Reply to ${ parent_user_name }`">
+        <input ref="commentInput" maxlength="254" :disabled="isSaving" v-model="newCommentValue" type="text" class="input" :placeholder="`Reply to ${ parent_user_name }`">
       </div>
       <div class="control">
-        <b-button type="is-primary" :loading="isSaving" @click.prevent="onSubmit">Send</b-button>
+        <b-button type="is-primary" :loading="isSaving" @click.prevent="onSubmit" :disabled="!newCommentValue">Send</b-button>
       </div>
     </div>
   </footer>
@@ -99,7 +99,9 @@ export default {
 
       data.append('user_id', this.user.id);
       data.append('reply_id', this.reply_id);
-      data.append('value', this.newCommentValue);
+      if (this.newCommentValue) {
+        data.append('value', this.newCommentValue);
+      }
 
       axios({
           method: 'post',
@@ -130,7 +132,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `COMMENT POST ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+          axios.post('/log', {'error': `COMMENT POST ERROR\n${ platform.description }\n${ JSON.stringify(error) }\nReply data: ${JSON.stringify(data)}\n\n`});
           this.errors = error.response.data.errors || '';
         });
     },
