@@ -7,6 +7,7 @@
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta http-equiv="refresh" content="86400">
 
         <title>{{ config('app.name', 'Joy of Languages') }} {{ app()->version() }}</title>
 

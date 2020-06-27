@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
@@ -50,6 +51,10 @@ class Handler extends ExceptionHandler
      */
    public function render($request, Throwable $exception)
     {
+        if ($exception instanceof TokenMismatchException){
+          // Redirect to a form. Here is an example of how I handle mine
+          return redirect()->back()->withErrors('Your session timed out. Please try again.');
+        }
         return parent::render($request, $exception);
     }
 }

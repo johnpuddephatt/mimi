@@ -46,9 +46,9 @@
             </div>
           </form>
           <div class="has-text-centered" class="control">
-             {{-- <a href="{{ route('password.request') }}">
+             <a href="{{ route('password.request') }}">
                Forgot Your Password?
-             </a> --}}
+             </a>
           </div>
         </div>
       </div>
