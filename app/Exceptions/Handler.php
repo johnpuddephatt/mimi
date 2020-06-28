@@ -53,7 +53,10 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof TokenMismatchException){
           // Redirect to a form. Here is an example of how I handle mine
-          return redirect()->back()->withErrors('Your session timed out. Please try again.');
+          return redirect()
+            ->back()
+            ->withInput($request->except('_token'))
+            ->withErrors('Your session timed out. Please try again.');
         }
         return parent::render($request, $exception);
     }

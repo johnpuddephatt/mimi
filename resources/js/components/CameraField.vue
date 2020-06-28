@@ -184,7 +184,7 @@ export default {
       } else if (error.name == "TypeError") {
         this.errorMessage = "Sorry, something went wrong. Please try again.";
       } else if(error.name == "NoGetUserMedia") {
-        if(platform.product != 'iPad' || platform.product != 'iPhone') {
+        if(platform.product != 'iPad' && platform.product != 'iPhone') {
           this.warningMessage = "Your browser doesn’t support accessing your camera directly.";
         }
       } else {

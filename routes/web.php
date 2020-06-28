@@ -19,14 +19,14 @@ Route::post('log', function (\Illuminate\Http\Request $request) {
   Log::channel('frontend')->info($request->error);
 });
 
-Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('enrolled');
-Route::get('course/{course}/lesson/{lesson}/reply/{reply_id}/{show_feedback?}', 'LessonController@single')->name('lesson.reply')->middleware('enrolled');
-Route::get('course/{course}/lesson/{lesson}', 'LessonController@single')->name('lesson.single')->middleware('enrolled');
-Route::post('lesson/{lesson}/reply', 'ReplyController@create')->name('reply.create')->middleware('enrolled');
-Route::get('lesson/{lesson}/video/{video}', 'VideoController@single')->name('video.single')->middleware('enrolled');
+Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('auth','enrolled');
+Route::get('course/{course}/lesson/{lesson}/reply/{reply_id}/{show_feedback?}', 'LessonController@single')->name('lesson.reply')->middleware('auth','enrolled');
+Route::get('course/{course}/lesson/{lesson}', 'LessonController@single')->name('lesson.single')->middleware('auth','enrolled');
+Route::post('lesson/{lesson}/reply', 'ReplyController@create')->name('reply.create')->middleware('auth','enrolled');
+Route::get('lesson/{lesson}/video/{video}', 'VideoController@single')->name('video.single')->middleware('auth','enrolled');
 
-Route::post('lesson/{lesson}/reply/{reply}/comment', 'CommentController@create')->name('comment.create')->middleware('enrolled');
-Route::get('lesson/{lesson}/reply/{reply}/comments', 'CommentController@index')->name('comment.index')->middleware('enrolled');
+Route::post('lesson/{lesson}/reply/{reply}/comment', 'CommentController@create')->name('comment.create')->middleware('auth','enrolled');
+Route::get('lesson/{lesson}/reply/{reply}/comments', 'CommentController@index')->name('comment.index')->middleware('auth','enrolled');
 
 Route::get('admin', 'AdminController@overview')->name('admin')->middleware('admin');
 Route::get('admin/course/new', 'CourseController@new')->name('course.new')->middleware('admin');
