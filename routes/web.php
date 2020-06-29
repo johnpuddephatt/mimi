@@ -16,7 +16,7 @@ Auth::routes();
 Route::get('/', 'CourseController@index')->middleware('auth');
 
 Route::post('log', function (\Illuminate\Http\Request $request) {
-  Log::channel('frontend')->info($request->error, ['user_id' => Auth::user()->id ]);
+  Log::channel('frontend')->info($request->error, ['user_id' => Auth::user() ? Auth::user()->id : null ]);
 });
 
 Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('auth','enrolled');
