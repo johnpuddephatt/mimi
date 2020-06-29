@@ -174,7 +174,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `\nREPLY FIELD ERROR\n${ platform.description }\nError: ${ JSON.stringify(error) }\nReply data: ${JSON.stringify(this.reply)}\n\n`});
+          axios.post('/log', {'error': `\nREPLY FIELD ERROR\n${ platform.description }\nError: ${ error.name }: ${ error.message }\nReply data: ${JSON.stringify(this.reply)}\n\n`});
           this.errors = error.response.data.errors || '';
         });
     },

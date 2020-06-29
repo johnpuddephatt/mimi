@@ -132,7 +132,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `COMMENT POST ERROR\n${ platform.description }\n${ JSON.stringify(error) }\nReply data: ${JSON.stringify(data)}\n\n`});
+          axios.post('/log', {'error': `COMMENT POST ERROR\n${ platform.description }\n${ error.name }: ${ error.message }\nReply data: ${JSON.stringify(data)}\n\n`});
           this.errors = error.response.data.errors || '';
         });
     },

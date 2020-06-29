@@ -17,7 +17,7 @@ export default {
   props: {
     width: {
       type: [Number, String],
-      default: 640
+      default: 480
     },
     height: {
       type: [Number, String],
@@ -226,13 +226,20 @@ export default {
      * test access
      */
     testMediaAccess() {
-      let constraints = { video: { deviceId: this.deviceId, facingMode: "user" }, audio: true };
 
-      if (this.height && this.width) {
-        constraints.video = {};
-        constraints.video.height = this.height;
-        constraints.video.width = this.width;
-      }
+      let constraints = {
+        video: {
+          deviceId: this.deviceId,
+          facingMode: "user",
+          width: this.width,
+          height: this.height,
+          frameRate: {
+            ideal: 25,
+            min: 10
+          }
+        },
+        audio: true
+      };
 
       navigator.mediaDevices
         .getUserMedia(constraints)
@@ -251,14 +258,20 @@ export default {
      * load the camera passed as index!
      */
     loadCamera(device) {
-      let constraints = { video: { deviceId: device, facingMode: "user" }, audio: true };
-      // let constraints = { video: true, audio: true };
 
-      // if (this.height && this.width) {
-      //   constraints.video = {};
-      //   constraints.video.height = this.height;
-      //   constraints.video.width = this.width;
-      // }
+      let constraints = {
+        video: {
+          deviceId: device,
+          facingMode: "user",
+          width: this.width,
+          height: this.height,
+          frameRate: {
+            ideal: 25,
+            min: 10
+          }
+        },
+        audio: true
+      };
 
       navigator.mediaDevices
         .getUserMedia(constraints)

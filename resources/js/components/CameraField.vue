@@ -168,7 +168,7 @@ export default {
 
     onError(error) {
       this.cameraType = 'fallback';
-      axios.post('/log', {'error': `CAMERAFIELD ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+      axios.post('/log', {'error': `CAMERAFIELD ERROR\n${ platform.description }\n${ error.name }: ${ error.message }\n\n`});
 
       if (error.name == "NotFoundError") {
         this.errorMessage = "<strong>Camera or microphone not found</strong><br>A suitable camera and/or microphone could not be found on your device. Please ensure your devices are connected and turned on, then refresh this page to try again.";
