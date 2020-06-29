@@ -46,7 +46,7 @@
       <b-loading :is-full-page="false" :active="!isLoaded"></b-loading>
       <div class="has-square-media">
         <span v-if="isRecording"  class="recording-indicator tag is-black">Rec</span>
-        <vue-web-cam ref="webcam" :device-id="deviceId" @started="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onData" width="640" height="480" />
+        <vue-web-cam ref="webcam" :device-id="deviceId" @video-live="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onData" width="640" height="480" />
       </div>
       <div class="camera-controls has-background-light is-bordered has-text-centered">
         <b-tooltip v-if="devices.length > 1" v-show="!isRecording" label="Change camera" type="is-dark" animated position="is-bottom" :delay="1000" class="change-camera-tooltip">
@@ -163,10 +163,7 @@ export default {
     onStarted(stream) {
       this.stream = stream;
       this.isStarted = true;
-
-      setTimeout(() => {
-        this.isLoaded = true;
-      }, 1000)
+      this.isLoaded = true;
     },
 
     onError(error) {
@@ -188,7 +185,7 @@ export default {
           this.warningMessage = "Your browser doesn’t support accessing your camera directly.";
         }
       } else {
-        this.errorMessage = "Unknown error: " + error
+        this.errorMessage = "An unknown error has occured. " + error
       }
 
       if(this.errorMessage) {

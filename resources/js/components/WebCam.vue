@@ -226,7 +226,7 @@ export default {
      * test access
      */
     testMediaAccess() {
-      let constraints = { video: true, audio: true };
+      let constraints = { video: { deviceId: this.deviceId, facingMode: "user" }, audio: true };
 
       if (this.height && this.width) {
         constraints.video = {};
