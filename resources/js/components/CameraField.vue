@@ -185,7 +185,7 @@ export default {
           this.warningMessage = "Your browser doesn’t support accessing your camera directly.";
         }
       } else {
-        this.errorMessage = "An unknown error has occured. " + error
+        this.errorMessage = "An unknown error has occured. " + (error.name || error)
       }
 
       if(this.errorMessage) {

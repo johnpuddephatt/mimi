@@ -68,7 +68,7 @@ export default {
     axios({
         method: 'get',
         url: `/lesson/${this.lesson_id}/reply/${this.reply_id}/comments`,
-        timeout: 10000
+        timeout: 15000
       })
       .then(response => {
         this.comments = response.data;

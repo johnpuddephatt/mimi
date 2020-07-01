@@ -46,9 +46,10 @@ class Reply extends Model
         if($reply->reply_id) {
           $reply->sendFeedbackNotification();
         }
-        else {
-          $reply->sendReplyNotification();
-        }
+        // Notify admins
+        // else {
+        //   $reply->sendReplyNotification();
+        // }
       });
     }
 
