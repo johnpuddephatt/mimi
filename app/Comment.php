@@ -43,9 +43,9 @@ class Comment extends Model
       $email = new NewComment($this);
       $recipient = $this->reply->user;
 
-      if($this->user->id != $this->recipient->id) {
+      // if($this->user->id != $this->recipient->id) {
         Mail::to($recipient)->send($email);
-      }
+      // }
     }
 
 }
