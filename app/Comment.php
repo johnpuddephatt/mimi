@@ -42,7 +42,10 @@ class Comment extends Model
     public function sendCommentNotification() {
       $email = new NewComment($this);
       $recipient = $this->reply->user;
-      Mail::to($recipient)->send($email);
+
+      if($this->user->id != $this->recipient->id) {
+        Mail::to($recipient)->send($email);
+      }
     }
 
 }

@@ -11,5 +11,5 @@ if (token) {
 }
 
 window.onerror = function (msg, url, lineNo, columnNo, error) {
-  axios.post('/log', {'error': `UNCAUGHT ERROR:\nPLATFORM: ${ platform.description }. URL: ${lineNo} @ ${ url }\n${ msg }`});
+  axios.post('/log', {'error': `UNCAUGHT ERROR:\nPLATFORM: ${ platform.description }   URL: ${lineNo} of ${ url } @ ${ window.location.href }\nerror: ${ error }    msg: ${ msg }`});
 }
