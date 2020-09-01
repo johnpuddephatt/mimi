@@ -53,7 +53,9 @@ class Reply extends Model
       });
     }
 
-
+    public function scopeFeedbackless($query) {
+      return $query->doesntHave('feedback');
+    }
 
     public function user()
     {

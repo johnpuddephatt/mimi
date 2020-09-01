@@ -23,8 +23,6 @@ class Lesson extends Model
       'number' => 'integer'
     ];
 
-    // protected $with = ['video'];
-
     protected static function boot() {
       parent::boot();
       static::addGlobalScope('order', function (Builder $builder) {
