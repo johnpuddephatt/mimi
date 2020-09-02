@@ -30,6 +30,10 @@ class Lesson extends Model
       });
     }
 
+    public function feedbackless_reply_count() {
+      return $this->replies()->feedbackless()->count();
+    }
+
     public function video()
     {
       return $this->belongsTo('App\Video');

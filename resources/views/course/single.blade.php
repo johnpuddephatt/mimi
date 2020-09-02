@@ -21,7 +21,7 @@
                   {{str_pad($lesson->number, 2, '0', STR_PAD_LEFT)}}.
                   {{ $lesson->title }}
 
-                  @if(Auth::user()->is_admin && $lesson->replies()->feedbackless()->count())<span class="tag is-primary ml-1">{{ $lesson->replies()->feedbackless()->count() }} new</span>@endif
+                  @if(Auth::user()->is_admin && $lesson->feedbackless_reply_count())<span class="tag is-primary ml-4" title="{{ $lesson->feedbackless_reply_count() }} replies awaiting feedback">{{ $lesson->feedbackless_reply_count() }} new</span>@endif
               </b-button>
             @empty
               <section class="section is-medium has-background-light has-text-centered">

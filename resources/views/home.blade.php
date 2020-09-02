@@ -23,6 +23,9 @@
                 expanded
                 outlined>
                   {{ $course->title }}
+
+                  @if(Auth::user()->is_admin && $course->feedbackless_reply_count())<span class="tag is-primary ml-4" title="{{ $course->feedbackless_reply_count() }} replies awaiting feedback">{{ $course->feedbackless_reply_count() }} new</span>@endif
+
               </b-button>
             @empty
               <section class="section is-medium has-background-light has-text-centered">
