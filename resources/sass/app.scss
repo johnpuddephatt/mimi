@@ -22,6 +22,15 @@
   justify-content: space-between;
 }
 
+button {
+  &.is-fullwidth {
+    span:first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
 .button + .button {
   margin-top: 1em;
 }
