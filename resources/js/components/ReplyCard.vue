@@ -24,8 +24,8 @@
               <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
             </p>
           </div>
-          <b-button type="is-danger" outlined
-             icon-right="delete" @click="confirmDelete"/>
+          <!-- <b-button type="is-danger" outlined
+             icon-right="delete" @click="confirmDelete"/> -->
         </div>
       </div>
 
