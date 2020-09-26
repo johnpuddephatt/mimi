@@ -134,7 +134,6 @@ export default {
         .catch(error => {
           this.isRegistering = false;
           this.activeStep = 0;
-          console.log('foo',error);
           this.$buefy.snackbar.open({
                   message: `<b>Error:</b> ${error.response.data.message}`,
                   type: 'is-danger',

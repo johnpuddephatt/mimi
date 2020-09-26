@@ -1,6 +1,7 @@
 @import "bulma.scss";
 @import "checkmark";
 @import "square-media";
+@import "transitions";
 
 .back-link {
   display: inline-block;
@@ -22,6 +23,22 @@
   justify-content: space-between;
 }
 
+.is-autodismiss {
+  animation: autoDismiss 4s forwards !important;
+}
+
+@keyframes autoDismiss {
+  0%,100% {
+    opacity: 0;
+    transform: translateY(1em);
+  }
+  15%, 85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
 .button {
   &.is-fullwidth {
     span:first-child {
@@ -31,7 +48,7 @@
   }
 }
 
-.button + .button {
+.button.is-fullwidth + .button.is-fullwidth {
   margin-top: 1em;
 }
 

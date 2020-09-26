@@ -15,15 +15,22 @@ Auth::routes();
 
 Route::get('/', 'CourseController@index')->middleware('auth');
 
+// Route::get('enrol/{course}', function($course){
+//   return view('enrol', compact('course'));
+// })->name('loginOrRegisterToEnrol');
+
 Route::post('log', function (\Illuminate\Http\Request $request) {
   Log::channel('frontend')->info($request->error, ['user_id' => Auth::user() ? Auth::user()->id : null ]);
 });
+
+Route::get('course/{course}/enrol', 'CourseController@enrol')->name('course.enrol');
 
 Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('auth','enrolled');
 Route::get('course/{course}/lesson/{lesson}/reply/{reply_id}/{show_feedback?}', 'LessonController@single')->name('lesson.reply')->middleware('auth','enrolled');
 Route::get('course/{course}/lesson/{lesson}', 'LessonController@single')->name('lesson.single')->middleware('auth','enrolled');
 Route::post('lesson/{lesson}/reply', 'ReplyController@create')->name('reply.create')->middleware('auth','enrolled');
 Route::get('lesson/{lesson}/video/{video}', 'VideoController@single')->name('video.single')->middleware('auth','enrolled');
+Route::delete('lesson/{lesson}/reply/{reply}/delete', 'ReplyController@delete')->name('reply.delete')->middleware('auth','owner');
 
 Route::post('lesson/{lesson}/reply/{reply}/comment', 'CommentController@create')->name('comment.create')->middleware('auth','enrolled');
 Route::get('lesson/{lesson}/reply/{reply}/comments', 'CommentController@index')->name('comment.index')->middleware('auth','enrolled');

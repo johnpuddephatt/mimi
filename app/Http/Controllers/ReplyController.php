@@ -21,15 +21,18 @@ class ReplyController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+      $this->middleware('auth');
+    }
+
+    public function delete(Lesson $lesson, Reply $reply) {
+      $reply->delete();
     }
 
     /**
-     * Create a new course
+     * Create a new reply
      *
      * @return \Illuminate\Http\Response
      */
-
 
     public function create(Lesson $lesson, StoreReply $request) {
 

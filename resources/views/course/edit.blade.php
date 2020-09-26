@@ -70,9 +70,11 @@
                   Users will appear here once enrolled.
                 </section>
               @endforelse
-              <div class="notification">
-                <h4>Invite people to this course</h4>
-                <input id="course-invite-link" class="input" type="text" value="{{ route('register') . '?course=' . $course->hash() }}">
+              <div class="notification has-background-light">
+                <h3>Invite people</h3>
+                <p class="is-size-7">Share the link below with people to invite them to this course. If they don’t already have an account they'll be prompted to create one.</p>
+
+                <input id="course-invite-link" class="input is-small" type="text" value="{{ route('course.enrol', ['course' => $course->hash()]) }}">
               </div>
             </b-tab-item>
           </b-tabs>

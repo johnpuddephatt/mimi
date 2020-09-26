@@ -81,5 +81,14 @@
                 </div>
             </footer>
         </div>
-    </body>
+
+      @if(session()->has('message'))
+        <div class="notices is-bottom">
+          <div role="alertdialog" class="toast is-success is-top is-autodismiss" style="">
+            <div class="text">{{ session()->get('message') }}</div>
+          </div>
+        </div>
+      @endif
+
+  </body>
 </html>

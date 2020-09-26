@@ -59,6 +59,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'enrolled' => \App\Http\Middleware\RedirectIfNotEnrolled::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'owner' => \App\Http\Middleware\RedirectIfNotOwnerOrAdmin::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
