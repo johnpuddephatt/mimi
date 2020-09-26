@@ -22,7 +22,7 @@
           @typing="getFilteredUsers"
         >
           <template slot-scope="props">
-            {{ props.option.first_name }} {{ props.option.last_name }}!
+            {{ props.option.first_name }} {{ props.option.last_name }}
           </template>
         </b-taginput>
         <p class="control">
