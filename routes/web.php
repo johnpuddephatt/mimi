@@ -23,11 +23,20 @@ Route::post('log', function (\Illuminate\Http\Request $request) {
   Log::channel('frontend')->info($request->error, ['user_id' => Auth::user() ? Auth::user()->id : null ]);
 });
 
-Route::get('course/{course}/enrol', 'CourseController@enrol')->name('course.enrol');
+Route::get('users', 'UserController@index')->name('users.index')->middleware('admin');
+
+Route::get('course/{course}/enroll', 'CourseController@enrollCurrentUser')->name('course.enrollCurrentUser');
+Route::post('course/{course}/enroll', 'CourseController@enroll')->name('course.enroll')->middleware('admin');
+Route::get('course/{course}/unenroll/user/{user}', 'CourseController@unenroll')->name('course.unenroll')->middleware('admin');
+// Route::get('course/{course}/enroll/user/{user}', 'CourseController@enroll')->name('course.enroll')->middleware('admin');
+
 
 Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('auth','enrolled');
+Route::get('course/{course}/users', 'CourseController@users')->name('course.users')->middleware('admin');
+
 Route::get('course/{course}/lesson/{lesson}/reply/{reply_id}/{show_feedback?}', 'LessonController@single')->name('lesson.reply')->middleware('auth','enrolled');
 Route::get('course/{course}/lesson/{lesson}', 'LessonController@single')->name('lesson.single')->middleware('auth','enrolled');
+
 Route::post('lesson/{lesson}/reply', 'ReplyController@create')->name('reply.create')->middleware('auth','enrolled');
 Route::get('lesson/{lesson}/video/{video}', 'VideoController@single')->name('video.single')->middleware('auth','enrolled');
 Route::delete('lesson/{lesson}/reply/{reply}/delete', 'ReplyController@delete')->name('reply.delete')->middleware('auth','owner');

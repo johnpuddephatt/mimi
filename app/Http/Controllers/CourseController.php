@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Course;
+use App\User;
 use App\Http\Requests\StoreCourse;
 use App\Providers\RouteServiceProvider;
 
@@ -59,15 +60,29 @@ class CourseController extends Controller
       return view('course.edit', compact('course'));
     }
 
-    public function enrol($course) {
+    public function enrollCurrentUser($course) {
       if (\Auth::guard()->check()) {
-        $result = \Auth::User()->courses()->attach(\Hashids::decode($course));
-        return redirect(RouteServiceProvider::HOME)->with('message', 'You have been enrolled.' . $result);;
+        \Auth::User()->courses()->attach(\Hashids::decode($course));
+        return redirect(RouteServiceProvider::HOME)->with('message', 'You have been enrolled.');
       }
       else {
-        return view('enrol', compact('course'));
+        return view('enroll', compact('course'));
       }
     }
+
+    public function enroll(Course $course, Request $request) {
+      return $course->users()->attach($request->all());
+    }
+
+    public function unenroll(Course $course, User $user) {
+      $user->courses()->detach($course->id);
+      return back();
+    }
+
+    public function users(Course $course) {
+      return $course->users;
+    }
+
     /**
      * Show the application dashboard.
      *

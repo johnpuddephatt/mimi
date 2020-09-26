@@ -60,21 +60,22 @@
 
             </b-tab-item>
             <b-tab-item label="Enrolments">
-
-              @forelse($course->users as $user)
+              <course-users :course_id="{{ $course->id}}"></course-users>
+              {{-- @forelse($course->users as $user)
                 <div class="panel-block is-justify-between">
                   <span>{{ $user->first_name }} {{ $user->last_name }}</span>
+                  <a href="{{ route('course.unenroll', ['course' => $course->id, 'user' => $user->id]) }}">Remove</a>
                 </div>
               @empty
-                <section class="section is-medium has-background-light has-text-centered">
+              <section class="section is-medium has-background-light has-text-centered">
                   Users will appear here once enrolled.
                 </section>
-              @endforelse
+              @endforelse --}}
               <div class="notification has-background-light">
                 <h3>Invite people</h3>
                 <p class="is-size-7">Share the link below with people to invite them to this course. If they don’t already have an account they'll be prompted to create one.</p>
 
-                <input id="course-invite-link" class="input is-small" type="text" value="{{ route('course.enrol', ['course' => $course->hash()]) }}">
+                <input id="course-invite-link" class="input is-small" type="text" value="{{ route('course.enrollCurrentUser', ['course' => $course->hash()]) }}">
               </div>
             </b-tab-item>
           </b-tabs>

@@ -32,7 +32,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request)
     {
       if(isset($_GET['course'])) {
-        return redirect()->route('course.enrol', ['course' => $_GET['course']]);
+        return redirect()->route('course.enrollCurrentUser', ['course' => $_GET['course']]);
       }
       else {
         return redirect(RouteServiceProvider::HOME);

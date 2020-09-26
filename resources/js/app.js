@@ -14,6 +14,7 @@ Vue.use(VueTimeago, {
   }
 })
 
+Vue.component('course-users', require('./components/CourseUsers.vue').default);
 Vue.component('video-playlist', require('./components/Playlist.vue').default);
 Vue.component('registration-form', require('./components/Registration.vue').default);
 Vue.component('lesson-form', require('./components/Lesson.vue').default);
