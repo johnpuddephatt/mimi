@@ -13,7 +13,7 @@
 
 Auth::routes();
 
-Route::get('/', 'CourseController@index')->middleware('auth');
+Route::get('/', 'CourseController@index')->name('course.index')->middleware('auth');
 
 // Route::get('enrol/{course}', function($course){
 //   return view('enrol', compact('course'));
