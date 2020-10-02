@@ -5,9 +5,7 @@
     <div class="container">
       <div class="columns is-centered">
         <div class="column is-7-tablet is-6-desktop is-5-widescreen is-paddingless">
-          @if(Auth::user()->is_admin || Auth::user()->courses->count() > 1 )
-            <a class="back-link has-text-dark" href={{ route("course.index")}}>&larr; Back to courses</a>
-          @endif
+
           <div class="box">
             <h3 class="title has-text-centered">{{ $course->title}}</h3>
             <p class="subtitle has-text-centered">{{ $course->description}}</p>
