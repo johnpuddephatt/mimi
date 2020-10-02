@@ -31,6 +31,8 @@ class Reply extends Model
 
     protected $with = ['user'];
 
+    protected $withCount = ['comments'];
+
     protected static function boot() {
       parent::boot();
 
@@ -80,6 +82,11 @@ class Reply extends Model
     public function comments()
     {
       return $this->hasMany('App\Comment');
+    }
+
+    public function parent_comments()
+    {
+      return $this->hasMany('App\Comment')->doesntHave('parentComment');
     }
 
     public function video()

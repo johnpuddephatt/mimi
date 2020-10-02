@@ -11,7 +11,7 @@
           <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
           <div class="card instruction-card">
             <div class="card-image">
-              <video-player ref="instructionVideo" autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
+              <video-player ref="instructionVideo" should_autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
             </div>
             <div class="card-content">
               <h3 class="is-size-4">Istruzioni 📝</h3>
@@ -26,16 +26,22 @@
         <create-reply :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
         @foreach($lesson->replies as $reply)
           <reply-card
-            @if(isset($reply_id) && ($reply->id == $reply_id)) :auto_open="true"
+            @if(isset($reply_id) && ($reply->id == $reply_id))
+              :auto_open="true"
               @if(isset($show_feedback) && $show_feedback) :show_feedback="true" @endif
             @endif
+            comments_count="{{ $reply->comments_count }}"
             reply_id="{{ $reply->id }}"
             lesson_id="{{ $lesson->id }}"
             @if($reply->user) :user='@json($reply->user->only(['id','first_name','photo']))' @endif
             :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
             thumbnail="{{ $reply->video->thumbnail }}"
             video="{{ $reply->video->playlist }}"
-            @if($reply->feedback) response_playlist="{{$reply->feedback->video->playlist }}" response_thumbnail="{{$reply->feedback->video->thumbnail }}" @endif
+            @if($reply->feedback)
+              feedback_id="{{ $reply->feedback->id }}"
+              feedback_playlist="{{$reply->feedback->video->playlist }}"
+              feedback_thumbnail="{{$reply->feedback->video->thumbnail }}"
+            @endif
             time="{{ $reply->video->converted_for_streaming_at }}"
             @if(Auth::user()->is_admin) :admin_user='@json(Auth::user()->only(['id','first_name','photo']))' @endif
             class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative"

@@ -13,7 +13,7 @@
     </div>
 
     <b-modal custom-class="create-reply-modal":active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
-      <div v-if="isSaving" class="modal-card">
+      <div v-if="isSaving" class="modal-card is-rounded">
         <section class="modal-card-body has-text-centered">
           <div v-if="isSaved">
             <h3 class="title">Ottimo <span class="emoji">✨</span></h3>
@@ -71,7 +71,7 @@
         </figure>
       </div>
       <div class="card-content">
-        <div class="comment-author">
+        <div class="reply-author">
           <figure class="image is-48x48">
             <img class="is-rounded" :src="user.photo" />
           </figure>
@@ -194,5 +194,14 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+  .create-reply-modal {
+    .modal-card-foot {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .field {
+      width: 100%;
+    }
+  }
 </style>

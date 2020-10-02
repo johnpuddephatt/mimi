@@ -62,8 +62,14 @@ class CourseController extends Controller
 
     public function enrollCurrentUser($course) {
       if (\Auth::guard()->check()) {
-        \Auth::User()->courses()->attach(\Hashids::decode($course));
-        return redirect(RouteServiceProvider::HOME)->with('message', 'You have been enrolled.');
+
+        if(\Auth::User()->courses->contains(\Hashids::decode($course)[0])) {
+          return redirect(RouteServiceProvider::HOME)->with('message', 'You are already enrolled in this course');
+        }
+        else {
+          \Auth::User()->courses()->attach(\Hashids::decode($course));
+          return redirect(RouteServiceProvider::HOME)->with('message', 'You have been enrolled.');
+        }
       }
       else {
         return view('enroll', compact('course'));

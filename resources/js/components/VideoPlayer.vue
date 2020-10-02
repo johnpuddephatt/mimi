@@ -16,24 +16,22 @@
 import videojs from "video.js";
 
 export default {
-  props: ['play', 'source', 'type', 'poster', 'autoplay'],
+  props: ['source', 'type', 'poster', 'should_autoplay'],
   data() {
     return {
       isLoading: true,
-      player: null
+      player: null,
+      autoplay: false,
     };
   },
 
   watch: {
-    play: function(val) { // watch it
+    should_autoplay: function(val) { // watch it
       if (val == false) {
-        this.isLoading = false;
         this.player.pause();
-      } else {
-        this.isLoading = false;
+      } else if(!this.isLoading) {
         this.player.play();
       }
-
     }
   },
 
@@ -45,23 +43,16 @@ export default {
       //   }
       // }
     });
+    this.player.on('ended', this.onEnded);
+
+    this.player.on("play", this.onPlay);
+
     this.player.ready(() => {
-
       this.isLoading = false;
-      // console.log('player ready');
-      //
-      // this.player.on('ended', function() {
-      //   console.log('player ended');
-      // });
-
-      this.player.on("play", () => {
-        this.isLoading = false;
-
-        if (this.player.currentTime() === 0) {
-          this.player.currentTime(0);
-        }
-      });
-
+      if(this.should_autoplay) {
+        this.autoplay = true;
+        // this.player.play();
+      }
     });
 
   },
@@ -72,6 +63,16 @@ export default {
   methods: {
     pause() {
       this.player.pause();
+    },
+    onPlay() {
+      // if (this.player.currentTime() === 0) {
+      //   this.player.currentTime(0);
+      // }
+      this.player.currentTime(this.player.currentTime());
+      this.$emit('playing');
+    },
+    onEnded() {
+      this.$emit('stopped');
     }
   }
 };
@@ -84,6 +85,7 @@ export default {
 .video-player--wrapper {
   position: relative;
   flex-grow: 0;
+  background-color: #000;
 }
 
 .video-player--wrapper .has-square-media {
@@ -125,9 +127,9 @@ export default {
 
 .video-js .vjs-control-bar {
   background-color: #00C2CDaa;
-  bottom: 4em;
-  left: 2.5em;
-  right: 2.5em;
+  bottom: 2.5rem;
+  left: 2.5rem;
+  right: 2.5rem;
   width: auto;
   border-radius: 5px;
   padding-top: .5em;
@@ -135,8 +137,22 @@ export default {
   height: 4em;
 }
 
+.video-js video {
+  opacity: 0;
+  transition: opacity 0.5s 0.5s;
+}
+
+.vjs-has-started video {
+  opacity: 1;
+}
+
 .vjs-has-started .vjs-control-bar {
   opacity: 0;
+  transition: 400ms 750ms;
+}
+
+.vjs-ended .vjs-control-bar {
+  opacity: 0 !important;
   transition: 400ms 750ms;
 }
 

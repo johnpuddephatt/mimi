@@ -27,6 +27,6 @@ class CommentController extends Controller
     }
 
     public function index(Lesson $lesson, Reply $reply) {
-      return $reply->comments;
+      return $reply->parent_comments;
     }
 }
