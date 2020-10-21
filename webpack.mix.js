@@ -13,7 +13,8 @@ const mix = require('laravel-mix');
 
 mix
   .options({
-    extractVueStyles: false
+    extractVueStyles: true,
+    purifyCss: true
   })
   .js('resources/js/app.js', 'public/js')
    .sourceMaps()
