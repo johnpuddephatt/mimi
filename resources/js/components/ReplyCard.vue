@@ -6,7 +6,7 @@
         <b-tooltip v-if="feedback_playlist && !feedbackIsDeleted" label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
           <b-icon class="admin-check-button" type="is-light" icon="check"/>
         </b-tooltip>
-        <create-reply v-else :reply_id="reply_id" :lesson_id="lesson_id" :user="admin_user"></create-reply>
+        <create-reply v-else :reply_id="reply_id" :lesson_id="lesson_id" :user="admin_user" :should_open="open_reply_modal"></create-reply>
       </div>
 
       <div class="card reply-card">
@@ -72,12 +72,13 @@
               </button>
               <b-dropdown-item @click="confirmDelete(reply_id)" aria-role="listitem">Delete</b-dropdown-item>
               <b-dropdown-item v-if="admin_user && feedback_id" @click="confirmDelete(feedback_id)" aria-role="listitem">Delete feedback</b-dropdown-item>
+              <b-dropdown-item v-if="admin_user && !feedback_id" @click="openReplyModal" aria-role="listitem">Add feedback</b-dropdown-item>
             </b-dropdown>
             <button class="button reply-card-modal__close is-light" @click="is_open = false">
               <b-icon icon="close"></b-icon>
             </button>
           </header>
-          <create-comment :user="active_user" :parent_user_name="user.first_name" :reply_id="reply_id" :lesson_id="lesson_id"></create-comment>
+          <comments :user="active_user" :parent_user_name="user.first_name" :reply_id="reply_id" :lesson_id="lesson_id"></comments>
         </div>
       </b-modal>
     </div>
@@ -93,7 +94,8 @@ export default {
       currentSlide: null,
       isDeleted: false,
       feedbackIsDeleted: false,
-      video_stopped: null
+      video_stopped: null,
+      open_reply_modal: false
     }
   },
 
@@ -103,6 +105,7 @@ export default {
         if(!window.location.href.includes(`/reply/${this.reply_id}`)) {
           history.pushState(null, null, `${window.location.href}/reply/${this.reply_id}`);
         }
+        console.log('trying to pause');
         this.$root.$refs.instructionVideo.pause();
         this.currentSlide = this.show_feedback ? 1 : 0;
       }
@@ -120,6 +123,11 @@ export default {
 
   methods: {
     onSubmit() {
+    },
+
+    openReplyModal() {
+      this.is_open = false;
+      this.open_reply_modal = true;
     },
 
     updateProgress(progress) {

@@ -3,7 +3,6 @@
 <div class="camera-wrapper">
 
   <!-- Camera preview -->
-
   <div v-if="value">
     <div v-if="mode == 'photo'" class="has-square-media">
       <img :src="dataUrl" />
@@ -46,7 +45,7 @@
       <b-loading :is-full-page="false" :active="!isLoaded"></b-loading>
       <div class="has-square-media">
         <span v-if="isRecording"  class="recording-indicator tag is-black">Rec</span>
-        <vue-web-cam ref="webcam" :device-id="deviceId" @video-live="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onData" width="640" height="480" />
+        <vue-web-cam ref="webcam" :device-id="deviceId" @video-live="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onData" />
       </div>
       <div class="camera-controls has-background-light is-bordered has-text-centered">
         <b-tooltip v-if="devices.length > 1" v-show="!isRecording" label="Change camera" type="is-dark" animated position="is-bottom" :delay="1000" class="change-camera-tooltip">

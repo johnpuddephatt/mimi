@@ -62,13 +62,14 @@ export default {
 
   methods: {
     pause() {
+      console.log('pausing');
       this.player.pause();
     },
     onPlay() {
-      // if (this.player.currentTime() === 0) {
-      //   this.player.currentTime(0);
-      // }
-      this.player.currentTime(this.player.currentTime());
+      if (this.player.currentTime() === 0) {
+        this.player.currentTime(0);
+      }
+      // this.player.currentTime(this.player.currentTime());
       this.$emit('playing');
     },
     onEnded() {
@@ -142,7 +143,8 @@ export default {
   transition: opacity 0.5s 0.5s;
 }
 
-.vjs-has-started video {
+.vjs-has-started video,
+.vjs-paused video {
   opacity: 1;
 }
 

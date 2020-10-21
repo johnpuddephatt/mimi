@@ -16,9 +16,10 @@
         <figure class="image is-32x32">
           <img class="is-rounded" :src="comment.user.photo" />
         </figure>
-        <div>
+        <div class="comment-card--text">
           <p class="is-size-7 has-text-weight-semibold">
             {{ comment.user.first_name }}
+            <!-- <span v-if="comment.user.is_admin" class="tag">Teacher</span> -->
             <timeago class="has-text-grey has-text-weight-light" :datetime="comment.created_at" :auto-update="60"></timeago>
             <b-icon class="comment-card__reply-button" type="is-success" size="is-small" icon="reply"></b-icon>
           </p>
@@ -30,9 +31,10 @@
           <figure class="image is-32x32">
             <img class="is-rounded" :src="child_comment.user.photo" />
           </figure>
-          <div>
+          <div class="comment-card--text">
             <p class="is-size-7 has-text-weight-semibold">
               {{ child_comment.user.first_name }}
+              <!-- <span v-if="child_comment.user.is_admin" class="tag">Teacher</span> -->
               <timeago class="has-text-grey has-text-weight-light" :datetime="child_comment.created_at" :auto-update="60"></timeago>
               <b-icon class="comment-card__reply-button" type="is-success" size="is-small" icon="reply"></b-icon>
             </p>
@@ -321,6 +323,10 @@ export default {
     p:last-child {
       margin-bottom: 0;
     }
+  }
+
+  &--text {
+    flex: 1;
   }
 
   .image {

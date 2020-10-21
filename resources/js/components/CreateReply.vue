@@ -92,7 +92,7 @@ import NoSleep from 'nosleep.js';
 var platform = require('platform');
 
 export default {
-  props: ['user', 'lesson_id', 'reply_id'],
+  props: ['user', 'lesson_id', 'reply_id', 'should_open'],
   data() {
     return {
       isReplyModalActive: false,
@@ -116,6 +116,11 @@ export default {
   watch: {
     isReplyModalActive: function() {
       this.$root.$refs.instructionVideo.pause();
+    },
+    should_open: function(should_open){
+      if(should_open) {
+        this.isReplyModalActive = true;
+      }
     }
   },
 

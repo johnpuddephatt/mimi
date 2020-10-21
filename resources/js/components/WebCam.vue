@@ -1,8 +1,8 @@
 <template>
   <video
     ref="video"
-    :width="width"
-    :height="height"
+    :width="constraints.video.width.ideal"
+    :height="constraints.video.height.ideal"
     :src="source"
     :autoplay="autoplay"
     :playsinline="playsinline"
@@ -15,29 +15,17 @@ export default {
   name: "VueWebCam",
 
   props: {
-    width: {
-      type: [Number, String],
-      default: 480
-    },
-    height: {
-      type: [Number, String],
-      default: 480
-    },
     autoplay: {
       type: Boolean,
       default: true
     },
-    screenshotFormat: {
-      type: String,
-      default: "image/jpeg"
-    },
-    selectFirstDevice: {
-      type: Boolean,
-      default: false
-    },
     deviceId: {
       type: String,
       default: null
+    },
+    screenshotFormat: {
+      type: String,
+      default: "image/jpeg"
     },
     playsinline: {
       type: Boolean,
@@ -50,13 +38,35 @@ export default {
       source: null,
       canvas: null,
       camerasListEmitted: false,
-      cameras: []
+      cameras: [],
+      constraints: {
+        audio: true,
+        video: {
+          deviceId: null,
+          facingMode: "user",
+          width: {
+            max: 800,
+            ideal: 480,
+            min: 240
+          },
+          height: {
+            max: 800,
+            ideal: 480,
+            min: 240
+          },
+          frameRate: {
+            max: 25,
+            ideal: 16,
+            min: 10
+          }
+        }
+      }
     };
   },
 
   watch: {
-    deviceId: function(id) {
-      this.changeCamera(id);
+    deviceId: function(deviceId) {
+      this.changeCamera(deviceId);
     }
   },
 
@@ -125,7 +135,7 @@ export default {
           });
 
           if(!videoDevices.length) {
-            this.$emit("error", {name: 'NotFoundError', message: 'WebCam.vue couldn’t find at least one video device'})
+            this.$emit("error", {name: 'NotFoundError', message: 'Couldn’t find at least one video device (WebCam.vue)'})
           }
           else {
             for (let i = 0; i !== deviceInfos.length; ++i) {
@@ -138,10 +148,12 @@ export default {
         })
         .then(() => {
           if (!this.camerasListEmitted) {
-            if (this.selectFirstDevice && this.cameras.length > 0) {
-              this.deviceId = this.cameras[0].deviceId;
+            if(this.deviceId) {
+              this.constraints.video.deviceId = this.deviceId;
             }
-
+            else if (this.cameras.length > 0) {
+              this.constraints.video.deviceId = this.cameras[0].deviceId;
+            }
             this.$emit("cameras", this.cameras);
             this.camerasListEmitted = true;
           }
@@ -153,9 +165,10 @@ export default {
      * change to a different camera stream, like front and back camera on phones
      */
     changeCamera(deviceId) {
+      this.constraints.video.deviceId = deviceId;
       this.stop();
       this.$emit("camera-change", deviceId);
-      this.loadCamera(deviceId);
+      this.start();
     },
 
     /**
@@ -203,46 +216,32 @@ export default {
 
     // start the video
     start() {
-      if (this.deviceId) {
-        this.loadCamera(this.deviceId);
+      if (this.constraints.video.deviceId) {
+        this.loadCamera();
       }
     },
 
-    // pause the video
-    pause() {
-      if (this.$refs.video !== null && this.$refs.video.srcObject) {
-        this.$refs.video.pause();
-      }
-    },
-
-    // resume the video
-    resume() {
-      if (this.$refs.video !== null && this.$refs.video.srcObject) {
-        this.$refs.video.play();
-      }
-    },
+    // // pause the video
+    // pause() {
+    //   if (this.$refs.video !== null && this.$refs.video.srcObject) {
+    //     this.$refs.video.pause();
+    //   }
+    // },
+    //
+    // // resume the video
+    // resume() {
+    //   if (this.$refs.video !== null && this.$refs.video.srcObject) {
+    //     this.$refs.video.play();
+    //   }
+    // },
 
     /**
      * test access
      */
     testMediaAccess() {
 
-      let constraints = {
-        video: {
-          deviceId: this.deviceId,
-          facingMode: "user",
-          width: this.width,
-          height: this.height,
-          frameRate: {
-            ideal: 25,
-            min: 10
-          }
-        },
-        audio: true
-      };
-
       navigator.mediaDevices
-        .getUserMedia(constraints)
+        .getUserMedia(this.constraints)
         .then(stream => {
           //Make sure to stop this MediaStream
           let tracks = stream.getTracks();
@@ -257,24 +256,9 @@ export default {
     /**
      * load the camera passed as index!
      */
-    loadCamera(device) {
-
-      let constraints = {
-        video: {
-          deviceId: device,
-          facingMode: "user",
-          width: this.width,
-          height: this.height,
-          frameRate: {
-            ideal: 25,
-            min: 10
-          }
-        },
-        audio: true
-      };
-
+    loadCamera() {
       navigator.mediaDevices
-        .getUserMedia(constraints)
+        .getUserMedia(this.constraints)
         .then(stream => this.loadSrcStream(stream))
         .catch(error => this.$emit("error", error));
     },
