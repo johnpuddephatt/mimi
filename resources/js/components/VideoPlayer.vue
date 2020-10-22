@@ -146,8 +146,10 @@ export default {
 }
 
 .video-js video {
+  opacity: 0;
   animation: fadeIn 0.5s 0.5s forwards;
 }
+
 
 @keyframes fadeIn {
   0% {
