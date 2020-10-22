@@ -11,7 +11,7 @@
           <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
           <div class="card instruction-card">
             <div class="card-image">
-              <video-player ref="instructionVideo" should_autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL"></video-player>
+              <video-player ref="instructionVideo" should_autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL" poster="{{ $lesson->video->thumbnail }}"></video-player>
             </div>
             <div class="card-content">
               <h3 class="is-size-4">Istruzioni 📝</h3>

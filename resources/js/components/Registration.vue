@@ -147,7 +147,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 nav.steps {
   padding: 1em 0;
 }

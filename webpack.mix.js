@@ -12,27 +12,27 @@ const mix = require('laravel-mix');
  */
 
 mix
-  .options({
-    extractVueStyles: true,
-    purifyCss: true
-  })
   .js('resources/js/app.js', 'public/js')
-   .sourceMaps()
-   .sass('resources/sass/app.scss', 'public/css')
-   .browserSync({
-     proxy: 'public.mimi.localhost',
-     files: [
-        'app/**/*.php',
-        'resources/views/**/*.php',
-        'public/js/**/*.js',
-        'public/css/**/*.css'
-     ]
-   })
-   .copy('resources/images/**','public/images')
-   .webpackConfig(webpack => {
-      return {
-        output: {
-          chunkFilename: '[name].[chunkhash].js',
-        },
-      };
-    });
+  .options({
+    extractVueStyles: 'css/vue.css'
+  })
+  .version()
+  .sourceMaps()
+  .sass('resources/sass/app.scss', 'public/css')
+  .browserSync({
+   proxy: 'public.mimi.localhost',
+   files: [
+      'app/**/*.php',
+      'resources/views/**/*.php',
+      'public/js/**/*.js',
+      'public/css/**/*.css'
+   ]
+  })
+  .copy('resources/images/**','public/images')
+  .webpackConfig(webpack => {
+    return {
+      output: {
+        chunkFilename: '[name].[chunkhash].js',
+      },
+    };
+  });

@@ -105,8 +105,10 @@ export default {
         if(!window.location.href.includes(`/reply/${this.reply_id}`)) {
           history.pushState(null, null, `${window.location.href}/reply/${this.reply_id}`);
         }
-        console.log('trying to pause');
-        this.$root.$refs.instructionVideo.pause();
+        this.$nextTick(() => {
+          this.$root.$refs.instructionVideo.should_stop = true;
+        });
+
         this.currentSlide = this.show_feedback ? 1 : 0;
       }
       else {

@@ -22,15 +22,23 @@ export default {
       isLoading: true,
       player: null,
       autoplay: false,
+      should_stop: false,
     };
   },
 
   watch: {
-    should_autoplay: function(val) { // watch it
-      if (val == false) {
-        this.player.pause();
-      } else if(!this.isLoading) {
+    autoplay: function(val) {
+      if(val && (!this.isLoading) && (!this.should_stop)) {
         this.player.play();
+      }
+      else {
+        this.player.pause();
+      }
+    },
+    should_stop: function(val) {
+      if(val) {
+        this.autoplay = false;
+        this.player.pause();
       }
     }
   },
@@ -49,7 +57,7 @@ export default {
 
     this.player.ready(() => {
       this.isLoading = false;
-      if(this.should_autoplay) {
+      if(this.should_autoplay && !this.should_stop) {
         this.autoplay = true;
         // this.player.play();
       }
@@ -62,7 +70,6 @@ export default {
 
   methods: {
     pause() {
-      console.log('pausing');
       this.player.pause();
     },
     onPlay() {
@@ -80,7 +87,7 @@ export default {
 </script>
 
 
-<style>
+<style lang="scss">
 @import '~video.js/dist/video-js.css';
 
 .video-player--wrapper {
@@ -139,13 +146,16 @@ export default {
 }
 
 .video-js video {
-  opacity: 0;
-  transition: opacity 0.5s 0.5s;
+  animation: fadeIn 0.5s 0.5s forwards;
 }
 
-.vjs-has-started video,
-.vjs-paused video {
-  opacity: 1;
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .vjs-has-started .vjs-control-bar {

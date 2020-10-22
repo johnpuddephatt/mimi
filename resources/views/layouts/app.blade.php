@@ -12,11 +12,12 @@
         <title>{{ config('app.name', 'Joy of Languages') }} {{ app()->version() }}</title>
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/vue.css') }}" rel="stylesheet">
         {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css" rel="stylesheet"> --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.2.45/css/materialdesignicons.css" integrity="sha256-mHVnxh+7TPhWR15Mw9aeGEXnvJo75EqKr/zwS4pGIak=" crossorigin="anonymous" />
         <!-- Scripts -->
-        <script defer src="{{ asset('js/app.js') }}"></script>
+        <script defer src="{{ mix('js/app.js') }}"></script>
 
     </head>
     <body class="has-navbar-fixed-top">
