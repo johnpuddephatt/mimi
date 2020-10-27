@@ -45,19 +45,19 @@ export default {
           deviceId: null,
           facingMode: "user",
           width: {
-            max: 800,
-            ideal: 480,
-            min: 240
+            ideal: 480
+            // max: 800,
+            // min: 240
           },
           height: {
-            max: 800,
-            ideal: 480,
-            min: 240
+            ideal: 480
+            // max: 800,
+            // min: 240
           },
           frameRate: {
-            max: 25,
-            ideal: 16,
-            min: 10
+            // max: 30
+            ideal: 16
+            // min: 10
           }
         }
       }
