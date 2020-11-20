@@ -23,6 +23,9 @@ Vue.component('create-reply', require('./components/CreateReply.vue').default);
 Vue.component('comments', require('./components/Comments.vue').default);
 Vue.component('reply-card', require('./components/ReplyCard.vue').default);
 Vue.component('camera-field', require('./components/CameraField.vue').default);
+Vue.component('chart', require('./components/Chart.vue').default);
+Vue.component('teacher-monthly-chart', require('./components/TeacherMonthlyChart.vue').default);
+Vue.component('replies-monthly-chart', require('./components/RepliesMonthlyChart.vue').default);
 
 const app = new Vue({
     el: '#app',

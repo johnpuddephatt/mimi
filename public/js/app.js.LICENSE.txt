@@ -1,4 +1,11 @@
 /*!
+ * Chart.js v2.9.4
+ * https://www.chartjs.org
+ * (c) 2020 Chart.js Contributors
+ * Released under the MIT License
+ */
+
+/*!
  * Platform.js v1.3.6
  * Copyright 2014-2020 Benjamin Tan
  * Copyright 2011-2013 John-David Dalton
@@ -34,3 +41,7 @@
  * @copyright 2020 Brightcove, Inc
  * @license Apache-2.0
  */
+
+//! moment.js
+
+//! moment.js locale configuration

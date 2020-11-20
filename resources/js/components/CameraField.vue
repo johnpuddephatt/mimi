@@ -44,7 +44,11 @@
     <div v-else>
       <b-loading :is-full-page="false" :active="!isLoaded"></b-loading>
       <div class="has-square-media">
-        <span v-if="isRecording"  class="recording-indicator tag is-black">Rec</span>
+        <span v-if="isRecording"  class="recording-indicator tag" :class="timeRemaining < 30 ? 'is-red': 'is-black'">{{ timeRemaining > 30 ? 'Rec' : timeRemaininginMinutes }}</span>
+        <b-notification type="is-dark" v-if="mode == 'video' && isLoaded" class="recording-instructions" v-model="showInstructions" aria-close-label="Close instructions">
+          <p class="is-size-7"><b-icon icon="alarm" />Aim for a reply between 30 seconds and two minutes long. Five minutes is the maximum.</p>
+          <p class="is-size-7"><b-icon icon="restart" />You’ll be able to play your video back before uploading, and re-record it if you want to.</p>
+        </b-notification>
         <vue-web-cam ref="webcam" :device-id="deviceId" @video-live="onStarted" @error="onError" @cameras="onCameras" @camera-change="onCameraChange" @photo="onData" />
       </div>
       <div class="camera-controls has-background-light is-bordered has-text-centered">
@@ -91,6 +95,7 @@ export default {
   data() {
     return {
       deviceId: null,
+      showInstructions: true,
       devices: [],
       stream: null,
       cameraType: 'mediaRecorder',
@@ -104,6 +109,8 @@ export default {
       shouldStopRecording: false,
       errorMessage: null,
       warningMessage: null,
+      timeRemaining: null,
+      maxDuration: 300,
       accept: {
         photo: 'image/*',
         video: 'video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*'
@@ -113,6 +120,11 @@ export default {
   computed: {
     device: function() {
       return this.devices.find(n => n.deviceId === this.deviceId);
+    },
+    timeRemaininginMinutes: function() {
+      let minutes = Math.floor(this.timeRemaining / 60);
+      let seconds = ('0' + Math.floor(this.timeRemaining % 60)).slice(-2);;
+      return `${minutes}:${seconds}`;
     },
     mimeType: function() {
       return (this.rawMimeType && (this.rawMimeType.startsWith('video/x-matroska') || this.rawMimeType.startsWith('video/quicktime'))) ? 'video/mp4' : this.rawMimeType;
@@ -206,16 +218,28 @@ export default {
       }
       if (this.isRecording) {
         this.shouldStopRecording = true;
+        clearInterval(handle);
+        this.timeRemaining = this.maxDuration;
         // Timeout fallback for Safari, which only fires the dataavailable event once on stop
         setTimeout(() => {
           if (this.mediaRecorder.state == 'recording') {
             this.mediaRecorder.stop();
           }
         }, 1000);
+
       } else {
+        this.showInstructions = false;
         this.isRecording = true;
         this.shouldStopRecording = false;
         this.mediaRecorder.start(1000);
+
+        this.timeRemaining = this.maxDuration;
+        var handle = setInterval(()=>{
+          this.timeRemaining--;
+          if(this.timeRemaining < 1) {
+            this.onRecordToggle();
+          }
+        }, 1000);
       }
     },
 
@@ -325,6 +349,10 @@ export default {
   top: .5em;
   z-index: 9;
   padding-right: 2em !important;
+
+  &.is-danger::after {
+    background-color: white;
+  }
 }
 
 .recording-indicator::after {
@@ -335,12 +363,39 @@ export default {
   background-color: red;
   border-radius: 9999px;
   content: '';
-  animation: pulse 1s infinite ease;
+  animation: pulse 2s infinite ease;
 }
 
 @keyframes pulse {
-  0% {
+  0%, 100% {
     transform: scale(0.75);
+  }
+  90% {
+    transform: scale(1);
+  }
+}
+
+.recording-instructions {
+  position: absolute;
+  bottom: 0;
+  left: 1em;
+  right: 1em;
+  background-color: #000A !important;
+  z-index: 9;
+
+  p + p {
+    margin-top: 0.5em;
+  }
+
+  p {
+    padding-left: 2.2rem;
+    margin-bottom: 0;
+  }
+
+  .icon {
+    margin-left: -2rem;
+    margin-right: 0.5rem;
+    transform: translateY(40%);
   }
 }
 </style>

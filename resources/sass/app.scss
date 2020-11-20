@@ -85,6 +85,16 @@ main {
   }
 }
 
+
+.modal {
+  @media screen and (orientation: portrait) {
+    // Keeps modal over help scout on small screens
+
+    // @todo make help scout beacon work with modals on mobile
+    // as modals are a commmon pain point.
+    z-index: 60;
+  }
+}
 .modal-card {
   max-width: 100%;
 }

@@ -18,7 +18,7 @@ class RedirectIfNotAdmin
      */
     public function handle($request, Closure $next, $guard = null)
     {
-      if(!Auth::User()->is_admin) {
+      if(!Auth::User() || !Auth::User()->is_admin) {
         if ($request->expectsJson()) {
           abort(
             response()->json(['message' => 'You don’t have permission to do that'], 403)
