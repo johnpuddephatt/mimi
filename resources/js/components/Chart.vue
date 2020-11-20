@@ -14,7 +14,16 @@
         maintainAspectRatio: false,
         legend: {
           display: false
-        }
+        },
+        scales: {
+        yAxes: [{
+            display: true,
+            ticks: {
+                beginAtZero: true,
+                min: 0
+            }
+        }]
+    },
       }
     }),
     watch: {
