@@ -12,7 +12,7 @@
       </b-button>
     </div>
 
-    <b-modal custom-class="create-reply-modal":active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
+    <b-modal custom-class="create-reply-modal" :active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video && !isRecording" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
       <div v-if="isSaving" class="modal-card is-rounded">
         <section class="modal-card-body has-text-centered">
           <div v-if="isSaved">
@@ -37,7 +37,7 @@
 
       <div v-else class="modal-card">
         <section class="modal-card-body is-paddingless" style="overflow: visible;">
-          <camera-field v-model="reply.video" mode="video"></camera-field>
+          <camera-field @is-recording="isRecording = $event" v-model="reply.video" mode="video"></camera-field>
         </section>
         <footer class="modal-card-foot has-background-light">
           <b-button :disabled="!reply.video" expanded type="is-primary" size="is-medium" @click.prevent="onSubmit" :loading="isSaving">Upload your reply</b-button>
@@ -97,6 +97,7 @@ export default {
     return {
       isReplyModalActive: false,
       isSaving: false,
+      isRecording: false,
       isSaved: false,
       uploadProgress: null,
       newVideo: {},

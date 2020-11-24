@@ -110,6 +110,7 @@ export default {
       errorMessage: null,
       warningMessage: null,
       timeRemaining: null,
+      timer: null,
       maxDuration: 300,
       accept: {
         photo: 'image/*',
@@ -146,7 +147,9 @@ export default {
         }
       }
     },
-
+    isRecording: function(bool) {
+      this.$emit('is-recording', bool);
+    }
   },
 
   created: function () {
@@ -218,7 +221,7 @@ export default {
       }
       if (this.isRecording) {
         this.shouldStopRecording = true;
-        clearInterval(handle);
+        clearInterval(this.timer);
         this.timeRemaining = this.maxDuration;
         // Timeout fallback for Safari, which only fires the dataavailable event once on stop
         setTimeout(() => {
@@ -234,8 +237,9 @@ export default {
         this.mediaRecorder.start(1000);
 
         this.timeRemaining = this.maxDuration;
-        var handle = setInterval(()=>{
+        this.timer = setInterval(()=>{
           this.timeRemaining--;
+          console.log(this.timeRemaining);
           if(this.timeRemaining < 1) {
             this.onRecordToggle();
           }
