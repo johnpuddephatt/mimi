@@ -139,7 +139,7 @@ export default {
         }
       }
 
-      axios.post('/log', {'error': `\nBEGINNING UPLOAD\n${ platform.description }\nsize: ${Math.floor(this.reply.video.size/1024)}kB  \n\n`});
+      axios.post('/log', {'error': `BEGINNING UPLOAD, ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
 
       axios({
           method: 'post',
@@ -182,7 +182,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `\nREPLY FIELD ERROR\n${ platform.description }\nError: ${ error.name }: ${ error.message }\nReply data: ${JSON.stringify(this.reply)}\n\n`});
+          axios.post('/log', {'error': `REPLY FIELD ERROR ${ platform.description }, Error: ${ error.name }: ${ error.message }, Reply data: ${JSON.stringify(this.reply)},`});
           this.errors = error.response.data.errors || '';
         });
     },

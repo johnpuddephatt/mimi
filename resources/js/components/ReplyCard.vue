@@ -181,7 +181,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `REPLY DELETE ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+          axios.post('/log', {'error': `REPLY DELETE ERROR, ${ platform.description }, ${ JSON.stringify(error) }`});
         })
     }
   }

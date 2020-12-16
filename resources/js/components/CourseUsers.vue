@@ -70,7 +70,7 @@ export default {
       })
       .catch(error => {
         this.errorLoading = true;
-        axios.post('/log', {'error': `COURSE ENROLLED USERS GET ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+        axios.post('/log', {'error': `COURSE ENROLLED USERS GET ERROR, ${ platform.description }, ${ JSON.stringify(error) }`});
       }),
 
       axios({
@@ -82,7 +82,7 @@ export default {
         })
         .catch(error => {
           this.errorLoading = true;
-          axios.post('/log', {'error': `COURSE USERS GET ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+          axios.post('/log', {'error': `COURSE USERS GET ERROR, ${ platform.description }, ${ JSON.stringify(error) }`});
         })
   },
 
