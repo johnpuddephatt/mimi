@@ -7,6 +7,7 @@ use App\Course;
 use App\User;
 use App\Http\Requests\StoreCourse;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseController extends Controller
 {
@@ -97,7 +98,15 @@ class CourseController extends Controller
     public function index()
     {
       if(\Auth::User()->is_admin) {
-        $courses = Course::all();
+
+
+        $courses = Course::withCount([
+            'replies',
+            'replies as feedbackless_replies_count' => function (Builder $query) {
+                $query->feedbackless();
+            },
+        ])->get();
+
         return view('home', compact('courses'));
       }
       else {

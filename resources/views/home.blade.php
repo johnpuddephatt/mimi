@@ -24,7 +24,7 @@
                 outlined>
                   {{ $course->title }}
 
-                  @if(Auth::user()->is_admin && $course->feedbackless_reply_count())<span class="tag is-primary ml-4" title="{{ $course->feedbackless_reply_count() }} replies awaiting feedback">{{ $course->feedbackless_reply_count() }} new</span>@endif
+                  @if(Auth::user()->is_admin && $course->feedbackless_replies_count)<span class="tag is-primary ml-4" title="{{ $course->feedbackless_replies_count }} replies awaiting feedback">{{ $course->feedbackless_replies_count }} new</span>@endif
 
               </b-button>
             @empty
