@@ -2,7 +2,7 @@
   <transition name="fade-out">
     <div v-if="!isDeleted">
 
-      <div class="admin-reply" v-if="active_user.is_admin">
+      <div class="admin-reply" v-if="is_admin">
         <b-tooltip v-if="feedback_playlist && !feedbackIsDeleted" label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
           <b-icon class="admin-check-button" type="is-light" icon="check"/>
         </b-tooltip>

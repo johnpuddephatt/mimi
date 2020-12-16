@@ -53,7 +53,7 @@
         </div>
       </div>
       <div v-else>
-        <span v-if="comment.comments && comment.comments.length > threadDepth && (expandedComments.indexOf(comment.id) == -1)" class="tag is-rounded expand-comments-button is-size-7 has-text-weight-semibold " @click="expandedComments.push(comment.id)">Show {{ comment.comments.length - threadDepth }} more comments</span>
+        <span v-if="comment.comments && comment.comments.length > threadDepth && (expandedComments.indexOf(comment.id) == -1)" class="tag is-rounded expand-comments-button is-size-7 has-text-weight-semibold " @click="expandedComments.push(comment.id)">Show {{ comment.comments.length - threadDepth }} more {{ comment.comments.length - threadDepth > 1 ? 'comments' : 'comment' }}</span>
         <span v-else-if="comment.comments && comment.comments.length > threadDepth" class="tag is-rounded expand-comments-button is-size-7 has-text-weight-semibold" @click="expandedComments.splice(expandedComments.indexOf(comment.id), 1)">Hide comments</span>
       </div>
     </div>
