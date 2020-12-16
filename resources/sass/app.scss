@@ -15,6 +15,10 @@
  image-rendering: -webkit-optimize-contrast;
 }
 
+.is-rounded {
+  border-radius: 99999px;
+}
+
 .is-bordered {
   border: 1px solid $light;
 }

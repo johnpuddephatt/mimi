@@ -9,41 +9,36 @@
     </div>
   </div>
 
-  <transition-group ref="comments" name="list" tag="div" v-else-if="comments.length && isLoaded" class="comment-list modal-card-body">
+  <transition-group ref="comments" name="list" tag="div" v-else-if="comments && comments.length && isLoaded" class="comment-list modal-card-body">
 
     <div v-for="comment in comments" class="comment-wrapper" :key="comment.id">
-      <div class="comment-card" @click="currentlyCommentingOn = comment.id">
-        <figure class="image is-32x32">
-          <img class="is-rounded" :src="comment.user.photo" />
-        </figure>
-        <div class="comment-card--text">
-          <p class="is-size-7 has-text-weight-semibold">
-            {{ comment.user.first_name }}
-            <!-- <span v-if="comment.user.is_admin" class="tag">Teacher</span> -->
-            <timeago class="has-text-grey has-text-weight-light" :datetime="comment.created_at" :auto-update="60"></timeago>
-            <b-icon class="comment-card__reply-button" type="is-success" size="is-small" icon="reply"></b-icon>
-          </p>
-          <div class="comment-card__value is-size-7" v-html="comment.value"></div>
-        </div>
-      </div>
+
+      <comment
+        @reply="setupReply(comment.id)"
+        @delete="confirmDelete(comment.id)"
+        :comment="comment"
+        :user="user"
+        @click.native="currentlySelected = comment"
+        class="comment-card"
+        :class="currentlySelected.id == comment.id ? 'active' : ''">
+      </comment>
+
       <transition-group class="child-comments" :ref="`child-comments-${comment.id}`" name="list" tag="div">
-        <div :key="child_comment.id" class="comment-card comment-card--child" v-for="child_comment in comment.comments"  @click="currentlyCommentingOn = comment.id">
-          <figure class="image is-32x32">
-            <img class="is-rounded" :src="child_comment.user.photo" />
-          </figure>
-          <div class="comment-card--text">
-            <p class="is-size-7 has-text-weight-semibold">
-              {{ child_comment.user.first_name }}
-              <!-- <span v-if="child_comment.user.is_admin" class="tag">Teacher</span> -->
-              <timeago class="has-text-grey has-text-weight-light" :datetime="child_comment.created_at" :auto-update="60"></timeago>
-              <b-icon class="comment-card__reply-button" type="is-success" size="is-small" icon="reply"></b-icon>
-            </p>
-            <div class="comment-card__value is-size-7" v-html="child_comment.value"></div>
-          </div>
-        </div>
+        <comment
+          @reply="setupReply(comment.id)"
+          @delete="confirmDelete(child_comment.id)"
+          v-show="index < threadDepth || (expandedComments.indexOf(comment.id) > -1)"
+          :comment="child_comment"
+          :user="user"
+          :key="child_comment.id"
+          class="comment-card comment-card--child"
+          @click.native="currentlySelected = child_comment"
+          :class="currentlySelected.id == child_comment.id ? 'active' : ''"
+          v-for="(child_comment, index) in comment.comments">
+        </comment>
       </transition-group>
 
-      <div class="pl-6 field is-grouped comment-reply-field" v-if="currentlyCommentingOn == comment.id">
+      <div class="pl-5 mb-3 field is-grouped comment-reply-field" v-if="currentlyCommentingOn == comment.id">
         <div class="control is-expanded">
           <textarea
             rows="1"
@@ -52,10 +47,14 @@
             maxlength="254"
             class="textarea"
             v-html="currentlyCommentingOn ? newCommentValue : ''"
-            :placeholder="`Reply to ${ parent_user_name }`">
+            :placeholder="`Reply to ${ currentlySelected.user.first_name }`">
           </textarea>
           <b-button icon-left="send" aria-label="Send message" :loading="isSaving" @click.prevent="onSubmit" :disabled="!newCommentValue"></b-button>
         </div>
+      </div>
+      <div v-else>
+        <span v-if="comment.comments && comment.comments.length > threadDepth && (expandedComments.indexOf(comment.id) == -1)" class="tag is-rounded expand-comments-button is-size-7 has-text-weight-semibold " @click="expandedComments.push(comment.id)">Show {{ comment.comments.length - threadDepth }} more comments</span>
+        <span v-else-if="comment.comments && comment.comments.length > threadDepth" class="tag is-rounded expand-comments-button is-size-7 has-text-weight-semibold" @click="expandedComments.splice(expandedComments.indexOf(comment.id), 1)">Hide comments</span>
       </div>
     </div>
 
@@ -107,7 +106,10 @@ export default {
       isSaving: false,
       newCommentValue: null,
       currentlyCommentingOn: null,
+      currentlySelected: {},
       errorLoading: false,
+      expandedComments: [],
+      threadDepth: 3,
       errors: '',
       comments: [
       ]
@@ -156,6 +158,55 @@ export default {
 
   methods: {
 
+    setupReply(id) {
+      this.currentlyCommentingOn = id;
+    },
+
+    confirmDelete(id) {
+      this.$buefy.dialog.confirm({
+          title: 'Confirm deletion',
+          message: `Are you sure you want to <b>delete</b> this comment? This action cannot be undone.`,
+          confirmText: 'Delete',
+          type: 'is-danger',
+          hasIcon: true,
+          onConfirm: () => this.delete(id)
+      })
+    },
+
+    delete(id) {
+      axios({
+          method: 'delete',
+          url: `/lesson/${this.lesson_id}/reply/${this.reply_id}/comment/${id}/delete`,
+          timeout: 15000
+        })
+        .then(feedback => {
+          this.$buefy.snackbar.open({
+            message: 'Comment deleted!',
+            position: 'is-bottom',
+            duration: 5000
+          });
+
+          this.comments = this.comments.filter(function( comment ) {
+            if(comment.comments) {
+              comment.comments = comment.comments.filter(function( comment ) {
+                return comment.id !== id;
+              });
+            }
+            return comment.id !== id;
+          });
+
+        })
+        .catch(error => {
+          this.$buefy.snackbar.open({
+            message: `<b>Error:</b> ${error.feedback.data.message}`,
+            type: 'is-danger',
+            position: 'is-bottom',
+            duration: 5000
+          });
+          axios.post('/log', {'error': `COMMENT DELETE ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+        })
+    },
+
     onTextareaInput(event) {
       this.newCommentValue = event.target.value;
       event.target.style.height = "auto";
@@ -171,6 +222,7 @@ export default {
       data.append('reply_id', this.reply_id);
       data.append('value', this.newCommentValue);
       if(this.currentlyCommentingOn) {
+        this.expandedComments.push(this.currentlyCommentingOn);
         data.append('comment_id', this.currentlyCommentingOn);
       }
 
@@ -288,54 +340,14 @@ export default {
   }
 }
 
-.comment-card {
-  display: flex;
-  flex-direction: row;
-  padding: 0.5em 0;
-  cursor: pointer;
-
-  &--child {
-    padding: 0.5em;
-    &:last-child {
-      margin-bottom: 0.5em;
-    }
-  }
-
-  &__reply-button {
-    opacity: 0;
-    font-size: 0.8rem;
-    color: $grey;
-  }
-
-  &:hover {
-    .comment-card__reply-button {
-      opacity: 1;
-    }
-  }
-
-  &__value {
-    word-break: break-word;
-
-    li {
-      list-style-type: disc;
-      margin-left: 1.5em;
-    }
-    p:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  &--text {
-    flex: 1;
-  }
-
-  .image {
-    flex: 0 0 2rem;
-    margin-right: 0.25rem;
-  }
-}
-
 .child-comments {
   margin-left: 0.5rem;
+}
+
+.expand-comments-button {
+  margin-left: calc(0.75rem + 32px);
+  margin-right: auto;
+  margin-bottom: 1rem;
+  cursor: pointer;
 }
 </style>

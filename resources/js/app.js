@@ -11,6 +11,10 @@ Vue.use(VueTimeago, {
   locale: 'en',
   locales: {
     'en': require('date-fns/locale/en'),
+  },
+  converter(date, locale, { includeSeconds, addSuffix = true }) {
+    const distanceInWordsStrict = require('date-fns/distance_in_words_strict')
+    return distanceInWordsStrict(Date.now(), date, { locale, addSuffix, includeSeconds });
   }
 })
 
@@ -21,6 +25,7 @@ Vue.component('lesson-form', require('./components/Lesson.vue').default);
 Vue.component('video-player', require('./components/VideoPlayer.vue').default);
 Vue.component('create-reply', require('./components/CreateReply.vue').default);
 Vue.component('comments', require('./components/Comments.vue').default);
+Vue.component('comment', require('./components/Comment.vue').default);
 Vue.component('reply-card', require('./components/ReplyCard.vue').default);
 Vue.component('camera-field', require('./components/CameraField.vue').default);
 Vue.component('chart', require('./components/Chart.vue').default);

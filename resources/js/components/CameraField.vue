@@ -239,7 +239,6 @@ export default {
         this.timeRemaining = this.maxDuration;
         this.timer = setInterval(()=>{
           this.timeRemaining--;
-          console.log(this.timeRemaining);
           if(this.timeRemaining < 1) {
             this.onRecordToggle();
           }

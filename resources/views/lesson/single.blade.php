@@ -35,6 +35,7 @@
             lesson_id="{{ $lesson->id }}"
             @if($reply->user) :user='@json($reply->user->only(['id','first_name','photo']))' @endif
             :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
+            @if(Auth::user()->is_admin) :is_admin = "true" @endif
             thumbnail="{{ $reply->video->thumbnail }}"
             video="{{ $reply->video->playlist }}"
             @if($reply->feedback)
@@ -43,7 +44,6 @@
               feedback_thumbnail="{{$reply->feedback->video->thumbnail }}"
             @endif
             time="{{ $reply->video->converted_for_streaming_at }}"
-            @if(Auth::user()->is_admin) :admin_user='@json(Auth::user()->only(['id','first_name','photo']))' @endif
             class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative"
             >
           </reply-card>

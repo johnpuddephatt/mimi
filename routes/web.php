@@ -31,8 +31,6 @@ Route::get('users', 'UserController@index')->name('users.index')->middleware('ad
 Route::get('course/{course}/enroll', 'CourseController@enrollCurrentUser')->name('course.enrollCurrentUser');
 Route::post('course/{course}/enroll', 'CourseController@enroll')->name('course.enroll')->middleware('admin');
 Route::get('course/{course}/unenroll/user/{user}', 'CourseController@unenroll')->name('course.unenroll')->middleware('admin');
-// Route::get('course/{course}/enroll/user/{user}', 'CourseController@enroll')->name('course.enroll')->middleware('admin');
-
 
 Route::get('course/{course}', 'CourseController@single')->name('course.single')->middleware('auth','enrolled');
 Route::get('course/{course}/users', 'CourseController@users')->name('course.users')->middleware('admin');
@@ -46,6 +44,7 @@ Route::delete('lesson/{lesson}/reply/{reply}/delete', 'ReplyController@delete')-
 
 Route::post('lesson/{lesson}/reply/{reply}/comment', 'CommentController@create')->name('comment.create')->middleware('auth','enrolled');
 Route::get('lesson/{lesson}/reply/{reply}/comments', 'CommentController@index')->name('comment.index')->middleware('auth','enrolled');
+Route::delete('lesson/{lesson}/reply/{reply}/comment/{comment}/delete', 'CommentController@delete')->name('comment.delete')->middleware('auth','enrolled');
 
 Route::get('admin', 'AdminController@overview')->name('admin')->middleware('admin');
 Route::get('admin/course/new', 'CourseController@new')->name('course.new')->middleware('admin');
@@ -69,7 +68,8 @@ Route::get('admin/emails/newreply', function () {
     $reply = App\Reply::whereNull('reply_id')->latest()->first();
     abort_if(!$reply, 404);
     return new App\Mail\NewReply($reply);
-})->name('admin.emails.newreply')->middleware('admin');;
+})->name('admin.emails.newreply')->middleware('admin');
+
 Route::get('admin/emails/newreplyfeedback', function () {
     $reply = App\Reply::whereNotNull('reply_id')->latest()->first();
     abort_if(!$reply, 404);
@@ -80,5 +80,4 @@ Route::get('admin/emails/newcomment', function () {
     $comment = App\Comment::latest()->first();
     abort_if(!$comment, 404);
     return new App\Mail\NewComment($comment);
-
 })->name('admin.emails.newcomment')->middleware('admin');;

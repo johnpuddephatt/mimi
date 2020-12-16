@@ -12,8 +12,8 @@
       </b-button>
     </div>
 
-    <b-modal custom-class="create-reply-modal" :active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video && !isRecording" :destroy-on-hide="false" aria-role="dialog" width="420px" aria-modal>
-      <div v-if="isSaving" class="modal-card is-rounded">
+    <b-modal custom-class="create-reply-modal" :active.sync="isReplyModalActive" has-modal-card trap-focus :can-cancel="!reply.video && !isRecording" :destroy-on-hide="true" aria-role="dialog" width="420px" aria-modal>
+      <div v-if="isSaving" class="modal-card">
         <section class="modal-card-body has-text-centered">
           <div v-if="isSaved">
             <h3 class="title">Ottimo <span class="emoji">✨</span></h3>
@@ -138,6 +138,8 @@ export default {
           data.append(key, value);
         }
       }
+
+      axios.post('/log', {'error': `\nBEGINNING UPLOAD\n${ platform.description }\nsize: ${Math.floor(this.reply.video.size/1024)}kB  \n\n`});
 
       axios({
           method: 'post',

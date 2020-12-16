@@ -1,13 +1,14 @@
 // @import 'variables';
 
 .list-enter-active, .list-leave-active {
-  transition: all 1s;
+  transition: all 0.5s;
 }
 
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(5px);
-  background-color: #d5d5d5;
+  background-color: #e5e5e5;
+  border-radius: 5px;
 }
 
 .fade-out-enter-active,

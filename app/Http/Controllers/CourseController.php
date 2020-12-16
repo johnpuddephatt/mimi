@@ -72,7 +72,7 @@ class CourseController extends Controller
         }
       }
       else {
-        return view('enroll', compact('course'));
+        return view('enrol', compact('course'));
       }
     }
 

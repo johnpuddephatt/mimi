@@ -19,7 +19,11 @@ class CommentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+      $this->middleware('auth');
+    }
+
+    public function delete(Lesson $lesson, Reply $reply, Comment $comment) {
+      $comment->delete();
     }
 
     public function create(StoreComment $request, Lesson $lesson, Reply $reply) {

@@ -2,11 +2,11 @@
   <transition name="fade-out">
     <div v-if="!isDeleted">
 
-      <div class="admin-reply" v-if="admin_user">
+      <div class="admin-reply" v-if="active_user.is_admin">
         <b-tooltip v-if="feedback_playlist && !feedbackIsDeleted" label="You’ve replied to this" type="is-dark" animated position="is-left" :delay="1000" class="admin-check-button--tooltip">
           <b-icon class="admin-check-button" type="is-light" icon="check"/>
         </b-tooltip>
-        <create-reply v-else :reply_id="reply_id" :lesson_id="lesson_id" :user="admin_user" :should_open="open_reply_modal"></create-reply>
+        <create-reply v-else :reply_id="reply_id" :lesson_id="lesson_id" :user="active_user" :should_open="open_reply_modal"></create-reply>
       </div>
 
       <div class="card reply-card">
@@ -66,13 +66,13 @@
               <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
             </p>
 
-            <b-dropdown v-if="active_user.id == user.id || admin_user" position="is-bottom-left" aria-role="list">
+            <b-dropdown v-if="active_user.id == user.id || active_user.is_admin" position="is-bottom-left" aria-role="list">
               <button class="button is-light" slot="trigger" slot-scope="{ active }">
                 <b-icon icon="cog"></b-icon>
               </button>
               <b-dropdown-item @click="confirmDelete(reply_id)" aria-role="listitem">Delete</b-dropdown-item>
-              <b-dropdown-item v-if="admin_user && feedback_id" @click="confirmDelete(feedback_id)" aria-role="listitem">Delete feedback</b-dropdown-item>
-              <b-dropdown-item v-if="admin_user && !feedback_id" @click="openReplyModal" aria-role="listitem">Add feedback</b-dropdown-item>
+              <b-dropdown-item v-if="active_user.is_admin && feedback_id" @click="confirmDelete(feedback_id)" aria-role="listitem">Delete feedback</b-dropdown-item>
+              <b-dropdown-item v-if="active_user.is_admin && !feedback_id" @click="openReplyModal" aria-role="listitem">Add feedback</b-dropdown-item>
             </b-dropdown>
             <button class="button reply-card-modal__close is-light" @click="is_open = false">
               <b-icon icon="close"></b-icon>
@@ -87,7 +87,7 @@
 
 <script>
 export default {
-  props: ['thumbnail', 'video', 'user', 'active_user', 'time', 'feedback_id', 'feedback_playlist', 'feedback_thumbnail', 'auto_open', 'reply_id', 'lesson_id', 'admin_user', 'show_feedback', 'comments_count'],
+  props: ['thumbnail', 'video', 'user', 'active_user', 'is_admin', 'time', 'feedback_id', 'feedback_playlist', 'feedback_thumbnail', 'auto_open', 'reply_id', 'lesson_id', 'show_feedback', 'comments_count'],
   data() {
     return {
       is_open: false,
@@ -120,6 +120,9 @@ export default {
   mounted() {
     if(this.auto_open) {
       this.is_open = true;
+    }
+    if(this.is_admin) {
+      this.active_user.is_admin = true;
     }
   },
 
@@ -178,7 +181,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `COMMENT GET ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
+          axios.post('/log', {'error': `REPLY DELETE ERROR\n${ platform.description }\n${ JSON.stringify(error) }`});
         })
     }
   }
