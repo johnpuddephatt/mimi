@@ -38,7 +38,7 @@ return [
 
         'frontend' => [
             'driver' => 'single',
-            'path' => storage_path('logs/frontend.log'),
+            'path' => storage_path('logs/laravel-frontend.log'),
         ],
 
         'stack' => [
