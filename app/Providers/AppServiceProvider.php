@@ -14,9 +14,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-      if(isset($_GET['debug'])){
-        \Debugbar::enable();
-       }
     }
 
     /**
@@ -29,5 +26,10 @@ class AppServiceProvider extends ServiceProvider
       Validator::extend('course', function ($attribute, $value, $parameters, $validator) {
         return \App\Course::find(\Hashids::decode($value))->count();
       }, 'Specified course could not be found');
+
+      if(isset($_GET['debug'])) {
+        \Debugbar::enable();
+       }
+
     }
 }

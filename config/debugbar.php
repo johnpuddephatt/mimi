@@ -14,6 +14,7 @@ return [
      |
      */
 
+    'enabled_for' => explode(',', env('DEBUGBAR_ENABLED_FOR','')),
     'enabled' => env('DEBUGBAR_ENABLED', null),
     'except' => [
         'telescope*',
