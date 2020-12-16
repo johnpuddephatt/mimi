@@ -11,8 +11,6 @@ class Course extends Model
       'title', 'description'
   ];
 
-  protected $with = ['lessons'];
-
   public function hash() {
     return \Hashids::encode($this->id);
   }
