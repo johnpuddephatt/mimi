@@ -149,10 +149,10 @@ export default {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
           },
           onUploadProgress: progressEvent => this.updateProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)),
-          timeout: 90000
+          timeout: 120000
         })
         .then(response => {
-
+          axios.post('/log', {'error': `BEGINNING UPLOAD, ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
           this.reply = response.data;
           noSleep.disable();
           this.isSaved = true;
@@ -170,20 +170,31 @@ export default {
                 })
                 .catch(error => {
                 })
-            }, 5000
+            }, 10000
           );
         })
         .catch(error => {
           noSleep.disable();
           this.isSaving = false;
+
+          if(error.response) {
+            var uploadErrorMessage = (error.response.data  && error.response.data.message) ? error.response.data.message : 'Server reponse error. Let us know and we’ll look into the problem for you.'
+          }
+          else if(error.request) {
+            var uploadErrorMessage = (error.request.data && error.request.data.message) ? error.request.data.message : 'Network request error. Either your internet connection is unstable or the upload timed out. '
+          }
+          else {
+            var uploadErrorMessage = 'Unknown error';
+          }
+
           this.$buefy.snackbar.open({
-            message: `<b>Error:</b> ${error.response.data.message}`,
+            message: `<b>Error:</b> ${ uploadErrorMessage}`,
             type: 'is-danger',
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `REPLY FIELD ERROR ${ platform.description }, Error: ${ error.name }: ${ error.message }, Reply data: ${JSON.stringify(this.reply)},`});
-          this.errors = error.response.data.errors || '';
+          axios.post('/log', {'error': `REPLY FIELD ERROR ${ platform.description }, Error: ${ uploadErrorMessage }, ${ error }, Reply data: ${JSON.stringify(this.reply)},`});
+          this.errors = uploadErrorMessage;
         });
     },
 
