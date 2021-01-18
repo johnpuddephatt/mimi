@@ -152,7 +152,7 @@ export default {
           timeout: 120000
         })
         .then(response => {
-          axios.post('/log', {'error': `BEGINNING UPLOAD, ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
+          axios.post('/log', {'error': `UPLOAD COMPLETE, ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
           this.reply = response.data;
           noSleep.disable();
           this.isSaved = true;
@@ -193,7 +193,7 @@ export default {
             position: 'is-bottom',
             duration: 5000
           });
-          axios.post('/log', {'error': `REPLY FIELD ERROR ${ platform.description }, Error: ${ uploadErrorMessage }, ${ error }, Reply data: ${JSON.stringify(this.reply)},`});
+          axios.post('/log', {'error': `UPLOAD ERROR ${ platform.description }, Error: ${ uploadErrorMessage }, ${ error }, Reply data: ${JSON.stringify(this.reply)},`});
           this.errors = uploadErrorMessage;
         });
     },

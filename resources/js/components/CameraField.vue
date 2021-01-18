@@ -9,11 +9,18 @@
     </div>
 
     <div v-else class="card-body">
-      <video-player :source="dataUrl" :type="mimeType || value.type ||  'application/x-mpegURL'"></video-player>
+      <!-- <video-player :source="dataUrl" :type="mimeType || value.type ||  'application/x-mpegURL'"></video-player> -->
+      <div class="video-player--wrapper">
+        <div class="has-square-media">
+          <video class="video-js vjs-big-play-centered" controls width="640" height="264">
+            <source :src="dataUrl" :type="rawMimeType || value.type ||  'video/mp4'"/>
+          </video>
+        </div>
+      </div>
     </div>
 
     <div class="camera-controls has-background-light is-bordered has-text-centered">
-        <b-button class="restart-camera" icon-right="camera-retake" @click.prevent="onRestart">Start again</b-button>
+      <b-button class="restart-camera" icon-right="camera-retake" @click.prevent="onRestart">Start again</b-button>
     </div>
   </div>
 
@@ -115,7 +122,27 @@ export default {
       accept: {
         photo: 'image/*',
         video: 'video/webm,video/x-matroska,video/mp4,video/x-m4v,video/*'
-      }
+      },
+      videoTypes: [
+        "webm",
+        "ogg",
+        "mp4",
+        "x-matroska"
+      ],
+      videoCodecs: [
+        "vp9",
+        "vp9.0",
+        "vp8",
+        "vp8.0",
+        "avc1",
+        "av1",
+        "h265",
+        "h.265",
+        "h264",
+        "h.264",
+        "opus",
+      ],
+      supportedMimetypes: []
     };
   },
   computed: {
@@ -127,9 +154,15 @@ export default {
       let seconds = ('0' + Math.floor(this.timeRemaining % 60)).slice(-2);;
       return `${minutes}:${seconds}`;
     },
-    mimeType: function() {
-      return (this.rawMimeType && (this.rawMimeType.startsWith('video/x-matroska') || this.rawMimeType.startsWith('video/quicktime'))) ? 'video/mp4' : this.rawMimeType;
-    },
+    // mimeType: function() {
+    //   // Video.js doesn't like some mimetypes... if we see one it doesn't like we convert it to video/mp4
+    //   if(this.rawMimeType && (this.rawMimeType.startsWith('video/x-matroska') || this.rawMimeType.startsWith('video/quicktime'))) {
+    //     return 'video/mp4'
+    //   }
+    //   else {
+    //     return this.rawMimeType;
+    //   }
+    // },
     dataUrl: function() {
       return this.value instanceof Blob ? URL.createObjectURL(this.value) : this.value;
     }
@@ -153,6 +186,7 @@ export default {
   },
 
   created: function () {
+    this.getSupportedMimeTypes();
     if(this.mode == 'video' && !window.MediaRecorder) {
       if(platform.product != 'iPad' && platform.product != 'iPhone') {
         this.warningMessage = "Your browser doesn’t support accessing your camera directly.";
@@ -234,7 +268,7 @@ export default {
         this.showInstructions = false;
         this.isRecording = true;
         this.shouldStopRecording = false;
-        this.mediaRecorder.start(1000);
+        this.mediaRecorder.start();
 
         this.timeRemaining = this.maxDuration;
         this.timer = setInterval(()=>{
@@ -274,7 +308,7 @@ export default {
     setupVideo() {
 
       const options = {
-        mimeType: 'video/webm'
+        mimeType: this.supportedMimetypes.length ? this.supportedMimetypes[0] : 'video/webm'
       };
 
       const recordedChunks = [];
@@ -300,105 +334,125 @@ export default {
       });
 
       this.isSetupVideo = true;
+    },
+
+    getSupportedMimeTypes() {
+      this.videoTypes.forEach((videoType) => {
+        const type = `video/${videoType}`;
+        this.videoCodecs.forEach((codec) => {
+            const variations = [
+            `${type};codecs=${codec}`,
+            `${type};codecs:${codec}`,
+            `${type};codecs=${codec.toUpperCase()}`,
+            `${type};codecs:${codec.toUpperCase()}`
+          ]
+          variations.forEach(variation => {
+            if(MediaRecorder.isTypeSupported(variation))
+                this.supportedMimetypes.push(variation);
+          })
+        });
+        if (MediaRecorder.isTypeSupported(type)) this.supportedMimetypes.push(type);
+      });
     }
+
   }
 };
 </script>
 
 
 <style lang="scss">
-.camera-wrapper {
-  position: relative;
-}
-
-.field .camera-wrapper .has-square-media {
-  border-radius: 5px 5px 0 0;
-  border: 1px solid #dbdbdb;
-}
-
-.camera-controls {
-  padding: .5em 0;
-}
-
-.field .camera-controls {
-  border-radius: 0 0 5px 5px;
-  border: 1px solid #dbdbdb;
-  border-top: none;
-}
-
-.camera-controls button,
-.camera-controls a {
-  border-radius: 9999px;
-}
-
-.camera-controls>* {
-  vertical-align: middle;
-}
-
-.change-camera-tooltip {
-  margin-left: -5rem;
-  margin-right: 1.5rem;
-}
-
-.file-upload-tooltip {
-  margin-left: 1.5rem;
-  margin-right: -5rem;
-}
-
-
-.recording-indicator {
-  position: absolute;
-  right: .5em;
-  top: .5em;
-  z-index: 9;
-  padding-right: 2em !important;
-
-  &.is-danger::after {
-    background-color: white;
-  }
-}
-
-.recording-indicator::after {
-  width: .75em;
-  height: .75em;
-  position: absolute;
-  right: .75em;
-  background-color: red;
-  border-radius: 9999px;
-  content: '';
-  animation: pulse 2s infinite ease;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(0.75);
-  }
-  90% {
-    transform: scale(1);
-  }
-}
-
-.recording-instructions {
-  position: absolute;
-  bottom: 0;
-  left: 1em;
-  right: 1em;
-  background-color: #000A !important;
-  z-index: 9;
-
-  p + p {
-    margin-top: 0.5em;
+  .camera-wrapper {
+    position: relative;
   }
 
-  p {
-    padding-left: 2.2rem;
-    margin-bottom: 0;
+  .field .camera-wrapper .has-square-media {
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #dbdbdb;
   }
 
-  .icon {
-    margin-left: -2rem;
-    margin-right: 0.5rem;
-    transform: translateY(40%);
+  .camera-controls {
+    padding: .5em 0;
   }
-}
+
+  .field .camera-controls {
+    border-radius: 0 0 5px 5px;
+    border: 1px solid #dbdbdb;
+    border-top: none;
+  }
+
+  .camera-controls button,
+  .camera-controls a {
+    border-radius: 9999px;
+  }
+
+  .camera-controls>* {
+    vertical-align: middle;
+  }
+
+  .change-camera-tooltip {
+    margin-left: -5rem;
+    margin-right: 1.5rem;
+  }
+
+  .file-upload-tooltip {
+    margin-left: 1.5rem;
+    margin-right: -5rem;
+  }
+
+
+  .recording-indicator {
+    position: absolute;
+    right: .5em;
+    top: .5em;
+    z-index: 9;
+    padding-right: 2em !important;
+
+    &.is-danger::after {
+      background-color: white;
+    }
+  }
+
+  .recording-indicator::after {
+    width: .75em;
+    height: .75em;
+    position: absolute;
+    right: .75em;
+    background-color: red;
+    border-radius: 9999px;
+    content: '';
+    animation: pulse 2s infinite ease;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(0.75);
+    }
+    90% {
+      transform: scale(1);
+    }
+  }
+
+  .recording-instructions {
+    position: absolute;
+    bottom: 0;
+    left: 1em;
+    right: 1em;
+    background-color: #000A !important;
+    z-index: 9;
+
+    p + p {
+      margin-top: 0.5em;
+    }
+
+    p {
+      padding-left: 2.2rem;
+      margin-bottom: 0;
+    }
+
+    .icon {
+      margin-left: -2rem;
+      margin-right: 0.5rem;
+      transform: translateY(40%);
+    }
+  }
 </style>

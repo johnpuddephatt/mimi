@@ -1,6 +1,6 @@
 <template>
-<div class="video-player--wrapper">
-  <div class="has-square-media">
+  <div class="video-player--wrapper">
+    <div class="has-square-media">
     <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
     <video class="video-js vjs-big-play-centered" controls :preload="autoplay? 'auto' : 'none'" width="640" height="264" :autoplay="autoplay" :poster="poster" playsinline ref="player">
       <source :src="source" :type="type" />
@@ -44,13 +44,8 @@ export default {
   },
 
   mounted() {
-    this.player = videojs(this.$refs.player, {
-      // html5: {
-      //   hls: {
-      //     overrideNative: true
-      //   }
-      // }
-    });
+    this.player = videojs(this.$refs.player, {});
+
     this.player.on('ended', this.onEnded);
 
     this.player.on("play", this.onPlay);
