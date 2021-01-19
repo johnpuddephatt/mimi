@@ -128,7 +128,7 @@ export default {
       })
       .catch(error => {
         this.errorLoading = true;
-        axios.post('/log', {'error': `COMMENT GET ERROR\n${ platform.description }, ${ JSON.stringify(error) }`});
+        axios.post('/log', {'error': `COMMENT GET ERROR { platform.description }, ${ JSON.stringify(error) }`});
       })
   },
 
