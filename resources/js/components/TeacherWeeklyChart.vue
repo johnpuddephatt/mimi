@@ -45,7 +45,7 @@
           let date = dayjs(this.date, "YYYY-MM-DD").subtract(i, 'weeks');
           this.weeks.push({
             robot: date.format("YYYY-MM-DD"),
-            human: date.format("dddd D MMM , YYYY")
+            human: date.add(1, 'days').format("dddd D MMM , YYYY")
           })
         };
       },
