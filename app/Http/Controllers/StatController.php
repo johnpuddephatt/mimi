@@ -15,6 +15,9 @@ class StatController extends Controller
     return view('stats');
   }
 
+
+
+
   public function repliesMonthly($from, $to) {
     $replies_by_month = Reply::select('created_at')->where('reply_id', null)->whereBetween('created_at',[date($from),date($to)])
             ->get()
@@ -34,6 +37,12 @@ class StatController extends Controller
   public function teacherMonthly($from, $to) {
     return User::select('first_name', 'last_name')->where('is_admin',true)->withCount(['replies' => function (Builder $query) use ($from, $to) {
       $query->whereBetween('created_at',[date($from),date($to)]);
+    }])->get();
+  }
+
+  public function teacherWeekly($date) {
+    return User::select('first_name', 'last_name')->where('is_admin',true)->withCount(['replies' => function (Builder $query) use ($date) {
+      $query->whereBetween('created_at',[date($date),Carbon::parse($date)->add('week',1)]);
     }])->get();
   }
 }

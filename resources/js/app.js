@@ -30,6 +30,7 @@ Vue.component('reply-card', require('./components/ReplyCard.vue').default);
 Vue.component('camera-field', require('./components/CameraField.vue').default);
 Vue.component('chart', require('./components/Chart.vue').default);
 Vue.component('teacher-monthly-chart', require('./components/TeacherMonthlyChart.vue').default);
+Vue.component('teacher-weekly-chart', require('./components/TeacherWeeklyChart.vue').default);
 Vue.component('replies-monthly-chart', require('./components/RepliesMonthlyChart.vue').default);
 
 const app = new Vue({

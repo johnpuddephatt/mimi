@@ -10,6 +10,8 @@
             <p class="subtitle has-text-centered">With great power comes great responsibility</p>
             <teacher-monthly-chart></teacher-monthly-chart>
             <br><br>
+            <teacher-weekly-chart></teacher-weekly-chart>
+            <br><br>
             <replies-monthly-chart></replies-monthly-chart>
           </div>
         </div>

@@ -16,11 +16,10 @@ Auth::routes();
 Route::get('/', 'CourseController@index')->name('course.index')->middleware('auth');
 
 Route::get('stats', 'StatController@index')->name('stats');
-Route::get('stats/teacher-monthly/{from}/{to}', 'StatController@teacherMonthly')->name('stats.teacherMonthly')->middleware('admin');;
-Route::get('stats/replies-monthly/{from}/{to}', 'StatController@repliesMonthly')->name('stats.repliesMonthly')->middleware('admin');;
-// Route::get('enrol/{course}', function($course){
-//   return view('enrol', compact('course'));
-// })->name('loginOrRegisterToEnrol');
+Route::get('stats/teacher-monthly/{from}/{to}', 'StatController@teacherMonthly')->name('stats.teacherMonthly')->middleware('admin');
+Route::get('stats/teacher-weekly/{date}', 'StatController@teacherWeekly')->name('stats.teacherWeekly')->middleware('admin');
+Route::get('stats/replies-monthly/{from}/{to}', 'StatController@repliesMonthly')->name('stats.repliesMonthly')->middleware('admin');
+
 
 Route::post('log', function (\Illuminate\Http\Request $request) {
   Log::channel('frontend')->info($request->error . ', user_id: ' . (Auth::user() ? Auth::user()->id : null ));
