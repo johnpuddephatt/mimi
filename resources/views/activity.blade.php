@@ -24,7 +24,7 @@
                             {{$activity->properties['attributes']['reply.user.first_name']}}’s reply:<p>
                           @endif
                         </p>
-                        <div class="is-italic">{!!$activity->properties['attributes']['value'] !!}</div>
+                        <div class="is-italic is-size-7 mb-2">{!!$activity->properties['attributes']['value'] !!}</div>
                         <timeago class="is-size-7 has-text-grey" datetime="{{$activity->created_at}}" :auto-update="60"></timeago>
                     </div>
                     <a class="button" href="{{ route('lesson.reply', ['course' => $activity->properties['attributes']['reply.lesson.course.id'], 'lesson' => $activity->properties['attributes']['reply.lesson.id'], 'reply_id' => $activity->properties['attributes']['reply.id'], 'show_feedback' => false]) }}">
