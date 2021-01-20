@@ -15,13 +15,13 @@
                     <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                         <img class="is-rounded" src="{{$activity->properties['attributes']['user.photo']}}" alt="Image">
                     </figure>
-                    <div class="media-content">
+                    <div class="media-content mr-2">
                         <p>
-                          {{$activity->properties['attributes']['user.first_name']}} commented on
+                          <strong>{{$activity->properties['attributes']['user.first_name']}}</strong> commented on
                           @if($activity->properties['attributes']['reply.user.id'] == $activity->causer_id)
                             their own reply:
                           @else
-                            {{$activity->properties['attributes']['reply.user.first_name']}}’s reply:<p>
+                            <strong>{{$activity->properties['attributes']['reply.user.first_name']}}’s</strong> reply:<p>
                           @endif
                         </p>
                         <div class="is-italic is-size-7 mb-2">{!!$activity->properties['attributes']['value'] !!}</div>
@@ -36,12 +36,12 @@
                     <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                         <img class="is-rounded" src="{{$activity->properties['attributes']['user.photo']}}" alt="Image">
                     </figure>
-                    <div class="media-content">
+                    <div class="media-content mr-2">
                         <p>
                           @if(isset($activity->properties['attributes']['reply']['user']))
-                            {{$activity->properties['attributes']['user.first_name']}} gave feedback to {{ $activity->properties['attributes']['reply']['user']['first_name'] }} in {{ $activity->properties['attributes']['reply']['lesson']['title'] }}
+                            <strong>{{$activity->properties['attributes']['user.first_name']}}</strong> gave feedback to <strong>{{ $activity->properties['attributes']['reply']['user']['first_name'] }} in {{ $activity->properties['attributes']['reply']['lesson']['title'] }}</strong>
                           @else
-                            {{$activity->properties['attributes']['user.first_name']}} posted a reply in {{ $activity->properties['attributes']['lesson.title'] }}
+                            <strong>{{$activity->properties['attributes']['user.first_name']}}</strong> posted a reply in <strong>{{ $activity->properties['attributes']['lesson.title'] }}</strong>
                           @endif
                         </p>
                         <timeago class="is-size-7 has-text-grey" datetime="{{$activity->created_at}}" :auto-update="60"></timeago>
