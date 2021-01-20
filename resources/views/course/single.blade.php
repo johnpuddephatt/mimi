@@ -12,6 +12,12 @@
             <h3 class="title has-text-centered">{{ $course->title}}</h3>
             <p class="subtitle has-text-centered">{{ $course->description}}</p>
 
+            @if($course->archived)
+              <div class="notification is-warning">
+                <strong>This course has finished and has now been archived.</strong>
+              </div>
+            @endif
+
             @forelse ($course->lessons as $lesson)
               <b-button
                 tag="a"

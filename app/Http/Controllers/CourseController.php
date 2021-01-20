@@ -58,6 +58,13 @@ class CourseController extends Controller
 
     public function update(Course $course, StoreCourse $request) {
       $course->update($request->all());
+
+      if($request->has('archived')){
+        $course->update(['archived' => true]);
+      }else{
+        $course->update(['archived' => false]);
+      }
+
       return view('course.edit', compact('course'));
     }
 
@@ -105,7 +112,9 @@ class CourseController extends Controller
             'replies as feedbackless_replies_count' => function (Builder $query) {
                 $query->feedbackless();
             },
-        ])->get();
+        ])
+          ->orderBy('id', 'desc')
+          ->get();
 
         return view('home', compact('courses'));
       }

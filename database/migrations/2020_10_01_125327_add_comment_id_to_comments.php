@@ -14,7 +14,7 @@ class AddCommentIdToComments extends Migration
     public function up()
     {
         Schema::table('comments', function (Blueprint $table) {
-            $table->integer('comment_id')->nullable()->references('id')->on('comments')->onDelete('cascade');;
+            $table->integer('comment_id')->nullable()->references('id')->on('comments')->onDelete('cascade');
         });
     }
 

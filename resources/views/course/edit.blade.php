@@ -36,6 +36,13 @@
                   </div>
                 </div>
                 <div class="field">
+                  <label for="archived" class="checkbox">
+
+                    <input id="archived" name="archived" type="checkbox" value="1" @if($course->archived) checked @endif>
+                    Archive?
+                  </label>
+                </div>
+                <div class="field">
                   <b-button tag="input" native-type="submit" value="Update" type="is-primary" class="is-fullwidth"></b-button>
                 </div>
               </form>

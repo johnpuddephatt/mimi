@@ -8,7 +8,11 @@ class Course extends Model
 {
 
   protected $fillable = [
-      'title', 'description'
+      'title', 'description', 'archived'
+  ];
+
+  protected $casts = [
+    'archived' => 'boolean'
   ];
 
   public function hash() {

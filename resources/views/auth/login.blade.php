@@ -13,7 +13,10 @@
 
              @error('email')
                <p class="notification is-danger" role="alert">
-                 {{ $message }}
+                  {{ $message }}
+                  <br><br>
+                  <strong>Are you using the right account details?</strong><br>
+                  <small>This is the Joy of Languages chat room, which is separate from the main course platform.</small>
                </p>
              @enderror
 

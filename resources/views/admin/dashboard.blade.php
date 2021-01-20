@@ -12,7 +12,11 @@
 
             @forelse($courses as $course)
             <div class="panel-block is-justify-between">
-              {{ $course->title }}
+              <p>{{ $course->title }}
+                @if($course->archived)
+                  <span class="tag is-light">Archived</span>
+                @endif
+              </p>
 
               <b-field>
                 <p class="control">
@@ -20,15 +24,6 @@
                     Edit
                   </b-button>
                 </p>
-                {{-- <p class="control">
-                  <b-dropdown position="is-bottom-left">
-                    <b-button slot="trigger">
-                      <b-icon icon="menu-down"></b-icon>
-                    </b-button>
-                    <b-dropdown-item>Delete</b-dropdown-item>
-                    <b-dropdown-item>Copy invite link</b-dropdown-item>
-                  </b-dropdown>
-                </p> --}}
               </b-field>
             </div>
             @empty

@@ -5,10 +5,18 @@
   <div class="container">
     <h3 class="title has-text-centered is-size-2">The chat room 💬</h3>
     <p class="subtitle has-text-centered is-size-3">{{str_pad($lesson->number, 2, '0', STR_PAD_LEFT)}}. {{ $lesson->title}}</p>
+
     @if($lesson->video)
       <div class="columns is-centered">
         <div class="column is-12-tablet is-9-desktop is-8-widescreen is-paddingless">
           <a class="back-link has-text-dark" href={{ route("course.single", ['course' => $lesson->course->id ])}}>&larr; Back to lessons</a>
+
+          @if($lesson->course->archived)
+            <div class="notification is-warning">
+              <strong>You’re viewing a lesson that’s part of an archived course.</strong> You won’t be able to post new replies.
+            </div>
+          @endif
+
           <div class="card instruction-card">
             <div class="card-image">
               <video-player ref="instructionVideo" should_autoplay="true" source="{{ $lesson->video->playlist }}" type="application/x-mpegURL" poster="{{ $lesson->video->thumbnail }}"></video-player>
@@ -23,7 +31,10 @@
 
       <h2 class="subtitle is-size-4 has-text-centered">Responses</h2>
       <div class="columns is-multiline">
-        <create-reply :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
+        @if(!$lesson->course->archived)
+          <create-reply :lesson_id="{{ $lesson->id }}" :user='@json(Auth::user()->only(['id','first_name','photo']))'></create-reply>
+        @endif
+
         @foreach($lesson->replies as $reply)
           <reply-card
             @if(isset($reply_id) && ($reply->id == $reply_id))
@@ -31,9 +42,10 @@
               @if(isset($show_feedback) && $show_feedback) :show_feedback="true" @endif
             @endif
             comments_count="{{ $reply->comments_count }}"
-            reply_id="{{ $reply->id }}"
             lesson_id="{{ $lesson->id }}"
-            @if($reply->user) :user='@json($reply->user->only(['id','first_name','photo']))' @endif
+            reply_id="{{ $reply->id }}"
+            @php $reply_user = $reply->user->only(['id','photo','first_name','last_name','email','description', 'created_at']); @endphp
+            @if($reply->user) :user='@json($reply_user)' @endif
             :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
             @if(Auth::user()->is_admin) :is_admin = "true" @endif
             thumbnail="{{ $reply->video->thumbnail }}"

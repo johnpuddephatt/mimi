@@ -59,6 +59,7 @@ Route::get('admin/course/{course}/lesson/{lesson}', 'LessonController@edit')->na
 Route::put('admin/course/{course}/lesson/{lesson}', 'LessonController@update')->name('lesson.update')->middleware('admin');
 Route::delete('admin/course/{course}/lesson/{lesson}', 'LessonController@delete')->name('lesson.delete')->middleware('admin');
 
+Route::get('admin/activity', 'ActivityController@index')->name('activities')->middleware('admin');
 
 Route::get('admin/emails', function() {
   return view('admin.emails');

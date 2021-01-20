@@ -16,15 +16,15 @@
           </figure>
         </div>
         <div class="card-content is-justify-between">
-          <div class="reply-author">
-            <figure class="image is-48x48">
-              <img class="is-rounded" :src="user.photo" />
-            </figure>
-            <p>
-              <span class="is-size-6">{{ user.first_name }}</span>
-              <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
-            </p>
-          </div>
+            <div class="reply-author" @click="isUserModalOpen = true">
+              <figure class="image is-48x48">
+                <img class="is-rounded" :src="user.photo" />
+              </figure>
+              <p>
+                <span class="is-size-6">{{ user.first_name}}</span>
+                <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
+              </p>
+            </div>
           <span v-if="comments_count > 0" class="tag is-rounded">{{ comments_count }} comments</span>
         </div>
       </div>
@@ -57,14 +57,16 @@
         </div>
 
         <div class="modal-card">
-          <header class="modal-card-head is-radiusless reply-author">
-            <figure class="image is-48x48">
-              <img class="is-rounded" :src="user.photo" />
-            </figure>
-            <p>
-              <span class="is-size-6">{{ user.first_name }}</span>
-              <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
-            </p>
+          <header class="modal-card-head is-radiusless">
+            <div class="reply-author" @click="isUserModalOpen = true">
+              <figure class="image is-48x48">
+                <img class="is-rounded" :src="user.photo" />
+              </figure>
+              <p>
+                <span class="is-size-6">{{ user.first_name }}</span>
+                <span class="is-size-7"><timeago :datetime="time" :auto-update="60"></timeago></span>
+              </p>
+            </div>
 
             <b-dropdown v-if="active_user.id == user.id || active_user.is_admin" position="is-bottom-left" aria-role="list">
               <button class="button is-light" slot="trigger" slot-scope="{ active }">
@@ -81,6 +83,25 @@
           <comments :user="active_user" :parent_user_name="user.first_name" :reply_id="reply_id" :lesson_id="lesson_id"></comments>
         </div>
       </b-modal>
+      <b-modal v-model="isUserModalOpen" :width="480" scroll="keep">
+           <div class="card">
+               <div class="card-content">
+                   <div class="media ">
+                       <div class="media-left">
+                           <figure class="image is-64x64">
+                               <img class="is-rounded" :src="user.photo" alt="Image">
+                           </figure>
+                       </div>
+                       <div class="media-content">
+                           <p class="title is-4">{{ user.first_name}} {{ user.last_name}}</p>
+                           <p class="subtitle is-6" v-if="active_user.is_admin"><a :href="`mailto:${user.email}`">{{ user.email }}</a></p>
+                           <p>{{ user.description }}</p>
+                           <br><p><small>Joined <timeago :datetime="user.created_at"></timeago></small></p>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </b-modal>
     </div>
   </transition>
 </template>
@@ -95,7 +116,8 @@ export default {
       isDeleted: false,
       feedbackIsDeleted: false,
       video_stopped: null,
-      open_reply_modal: false
+      open_reply_modal: false,
+      isUserModalOpen: false
     }
   },
 
@@ -192,8 +214,7 @@ export default {
 @import "../../sass/variables";
 
 .reply-card {
-  border-radius: $radius;
-  overflow: hidden;
+
   .card-image {
     position: relative;
     background-color: $grey-lighter;
