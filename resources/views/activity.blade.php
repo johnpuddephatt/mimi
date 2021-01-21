@@ -12,6 +12,7 @@
               @foreach($activities as $activity)
                  <div class="panel-block is-justify-between">
                   @if(class_basename($activity->subject_type) == 'Comment')
+                    @if($activity->subject)
                     <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                         <img class="is-rounded" src="{{ $activity->causer->photo }}" alt="Image">
                     </figure>
@@ -27,12 +28,11 @@
                         <div class="is-italic is-size-7 mb-2">{!!$activity->properties['attributes']['value'] !!}</div>
                         <timeago class="is-size-7 has-text-grey" datetime="{{$activity->created_at}}" :auto-update="60"></timeago>
                     </div>
-                    <div>
-                  </div>
-                  <a class="button" href="{{ route('lesson.reply', [
-                    'course' => $activity->subject->reply->lesson->course->id,
-                    'lesson' => $activity->subject->reply->lesson->id,
-                    'reply_id' => $activity->subject->reply->id ]) }}">View</a>
+                    <a class="button" href="{{ route('lesson.reply', [
+                      'course' => $activity->subject->reply->lesson->course->id,
+                      'lesson' => $activity->subject->reply->lesson->id,
+                      'reply_id' => $activity->subject->reply->id ]) }}">View</a>
+                    @endif
                   @endif
 
                   @if(class_basename($activity->subject_type) == 'Reply')
