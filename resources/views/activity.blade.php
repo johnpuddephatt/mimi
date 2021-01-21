@@ -10,9 +10,9 @@
             <p class="subtitle has-text-centered">Take a look at what’s been happening</p>
             <div class="panel is-shadowless is-bordered">
               @foreach($activities as $activity)
+                @if($activity->subject)
                  <div class="panel-block is-justify-between">
                   @if(class_basename($activity->subject_type) == 'Comment')
-                    @if($activity->subject)
                     <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                         <img class="is-rounded" src="{{ $activity->causer->photo }}" alt="Image">
                     </figure>
@@ -32,14 +32,11 @@
                       'course' => $activity->subject->reply->lesson->course->id,
                       'lesson' => $activity->subject->reply->lesson->id,
                       'reply_id' => $activity->subject->reply->id ]) }}">View</a>
-                    @else
-                      Something went wrong: {{ $activity->id }}
-                    @endif
 
                   @endif
 
                   @if(class_basename($activity->subject_type) == 'Reply')
-                    @if($activity->subject && $activity->subject->reply)
+                    @if($activity->subject->reply)
                       {{-- TEACHER FEEDBACK --}}
                       <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                           <img class="is-rounded" src="{{ $activity->subject->user->photo }}" alt="Image">
@@ -54,7 +51,7 @@
                         'reply_id' => $activity->subject->reply->id,
                         'show_feedback' => true ]) }}">View</a>
 
-                    @elseif($activity->subject)
+                    @else
                       {{-- STUDENT REPLY --}}
                       <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                           <img class="is-rounded" src="{{ $activity->subject->user->photo }}" alt="Image">
@@ -71,6 +68,7 @@
                     @endif
                   @endif
                 </div>
+              @endif
               @endforeach
             </div>
             {{ $activities->links() }}
