@@ -19,10 +19,10 @@
                     <div class="media-content mr-2">
                         <p>
                           <strong>{{ $activity->causer->first_name }}</strong> commented on
-                          @if( $activity->subject->user->id == $activity->causer->id )
+                          @if( $activity->subject->reply->user->id == $activity->causer->id )
                             their own reply:
                           @else
-                            {{ $activity->subject->user->first_name }}’s reply:<p>
+                            {{ $activity->subject->reply->user->first_name }}’s reply:<p>
                           @endif
                         </p>
                         <div class="is-italic is-size-7 mb-2">{!!$activity->properties['attributes']['value'] !!}</div>
