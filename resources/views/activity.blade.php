@@ -32,7 +32,10 @@
                       'course' => $activity->subject->reply->lesson->course->id,
                       'lesson' => $activity->subject->reply->lesson->id,
                       'reply_id' => $activity->subject->reply->id ]) }}">View</a>
+                    @else
+                      Something went wrong: {{ $activity->id }}
                     @endif
+
                   @endif
 
                   @if(class_basename($activity->subject_type) == 'Reply')
