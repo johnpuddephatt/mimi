@@ -45,14 +45,13 @@
                           <p><strong>{{ $activity->subject->user->first_name }}</strong> gave feedback to {{ $activity->subject->reply->user->first_name }}</strong></p>
                           <timeago class="is-size-7 has-text-grey" datetime="{{$activity->created_at}}" :auto-update="60"></timeago>
                       </div>
-                      <div>
                       <a class="button" href="{{ route('lesson.reply', [
                         'course' => $activity->subject->reply->lesson->course->id,
                         'lesson' => $activity->subject->reply->lesson->id,
                         'reply_id' => $activity->subject->reply->id,
                         'show_feedback' => true ]) }}">View</a>
-                    </div>
-                  @elseif($activity->subject)
+
+                    @elseif($activity->subject)
                       {{-- STUDENT REPLY --}}
                       <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                           <img class="is-rounded" src="{{ $activity->subject->user->photo }}" alt="Image">
@@ -67,9 +66,7 @@
                         'reply_id' => $activity->subject->id,
                         'show_feedback' => false ]) }}">View</a>
                     @endif
-
                   @endif
-
                 </div>
               @endforeach
             </div>
