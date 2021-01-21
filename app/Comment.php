@@ -12,7 +12,7 @@ class Comment extends Model
 {
     use LogsActivity;
 
-    protected static $logAttributes = ['value','reply.id','reply.lesson.id','reply.lesson.course.id','reply.user.first_name', 'reply.user.id', 'user.first_name', 'user.photo'];
+    protected static $logAttributes = ['value'];
 
     protected $fillable = [
       'reply_id',

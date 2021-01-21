@@ -93,7 +93,7 @@ class LessonController extends Controller
      */
 
     public function single(Course $course, Lesson $lesson, $reply_id = null, $show_feedback = false) {
-      $lesson->load('replies.feedback');
+      $lesson->load('replies.video','replies.feedback');
       return view('lesson.single', $reply_id ? compact('lesson', 'reply_id', 'show_feedback') : compact('lesson'));
     }
 

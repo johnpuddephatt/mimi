@@ -36,29 +36,31 @@
         @endif
 
         @foreach($lesson->replies as $reply)
-          <reply-card
-            @if(isset($reply_id) && ($reply->id == $reply_id))
-              :auto_open="true"
-              @if(isset($show_feedback) && $show_feedback) :show_feedback="true" @endif
-            @endif
-            comments_count="{{ $reply->comments_count }}"
-            lesson_id="{{ $lesson->id }}"
-            reply_id="{{ $reply->id }}"
-            @php $reply_user = $reply->user->only(['id','photo','first_name','last_name','email','description', 'created_at']); @endphp
-            @if($reply->user) :user='@json($reply_user)' @endif
-            :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
-            @if(Auth::user()->is_admin) :is_admin = "true" @endif
-            thumbnail="{{ $reply->video->thumbnail }}"
-            video="{{ $reply->video->playlist }}"
-            @if($reply->feedback)
-              feedback_id="{{ $reply->feedback->id }}"
-              feedback_playlist="{{$reply->feedback->video->playlist }}"
-              feedback_thumbnail="{{$reply->feedback->video->thumbnail }}"
-            @endif
-            time="{{ $reply->video->converted_for_streaming_at }}"
-            class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative"
-            >
-          </reply-card>
+          @if($reply->user)
+            <reply-card
+              @if(isset($reply_id) && ($reply->id == $reply_id))
+                :auto_open="true"
+                @if(isset($show_feedback) && $show_feedback) :show_feedback="true" @endif
+              @endif
+              comments_count="{{ $reply->comments_count }}"
+              lesson_id="{{ $lesson->id }}"
+              reply_id="{{ $reply->id }}"
+              @php $reply_user = $reply->user->only(['id','photo','first_name','last_name','email','description', 'created_at']); @endphp
+              @if($reply->user) :user='@json($reply_user)' @endif
+              :active_user='@json(Auth::user()->only(['id','first_name','photo']))'
+              @if(Auth::user()->is_admin) :is_admin = "true" @endif
+              thumbnail="{{ $reply->video->thumbnail }}"
+              video="{{ $reply->video->playlist }}"
+              @if($reply->feedback)
+                feedback_id="{{ $reply->feedback->id }}"
+                feedback_playlist="{{$reply->feedback->video->playlist }}"
+                feedback_thumbnail="{{$reply->feedback->video->thumbnail }}"
+              @endif
+              time="{{ $reply->video->converted_for_streaming_at }}"
+              class="column is-full is-half-tablet is-one-third-widescreen is-one-quarter-fullhd is-relative"
+              >
+            </reply-card>
+          @endif
         @endforeach
       </div>
     @else
