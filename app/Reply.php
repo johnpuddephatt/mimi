@@ -16,7 +16,7 @@ use App\Mail\NewFeedback;
 
 class Reply extends Model
 {
-    use LogsActivity;
+    // use LogsActivity;
 
     // protected static $logAttributes = ['reply', 'reply.lesson', 'lesson.title', 'lesson.id', 'lesson.course.id', 'user.first_name', 'user.photo'];
 
