@@ -12,13 +12,13 @@ use Mail;
 use App\Mail\NewReply;
 use App\Mail\NewFeedback;
 
-use Spatie\Activitylog\Traits\LogsActivity;
+// use Spatie\Activitylog\Traits\LogsActivity;
 
 class Reply extends Model
 {
     use LogsActivity;
 
-    protected static $logAttributes = ['reply', 'reply.lesson', 'lesson.title', 'lesson.id', 'lesson.course.id', 'user.first_name', 'user.photo'];
+    // protected static $logAttributes = ['reply', 'reply.lesson', 'lesson.title', 'lesson.id', 'lesson.course.id', 'user.first_name', 'user.photo'];
 
     protected $fillable = [
         'video_id',
