@@ -36,7 +36,7 @@
                   @endif
 
                   @if(class_basename($activity->subject_type) == 'Reply')
-                    @if($activity->subject->reply)
+                    @if($activity->subject && $activity->subject->reply)
                       {{-- TEACHER FEEDBACK --}}
                       <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                           <img class="is-rounded" src="{{ $activity->subject->user->photo }}" alt="Image">
@@ -52,7 +52,7 @@
                         'reply_id' => $activity->subject->reply->id,
                         'show_feedback' => true ]) }}">View</a>
                     </div>
-                    @else
+                  @elseif($activity->subject)
                       {{-- STUDENT REPLY --}}
                       <figure class="image is-64x64 mr-2 is-align-self-flex-start is-flex-shrink-0">
                           <img class="is-rounded" src="{{ $activity->subject->user->photo }}" alt="Image">
