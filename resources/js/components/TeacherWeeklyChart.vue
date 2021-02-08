@@ -26,8 +26,10 @@
     }),
 
     watch: {
-      date() {
-        if(this.date) {
+      date(newDate,oldDate) {
+
+        if(newDate && newDate != oldDate) {
+          console.log('fetching');
           this.fetchData();
         }
       }
@@ -35,9 +37,8 @@
     computed: {
     },
     mounted () {
-      this.date = dayjs().startOf('week').format("YYYY-MM-DD");
+      this.date = dayjs().startOf('week').add(1, 'days').format("YYYY-MM-DD");
       this.enumerateWeeks();
-      this.fetchData();
     },
     methods: {
       enumerateWeeks() {
@@ -45,7 +46,7 @@
           let date = dayjs(this.date, "YYYY-MM-DD").subtract(i, 'weeks');
           this.weeks.push({
             robot: date.format("YYYY-MM-DD"),
-            human: date.add(1, 'days').format("dddd D MMM , YYYY")
+            human: date.format("dddd D MMM , YYYY")
           })
         };
       },
@@ -53,7 +54,7 @@
         this.isLoading = true;
         axios({
             method: 'get',
-            url: `/stats/teacher-weekly/${ this.date }/`,
+            url: `/stats/teacher-weekly/${ this.date }`,
             timeout: 15000
           })
           .then(response => {

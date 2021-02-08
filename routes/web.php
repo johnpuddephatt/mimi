@@ -22,7 +22,7 @@ Route::get('stats/replies-monthly/{from}/{to}', 'StatController@repliesMonthly')
 
 
 Route::post('log', function (\Illuminate\Http\Request $request) {
-  Log::channel('frontend')->info($request->error . ', user_id: ' . (Auth::user() ? Auth::user()->id : null ));
+  Log::channel('frontend')->info($request->error . ', user: ' . (Auth::user() ? (Auth::user()->first_name . ' ' . Auth::user()->last_name . ' (' . Auth::user()->id . ')'): null ));
 });
 
 Route::get('users', 'UserController@index')->name('users.index')->middleware('admin');

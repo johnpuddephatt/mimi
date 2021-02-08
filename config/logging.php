@@ -37,8 +37,9 @@ return [
     'channels' => [
 
         'frontend' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/laravel-frontend.log'),
+            'days' => 14
         ],
 
         'stack' => [

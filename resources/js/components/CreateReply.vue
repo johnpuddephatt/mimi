@@ -40,7 +40,8 @@
           <camera-field @is-recording="isRecording = $event" v-model="reply.video" mode="video"></camera-field>
         </section>
         <footer class="modal-card-foot has-background-light">
-          <b-button :disabled="!reply.video" expanded type="is-primary" size="is-medium" @click.prevent="onSubmit" :loading="isSaving">Upload your reply</b-button>
+          <b-button v-if="reply.video" expanded type="is-primary" size="is-medium" @click.prevent="onSubmit" :loading="isSaving">Upload your reply</b-button>
+          <p v-else>Start and stop recording with the red record button.</p>
         </footer>
       </div>
     </b-modal>
@@ -103,6 +104,8 @@ export default {
       newVideo: {},
       errors: '',
       noSleep: null,
+      max_attempts: 3,
+      attempts: 0,
       reply: {
         id: null,
         video: null,
@@ -129,6 +132,7 @@ export default {
 
     onSubmit() {
       this.isSaving = true;
+
       var noSleep = new NoSleep();
       noSleep.enable();
       const data = new FormData();
@@ -141,6 +145,22 @@ export default {
 
       axios.post('/log', {'error': `BEGINNING UPLOAD, ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
 
+      let cancelTokenSource = axios.CancelToken.source();
+
+      if(this.attempts < this.max_attempts) {
+        setTimeout(()=> {
+          if(this.isSaving && (!this.uploadProgress || this.uploadProgress < 5)) {
+            this.attempts++;
+            axios.post('/log', {'error': `UPLOAD STALLED – RESTARTING (${this.attempts}/${this.max_attempts}), ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
+            cancelTokenSource.cancel(`Upload stalled. Restarting (${this.attempts}/${this.max_attempts}) .`);
+            this.isSaving = false;
+            setTimeout(()=> {
+              this.onSubmit();
+            }, 1000);
+          }
+        }, 10000);
+      }
+
       axios({
           method: 'post',
           url: `/lesson/${this.reply.lesson_id}/reply`,
@@ -148,8 +168,9 @@ export default {
           headers: {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
           },
+          cancelToken : cancelTokenSource.token,
           onUploadProgress: progressEvent => this.updateProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total)),
-          timeout: 120000
+          timeout: 140000
         })
         .then(response => {
           axios.post('/log', {'error': `UPLOAD COMPLETE, ${ platform.description }, size: ${Math.floor(this.reply.video.size/1024)}kB, `});
@@ -177,22 +198,33 @@ export default {
           noSleep.disable();
           this.isSaving = false;
 
-          if(error.response) {
-            var uploadErrorMessage = (error.response.data  && error.response.data.message) ? error.response.data.message : 'Server reponse error. Let us know and we’ll look into the problem for you.'
-          }
-          else if(error.request) {
-            var uploadErrorMessage = (error.request.data && error.request.data.message) ? error.request.data.message : 'Network request error. Either your internet connection is unstable or the upload timed out. '
-          }
-          else {
-            var uploadErrorMessage = 'Unknown error';
-          }
+          var uploadErrorMessage = 'Unknown error';
 
-          this.$buefy.snackbar.open({
-            message: `<b>Error:</b> ${ uploadErrorMessage}`,
+          let snackbarOptions = {
             type: 'is-danger',
             position: 'is-bottom',
-            duration: 5000
-          });
+            duration: 5000,
+            actionText: 'OK'
+          }
+
+          if(error.response) {
+            uploadErrorMessage = (error.response.data  && error.response.data.message) ? error.response.data.message : 'Server reponse error. Let us know and we’ll look into the problem for you.'
+          }
+          else if(error.request) {
+            uploadErrorMessage = (error.request.data && error.request.data.message) ? error.request.data.message : 'Network request error. Either your internet connection is unstable or the upload timed out. '
+          }
+          else if(error.message) {
+            uploadErrorMessage = error.message;
+            snackbarOptions.actionText = null;
+            snackbarOptions.duration = 2000;
+          }
+          else {
+            uploadErrorMessage = '';
+          }
+
+          snackbarOptions.message = `<b>Error:</b> ${ uploadErrorMessage}`;
+
+          this.$buefy.snackbar.open(snackbarOptions);
           axios.post('/log', {'error': `UPLOAD ERROR ${ platform.description }, Error: ${ uploadErrorMessage }, ${ error }, Reply data: ${JSON.stringify(this.reply)},`});
           this.errors = uploadErrorMessage;
         });
@@ -207,7 +239,7 @@ export default {
       this.isSaving = false;
       this.uploadProgress = null;
       this.errors = null;
-      this.reply.video = null;
+      // this.reply.video = null;
     }
   }
 };
