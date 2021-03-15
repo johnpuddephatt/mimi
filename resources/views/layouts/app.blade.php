@@ -26,11 +26,12 @@
 
             <nav class="navbar is-transparent is-fixed-top is-spaced">
 
-            @if(config('app.alert'))
-              <div class="notification has-text-centered is-warning m-1 is-light">
-                {{ config('app.alert') }}
-              </div>
-            @endif
+                @if(config('app.alert'))
+                  <div class="notification has-text-centered is-warning m-1 is-light">
+                    {{ config('app.alert') }}
+                  </div>
+                @endif
+
                 <div class="container">
                     <div class="navbar-brand">
                         <a href="{{ url('/') }}" class="navbar-item">
