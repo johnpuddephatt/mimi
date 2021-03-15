@@ -205,7 +205,7 @@ export default {
         confirmText: 'Confirm',
         type: 'is-danger',
         hasIcon: true,
-        onConfirm: () => this.onRestart
+        onConfirm: () => this.onRestart()
       })
     },
 
